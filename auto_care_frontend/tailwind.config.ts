@@ -5,9 +5,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#2d1f1a',          // Dark brown
-        secondary: '#fbe8df',        // Light beige
-        accent: '#ff9248',           // Orange
+        primary: '#1E201E',          // Dark brown
+        secondary: '#222725',        // Light beige
+        tertiary: '#ECDFCC',           // Orange
         brand: {
           100: '#fcd9c1',
           500: '#fca36b',

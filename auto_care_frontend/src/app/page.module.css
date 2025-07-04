@@ -1,0 +1,13 @@
+.hero {
+  background-image: url('/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.subheading {
+  font-size: 1.25rem;
+  color: #ff9248;
+  margin-top: 1rem;
+}

@@ -1,0 +1,106 @@
+/* src/components/layout/layout.module.css */
+
+
+.headerWrapper {
+  background-color: #fbe8df;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.logo {
+  height: 5.5rem;
+  padding-left: 5.5rem;
+}
+
+.navbar {
+  display: none;
+}
+
+.navbarActive {
+  display: flex;
+  gap: 1.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  align-items: center;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  padding: 0.5rem;
+}
+
+.dropdownItem {
+  display: block;
+  padding: 0.25rem 1rem;
+}
+
+.dropdownItem:hover {
+  background-color: #f3f4f6;
+}
+
+.searchBox {
+  background-color: #2d1f1a;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+}
+
+.searchInput {
+  background: transparent;
+  color: white;
+  font-size: 0.875rem;
+  padding-left: 0.5rem;
+  outline: none;
+}
+
+.footerWrapper {
+  background-color: #fbe8df;
+  text-align: center;
+  font-size: 0.875rem;
+  padding: 2rem 1rem;
+  margin-top: 3rem;
+}
+
+.footerGrid {
+  max-width: 72rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    display: flex;
+  }
+
+  .footerGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.footerText {
+  font-size: 0.75rem;
+  color: #4b5563;
+  max-width: 48rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.footerLink {
+  color: #2563eb;
+}
