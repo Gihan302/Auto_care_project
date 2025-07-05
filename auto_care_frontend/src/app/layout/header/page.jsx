@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import styles from '../layout.module.css'
 import { useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
+import styles from '../layout.module.css'
 
 export default function Header() {
   const [isVehiclesOpen, setVehiclesOpen] = useState(false)
@@ -10,32 +10,56 @@ export default function Header() {
 
   return (
     <header className={styles.headerWrapper}>
+      {/* Logo */}
       <div>
         <img src="/logo.png" alt="Auto Care" className={styles.logo} />
       </div>
 
-      <nav className={`${styles.navbar} md:flex`}>
+      {/* Nav Links */}
+      <nav className={styles.navbarActive}>
         <div className="relative">
-          <button onClick={() => setVehiclesOpen(!isVehiclesOpen)}>VEHICLES ▾</button>
+          <button onClick={() => {
+            setVehiclesOpen(!isVehiclesOpen)
+            setResearchOpen(false)
+          }}>
+            VEHICLES {isVehiclesOpen ? '▴' : '▾'}
+          </button>
           {isVehiclesOpen && (
             <div className={styles.dropdown}>
-              <a href="#" className={styles.dropdownItem}>New Cars</a>
-              <a href="#" className={styles.dropdownItem}>Used Cars</a>
+              <a href="#" className={styles.dropdownItem}>Cars</a>
+              <a href="#" className={styles.dropdownItem}>Vans</a>
+              <a href="#" className={styles.dropdownItem}>SUVs</a>
+              <a href="#" className={styles.dropdownItem}>Trucks</a>
+              <a href="#" className={styles.dropdownItem}>Motor Bikes</a>
+              <a href="#" className={styles.dropdownItem}>Three wheelers</a>
+              <a href="#" className={styles.dropdownItem}>Busses</a>
+              <a href="#" className={styles.dropdownItem}>Lories</a>
             </div>
           )}
         </div>
+
         <div className="relative">
-          <button onClick={() => setResearchOpen(!isResearchOpen)}>RESEARCH ▾</button>
+          <button onClick={() => {
+            setResearchOpen(!isResearchOpen)
+            setVehiclesOpen(false)
+          }}>
+            RESEARCH {isResearchOpen ? '▴' : '▾'}
+          </button>
           {isResearchOpen && (
             <div className={styles.dropdown}>
-              <a href="#" className={styles.dropdownItem}>Loan Tips</a>
               <a href="#" className={styles.dropdownItem}>Car Reviews</a>
+              <a href="#" className={styles.dropdownItem}>Compare Cars</a>
+              <a href="#" className={styles.dropdownItem}>Car Finder Quiz</a>
+              <a href="#" className={styles.dropdownItem}>Buying Power Calculator</a>
+              <a href="#" className={styles.dropdownItem}>Lease Calculator</a>
             </div>
           )}
         </div>
+
         <a href="#">SELL YOUR CAR</a>
       </nav>
 
+      {/* Search + SignUp */}
       <div className="flex items-center gap-4">
         <div className={styles.searchBox}>
           <FaSearch className="text-white text-sm" />

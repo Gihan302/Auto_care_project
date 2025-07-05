@@ -1,19 +1,24 @@
 /* src/components/layout/layout.module.css */
 
+:root {
+  --color-primary: #1E201E;
+  --color-secondary: #222725;
+  --color-tertiary: #ECDFCC;
+}
 
 .headerWrapper {
-  background-color: #fbe8df;
+  background-color: var(--color-tertiary);
   padding: 1rem 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
+  z-index: 20;
 }
 
 .logo {
-  height: 5.5rem;
-  padding-left: 5.5rem;
+  height: 2.5rem;
 }
 
 .navbar {
@@ -26,6 +31,7 @@
   font-weight: 600;
   font-size: 0.875rem;
   align-items: center;
+  color: var(--color-primary);
 }
 
 .dropdown {
@@ -33,23 +39,29 @@
   top: 100%;
   left: 0;
   margin-top: 0.25rem;
-  background-color: white;
+  background-color: var(--color-tertiary);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
+  min-width: 180px;
 }
 
 .dropdownItem {
   display: block;
-  padding: 0.25rem 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--color-primary);
+  transition: background 0.2s;
 }
 
 .dropdownItem:hover {
-  background-color: #f3f4f6;
+  background-color: rgba(30, 32, 30, 0.1);
+  border-radius: 4px;
+  padding-left: 0.5rem;
 }
 
 .searchBox {
-  background-color: #2d1f1a;
+  background-color: var(--color-primary);
   border-radius: 9999px;
   display: flex;
   align-items: center;
@@ -65,7 +77,7 @@
 }
 
 .footerWrapper {
-  background-color: #fbe8df;
+  background-color: var(--color-tertiary);
   text-align: center;
   font-size: 0.875rem;
   padding: 2rem 1rem;
