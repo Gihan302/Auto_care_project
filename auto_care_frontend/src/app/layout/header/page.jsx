@@ -1,76 +1,125 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
-import styles from '../layout.module.css'
+import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { ChevronDown, Search, Menu, X } from 'lucide-react';
+import styles from '../layout.module.css';
+import Image from 'next/image';
 
-export default function Header() {
-  const [isVehiclesOpen, setVehiclesOpen] = useState(false)
-  const [isResearchOpen, setResearchOpen] = useState(false)
+
+const Header = () => {
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const vehicleCategories = [
+    { name: 'Cars', href: '/vehicles/cars' },
+    { name: 'Vans', href: '/vehicles/vans' },
+    { name: 'SUVs', href: '/vehicles/suvs' },
+    { name: 'Trucks', href: '/vehicles/trucks' },
+    { name: 'Motor Bikes', href: '/vehicles/motorbikes' },
+    { name: 'Three Wheelers', href: '/vehicles/three-wheelers' },
+    { name: 'Busses', href: '/vehicles/busses' },
+    { name: 'Lorries', href: '/vehicles/lorries' },
+  ];
+
+  const researchOptions = [
+    { name: 'Car Reviews', href: '/research/reviews' },
+    { name: 'Compare Cars', href: '/research/compare' },
+    { name: 'Car Finder Quiz', href: '/research/quiz' },
+    { name: 'Buying Power Calculator', href: '/research/calculator' },
+    { name: 'Lease Calculator', href: '/research/lease' },
+  ];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setActiveDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleDropdownToggle = (dropdown) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
 
   return (
     <header className={styles.headerWrapper}>
-      {/* Logo */}
-      <div>
-        <img src="/logo.png" alt="Auto Care" className={styles.logo} />
-      </div>
+      <div className={styles.headerContainer}>
+        {/* Logo */}
+        <Link href="/" className={styles.logoContainer}>
+          <div className={styles.logoIcon}>
+            <Image src="/logo.png" alt="Auto Care Logo" width={85} height={80} />
+          </div>
+        </Link>
 
-      {/* Nav Links */}
-      <nav className={styles.navbarActive}>
-        <div className="relative">
-          <button onClick={() => {
-            setVehiclesOpen(!isVehiclesOpen)
-            setResearchOpen(false)
-          }}>
-            VEHICLES {isVehiclesOpen ? '▴' : '▾'}
-          </button>
-          {isVehiclesOpen && (
-            <div className={styles.dropdown}>
-              <a href="#" className={styles.dropdownItem}>Cars</a>
-              <a href="#" className={styles.dropdownItem}>Vans</a>
-              <a href="#" className={styles.dropdownItem}>SUVs</a>
-              <a href="#" className={styles.dropdownItem}>Trucks</a>
-              <a href="#" className={styles.dropdownItem}>Motor Bikes</a>
-              <a href="#" className={styles.dropdownItem}>Three wheelers</a>
-              <a href="#" className={styles.dropdownItem}>Busses</a>
-              <a href="#" className={styles.dropdownItem}>Lories</a>
+
+        {/* Desktop Navigation */}
+        <nav className={styles.navbarActive} ref={dropdownRef}>
+          {/* VEHICLES Dropdown */}
+          <div className={styles.navItemWrapper}>
+            <button onClick={() => handleDropdownToggle('vehicles')} className={styles.navItem}>
+              <span>VEHICLES</span>
+              <ChevronDown className={`${styles.chevron} ${activeDropdown === 'vehicles' ? styles.chevronRotated : ''}`} size={16} />
+            </button>
+
+            <div className={`${styles.dropdownMenu} ${activeDropdown === 'vehicles' ? styles.dropdownActive : styles.dropdownEnter}`}>
+              <div className={styles.dropdownContent}>
+                {vehicleCategories.map((category, index) => (
+                  <Link key={index} href={category.href} className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
 
-        <div className="relative">
-          <button onClick={() => {
-            setResearchOpen(!isResearchOpen)
-            setVehiclesOpen(false)
-          }}>
-            RESEARCH {isResearchOpen ? '▴' : '▾'}
-          </button>
-          {isResearchOpen && (
-            <div className={styles.dropdown}>
-              <a href="#" className={styles.dropdownItem}>Car Reviews</a>
-              <a href="#" className={styles.dropdownItem}>Compare Cars</a>
-              <a href="#" className={styles.dropdownItem}>Car Finder Quiz</a>
-              <a href="#" className={styles.dropdownItem}>Buying Power Calculator</a>
-              <a href="#" className={styles.dropdownItem}>Lease Calculator</a>
+          {/* RESEARCH Dropdown */}
+          <div className={styles.navItemWrapper}>
+            <button onClick={() => handleDropdownToggle('research')} className={styles.navItem}>
+              <span>RESEARCH</span>
+              <ChevronDown className={`${styles.chevron} ${activeDropdown === 'research' ? styles.chevronRotated : ''}`} size={16} />
+            </button>
+
+            <div className={`${styles.dropdownMenu} ${activeDropdown === 'research' ? styles.dropdownActive : styles.dropdownEnter}`}>
+              <div className={styles.dropdownContent}>
+                {researchOptions.map((option, index) => (
+                  <Link key={index} href={option.href} className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
+                    {option.name}
+                  </Link>
+                ))}
+              </div>
             </div>
-          )}
+          </div>
+
+          {/* Sell Your Car */}
+          <Link href="/sell" className={styles.navItem}>
+            SELL YOUR CAR
+          </Link>
+        </nav>
+
+        {/* Search + Sign Up */}
+        <div className={styles.searchSignupWrapper}>
+          <form className={styles.searchContainer}>
+            <input type="text" placeholder="Search" className={styles.searchInput} />
+            <Search className={styles.searchIcon} size={16} />
+          </form>
+
+          <Link href="/signup" className={styles.signupBtn}>
+            SIGN UP
+          </Link>
         </div>
 
-        <a href="#">SELL YOUR CAR</a>
-      </nav>
-
-      {/* Search + SignUp */}
-      <div className="flex items-center gap-4">
-        <div className={styles.searchBox}>
-          <FaSearch className="text-white text-sm" />
-          <input
-            type="text"
-            placeholder="Search"
-            className={styles.searchInput}
-          />
-        </div>
-        <button className="text-sm font-semibold">SIGN UP</button>
+        {/* Mobile Menu Button */}
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className={styles.mobileMenuButton}>
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
     </header>
-  )
-}
+  );
+};
+
+export default Header;
