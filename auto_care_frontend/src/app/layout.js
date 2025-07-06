@@ -1,5 +1,3 @@
-// src/app/layout.tsx
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./page.module.css"; // adjust path if needed
 

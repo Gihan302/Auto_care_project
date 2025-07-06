@@ -1,15 +1,18 @@
 /* src/components/layout/layout.module.css */
 .headerWrapper {
   background-color: var(--color-tertiary);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 50;
   position: relative;
+  height: 100px;
+  padding: 0%;
 }
-
+.noPadding {
+  padding: 0 !important;
+}
 
 .logoIcon {
   padding: 0.5rem;
-  height: 45;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,6 +35,8 @@
   font-size: 0.875rem;
   padding: 0.5rem 0;
   transition: color 0.2s;
+  border-width: 0cap;
+  background-color: var(--color-tertiary);;
 }
 
 .navItem:hover {
@@ -78,7 +83,7 @@
 }
 
 .dropdownLink:hover {
-  background-color: #f9fafb;
+  background-color:var(--color-tertiary);
   color: var(--color-primary);
 }
 
@@ -171,8 +176,71 @@
   background-color: rgba(30, 32, 30, 0.1);
 }
 
-@media (max-width: 768px) {
-  .mobileMenuButton {
-    display: block;
+.logoIconWrapper {
+  position: relative;
+  width: auto;
+  height: 75px;
+  padding: 8px;
+  /* or whatever fits your header */
+}
+/* === Footer Styles === */
+
+.footerWrapper {
+  background-color: var(--color-tertiary);
+  color: var(--color-primary);
+  padding: 3rem 1rem;
+}
+
+.footerContainer {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.footerGrid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .footerGrid {
+    grid-template-columns: repeat(4, 1fr);
   }
+}
+
+.footerTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.footerList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #000000;
+}
+
+.footerList a {
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerList a:hover {
+  color: var(--color-secondary);
+}
+
+.footerContact {
+  color: var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footerBottom {
+  border-top: 1px solid #ffffff;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
 }

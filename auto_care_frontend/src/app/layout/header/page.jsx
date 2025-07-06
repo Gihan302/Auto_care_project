@@ -7,6 +7,7 @@ import styles from '../layout.module.css';
 import Image from 'next/image';
 
 
+
 const Header = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -51,8 +52,15 @@ const Header = () => {
       <div className={styles.headerContainer}>
         {/* Logo */}
         <Link href="/" className={styles.logoContainer}>
-          <div className={styles.logoIcon}>
-            <Image src="/logo.png" alt="Auto Care Logo" width={85} height={80} />
+          <div className={styles.logoIconWrapper}>
+            <Image
+              src="/logo.png"
+              alt="Auto Care Logo"
+              width={150}
+              height={75}
+              priority
+
+            />
           </div>
         </Link>
 
