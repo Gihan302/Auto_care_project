@@ -5,20 +5,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#2d1f1a',          // Dark brown
-        secondary: '#fbe8df',        // Light beige
-        accent: '#ff9248',           // Orange
+        primary: '#1E201E',
+        secondary: '#222725',
+        tertiary:'#ECDFCC',
         brand: {
           100: '#fcd9c1',
           500: '#fca36b',
         },
       },
       fontFamily: {
-        sans: ['Geist', 'sans-serif'],
-        mono: ['Geist Mono', 'monospace'],
+        sans: ['var(--font-khand)', 'sans-serif'],              // Default UI font
+        display: ['var(--font-anton)', 'sans-serif'],           // Use for large headings
+        serifKannada: ['var(--font-noto-kannada)', 'serif'],    // Kannada or body serif
       },
     },
   },
   plugins: [],
 }
+
 export default config
