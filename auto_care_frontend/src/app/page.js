@@ -1,6 +1,7 @@
 import { Hero } from './user/components/homepage/hero';
 import { WhyAutoCare } from './user/components/homepage/whyAutoCare';
 import { VehicleTypeSelector } from './user/components/homepage/vehicleTypeSlector';
+import BuyingPowerCal from './user/components/homepage/buyingPowerCal';
 
 export default function HomePage() {
   return (
@@ -8,6 +9,7 @@ export default function HomePage() {
       <Hero />
       <VehicleTypeSelector />
       <WhyAutoCare />
+      <BuyingPowerCal />
     </>
   );
 }

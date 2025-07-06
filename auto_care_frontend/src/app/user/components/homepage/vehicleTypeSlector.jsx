@@ -45,8 +45,10 @@ export const VehicleTypeSelector = () => {
         {selectedType && (
           <div className="selected-info">
             <p>
-              You selected: <strong>{vehicleTypes.find(t => t.id === selectedType)?.name}</strong>
+              Explore the Latest <strong>{vehicleTypes.find(t => t.id === selectedType)?.name}</strong>{' '}
+              Collection Tailored for You
             </p>
+
             <button className="continue-btn"><span>Continue</span></button>
           </div>
         )}

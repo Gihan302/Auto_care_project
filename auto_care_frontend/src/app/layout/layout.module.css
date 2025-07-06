@@ -1,13 +1,9 @@
-/* src/components/layout/layout.module.css */
 .headerWrapper {
   background-color: var(--color-tertiary);
   z-index: 50;
   position: relative;
   height: 100px;
   padding: 0%;
-}
-.noPadding {
-  padding: 0 !important;
 }
 
 .logoIcon {
