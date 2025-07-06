@@ -1,10 +1,13 @@
-import styles from './page.module.css'
+import { Hero } from './user/components/homepage/hero';
+import { WhyAutoCare } from './user/components/homepage/whyAutoCare';
+import { VehicleTypeSelector } from './user/components/homepage/vehicleTypeSlector';
 
 export default function HomePage() {
   return (
-    <div className={styles.hero}>
-      <h1 className="text-4xl font-bold text-primary">Your Dream Vehicle Awaits!</h1>
-      <p className={styles.subheading}>Browse Listings Today</p>
-    </div>
-  )
+    <>
+      <Hero />
+      <VehicleTypeSelector />
+      <WhyAutoCare />
+    </>
+  );
 }
