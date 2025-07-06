@@ -1,5 +1,5 @@
 import { Hero } from './user/components/homepage/hero';
-import { WhyAutoCare } from './user/components/homepage/whyAutoCare';
+import {WhyAutoCare}  from './user/components/homepage/whyAutoCare';
 import { VehicleTypeSelector } from './user/components/homepage/vehicleTypeSlector';
 import BuyingPowerCal from './user/components/homepage/buyingPowerCal';
 
