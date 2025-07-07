@@ -80,12 +80,12 @@ export default function BuyingPowerCal() {
           KNOW YOUR BUYING POWER?
         </h1>
         
-        <div className="calculatorCard">
+        <div >
           <div className="calculatorGrid">
             {/* Car Image */}
             <div className="imageSection">
               <img 
-                src="https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                src="/Car image.png"
                 alt="Luxury Car"
                 className="carImage"
               />

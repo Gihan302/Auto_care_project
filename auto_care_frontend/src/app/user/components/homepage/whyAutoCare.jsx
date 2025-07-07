@@ -16,7 +16,7 @@ export const WhyAutoCare = () => {
     <section className="why-auto-care">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title">WHY Auto Care ?</h2>
+          <h2 className="sectionTitle">WHY Auto Care ?</h2>
         </div>
         
         <div className="features-grid"> {/* Fixed class name */}
@@ -31,7 +31,8 @@ export const WhyAutoCare = () => {
                 A well-maintained car sells faster and at a better price. 
                 Use Auto Care to showcase service history and attract serious buyers.
               </p>
-              <button className="feature-button">Sell Confidently</button> {/* Fixed class name */}
+              <button className="feature-button"><span>Sell Confidently</span></button>
+ {/* Fixed class name */}
             </div>
           </div>
 
@@ -46,7 +47,7 @@ export const WhyAutoCare = () => {
                 Leasing companies prefer vehicles with verified maintenance records. 
                 Auto Care connects you to lenders who trust a cared-for car.
               </p>
-              <button className="feature-button">Check Loan Rates</button>
+              <button className="feature-button"><span>Check Loan Rates</span></button>
             </div>
           </div>
 
@@ -61,7 +62,7 @@ export const WhyAutoCare = () => {
                 Advertise your car as "Auto Care Certified" to stand out in listings. 
                 Buyers trust vehicles with documented care—yours could be next.
               </p>
-              <button className="feature-button">List Your Car</button>
+              <button className="feature-button"><span>List Your Car</span></button>
             </div>
           </div>
         </div>
