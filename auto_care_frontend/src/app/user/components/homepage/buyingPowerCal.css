@@ -2,7 +2,7 @@
 
 .calculatorContainer {
   padding: 4rem 1rem;
-  background: linear-gradient(to bottom, #fed7aa, #fbbf24);
+  background: #ECDFCC;
   min-height: 100vh;
   z-index: 1;
   position: relative;
@@ -17,7 +17,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
-  color: #1f2937;
+  color: #1E201E;
   margin-bottom: 3rem;
   letter-spacing: 0.05em;
 }
@@ -44,7 +44,7 @@
 
 .carImage {
   width: 100%;
-  max-width: 28rem;
+  max-width: 50rem;
   height: auto;
   border-radius: 0.5rem;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -60,7 +60,7 @@
   text-align: center;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #605D56, #b0aba1);
   border-radius: 0.5rem;
   color: white;
 }
@@ -98,7 +98,7 @@
 .label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #374151;
+  color: #3C3D37;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -118,7 +118,7 @@
 .input:focus,
 .select:focus {
   outline: none;
-  border-color: #f97316;
+  border-color: #1E201E;
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
 }
 
@@ -160,7 +160,7 @@
   appearance: none;
   width: 24px;
   height: 24px;
-  background: #f97316;
+  background: #1E201E;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -168,14 +168,14 @@
 }
 
 .slider::-webkit-slider-thumb:hover {
-  background: #ea580c;
+  background: #3c403c;
   transform: scale(1.1);
 }
 
 .slider::-moz-range-thumb {
   width: 24px;
   height: 24px;
-  background: #f97316;
+  background: #1E201E;
   border-radius: 50%;
   cursor: pointer;
   border: none;
@@ -184,7 +184,7 @@
 }
 
 .slider::-moz-range-thumb:hover {
-  background: #ea580c;
+  background: #1E201E;
   transform: scale(1.1);
 }
 
@@ -198,7 +198,7 @@
 
 .calculateBtn {
   width: 100%;
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, #414641, #464a46);
   color: white;
   padding: 1rem;
   border: none;
@@ -213,7 +213,7 @@
 }
 
 .calculateBtn:hover {
-  background: linear-gradient(135deg, #ea580c, #c2410c);
+  background: linear-gradient(135deg, #3C3D37, #595b52);
   transform: translateY(-2px);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
@@ -384,7 +384,7 @@
 
   .input,
   .select {
-    background: #374151;
+    background: #3C3D37;
     color: #f9fafb;
     border-color: #4b5563;
   }
