@@ -1,0 +1,369 @@
+:root {
+  --color-primary: #1E201E;
+  --color-secondary: #222725;
+  --color-tertiary: #ECDFCC;
+}
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.backgroundOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(236,223,204,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+  opacity: 0.3;
+  animation: backgroundFloat 20s ease-in-out infinite;
+}
+
+@keyframes backgroundFloat {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.calculatorCard {
+  background: rgba(236, 223, 204, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  max-width: 800px;
+  width: 100%;
+  position: relative;
+  animation: cardSlideIn 0.8s ease-out;
+  border: 1px solid rgba(236, 223, 204, 0.2);
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  to {
+    text-shadow: 2px 2px 8px rgba(30, 32, 30, 0.3);
+  }
+}
+
+.formSection {
+  margin-bottom: 30px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  color: var(--color-secondary);
+  margin-bottom: 30px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.inputGroup {
+  margin-bottom: 25px;
+  animation: inputSlideIn 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.inputGroup:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.inputGroup:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.inputGroup:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.inputGroup:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.inputGroup:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+@keyframes inputSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-secondary);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 15px 20px;
+  border: 2px solid rgba(30, 32, 30, 0.2);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-primary);
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 32, 30, 0.1);
+  transform: translateY(-2px);
+}
+
+.input:hover,
+.select:hover {
+  border-color: var(--color-secondary);
+  transform: translateY(-1px);
+}
+
+.calculateButton {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: var(--color-tertiary);
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.calculateButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(30, 32, 30, 0.3);
+}
+
+.calculateButton:active {
+  transform: translateY(-1px);
+}
+
+.calculateButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.calculateButton:hover::before {
+  left: 100%;
+}
+
+.resultSection {
+  background: rgba(30, 32, 30, 0.05);
+  border-radius: 15px;
+  padding: 25px;
+  margin-top: 30px;
+  animation: resultFadeIn 0.8s ease-out;
+  border: 1px solid rgba(30, 32, 30, 0.1);
+}
+
+@keyframes resultFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resultTitle {
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.resultGrid {
+  display: grid;
+  gap: 15px;
+}
+
+.resultItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  border: 1px solid rgba(30, 32, 30, 0.1);
+  transition: all 0.3s ease;
+}
+
+.resultItem:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateX(5px);
+}
+
+.resultLabel {
+  font-weight: 500;
+  color: var(--color-secondary);
+  font-size: 1rem;
+}
+
+.resultValue {
+  font-weight: 700;
+  color: var(--color-primary);
+  font-size: 1.2rem;
+}
+
+.totalBuyingPower {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: var(--color-tertiary);
+  margin-top: 10px;
+  animation: totalPulse 2s ease-in-out infinite;
+}
+
+.totalBuyingPower .resultLabel,
+.totalBuyingPower .resultValue {
+  color: var(--color-tertiary);
+}
+
+.totalBuyingPower .resultValue {
+  font-size: 1.4rem;
+}
+
+@keyframes totalPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .calculatorCard {
+    padding: 25px;
+  }
+
+  .title {
+    font-size: 2.2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .label {
+    font-size: 1rem;
+  }
+
+  .input,
+  .select {
+    padding: 12px 15px;
+  }
+
+  .calculateButton {
+    padding: 15px;
+    font-size: 1.1rem;
+  }
+
+  .resultItem {
+    padding: 12px 15px;
+  }
+
+  .resultLabel {
+    font-size: 0.9rem;
+  }
+
+  .resultValue {
+    font-size: 1.1rem;
+  }
+
+  .totalBuyingPower .resultValue {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .resultItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .resultValue {
+    align-self: flex-end;
+  }
+}
