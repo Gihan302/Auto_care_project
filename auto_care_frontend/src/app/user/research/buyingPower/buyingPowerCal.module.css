@@ -27,7 +27,7 @@
 
 /* Ensure first image is visible on load */
 .backgroundImage:nth-child(1) {
-  background-image: url('/hero1.jpg');
+  background-image: url('/hero4.jpg');
   opacity: 1;
   animation-delay: 0s;
 }
