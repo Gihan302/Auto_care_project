@@ -14,7 +14,7 @@ const Header = () => {
   const dropdownRef = useRef(null);
 
   const vehicleCategories = [
-    { name: 'Cars', href: '/vehicles/cars' },
+    { name: 'Cars', href: '/user/carListing' },
     { name: 'Vans', href: '/vehicles/vans' },
     { name: 'SUVs', href: '/vehicles/suvs' },
     { name: 'Trucks', href: '/vehicles/trucks' },
@@ -28,7 +28,7 @@ const Header = () => {
     { name: 'Car Reviews', href: '/research/reviews' },
     { name: 'Compare Cars', href: '/research/compare' },
     { name: 'Car Finder Quiz', href: '/research/quiz' },
-    { name: 'Buying Power Calculator', href: '/research/calculator' },
+    { name: 'Buying Power Calculator', href: '/user/research/buyingPower' },
     { name: 'Lease Calculator', href: '/research/lease' },
   ];
 

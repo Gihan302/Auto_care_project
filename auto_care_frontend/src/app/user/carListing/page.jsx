@@ -27,7 +27,7 @@ const CarListing = () => {
       id: 1,
       title: 'Mercedes Benz C180',
       price: 'Rs. 70,000,000',
-      image: '/api/placeholder/300/200',
+      image: '/hero2.jpg',
       type: 'Cars',
       manufacturer: 'Mercedes',
       model: 'C180',
@@ -377,6 +377,7 @@ const CarListing = () => {
                 value={filters.priceMin}
                 onChange={(e) => handleFilterChange('priceMin', e.target.value)}
               />
+               <br />
               <input
                 type="number"
                 placeholder="Max"
