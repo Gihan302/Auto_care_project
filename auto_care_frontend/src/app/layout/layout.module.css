@@ -32,7 +32,8 @@
   padding: 0.5rem 0;
   transition: color 0.2s;
   border-width: 0cap;
-  background-color: var(--color-tertiary);;
+  background-color: var(--color-tertiary);
+  ;
 }
 
 .navItem:hover {
@@ -79,7 +80,7 @@
 }
 
 .dropdownLink:hover {
-  background-color:var(--color-tertiary);
+  background-color: var(--color-tertiary);
   color: var(--color-primary);
 }
 
@@ -139,6 +140,7 @@
   --color-secondary: #222725;
   --color-tertiary: #ECDFCC;
 }
+
 .headerContainer {
   max-width: 80rem;
   margin: 0 auto;
@@ -179,6 +181,7 @@
   padding: 8px;
   /* or whatever fits your header */
 }
+
 /* === Footer Styles === */
 /* === Footer Styles === */
 
