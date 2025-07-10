@@ -6,14 +6,68 @@
 }
 
 /* Background */
-.background {
+/* === MULTIPLE BACKGROUND IMAGES === */
+.backgroundSlider {
   position: absolute;
   inset: 0;
-  background-image: url('/hero2.jpg');
-  /* Make sure the image is in public folder */
+  z-index: 0;
+  overflow: hidden;
+}
+
+.backgroundImage {
+  position: absolute;
+  inset: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  animation: fadeCycle 24s infinite;
+}
+
+/* Ensure first image is visible on load */
+.backgroundImage:nth-child(1) {
+  background-image: url('/hero1.jpg');
+  opacity: 1;
+  animation-delay: 0s;
+}
+
+.backgroundImage:nth-child(2) {
+  background-image: url('/hero2.jpg');
+  animation-delay: 6s;
+}
+
+.backgroundImage:nth-child(3) {
+  background-image: url('/hero3.jpg');
+  animation-delay: 12s;
+}
+
+.backgroundImage:nth-child(4) {
+  background-image: url('/hero5.jpg');
+  animation-delay: 18s;
+}
+
+/* Updated animation to ensure continuous visibility */
+@keyframes fadeCycle {
+  0% {
+    opacity: 0;
+  }
+
+  4.17% {
+    opacity: 1;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  29.17% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 .overlay {

@@ -68,9 +68,14 @@ const BuyingPowerCalculator = () => {
   return (
     <div className={styles.container}>
       {/* Background with overlay */}
-      <div className={styles.background}>
+      <div className={styles.backgroundSlider}>
+        <div className={styles.backgroundImage}></div>
+        <div className={styles.backgroundImage}></div>
+        <div className={styles.backgroundImage}></div>
+        <div className={styles.backgroundImage}></div>
         <div className={styles.overlay}></div>
       </div>
+
 
       {/* Content */}
       <div className={styles.content}>
