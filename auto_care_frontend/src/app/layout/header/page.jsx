@@ -26,10 +26,10 @@ const Header = () => {
 
   const researchOptions = [
     { name: 'Car Reviews', href: '/research/reviews' },
-    { name: 'Compare Cars', href: '/research/compare' },
+    { name: 'Compare Cars', href: '/user/research/compare' },
     { name: 'Car Finder Quiz', href: '/research/quiz' },
     { name: 'Buying Power Calculator', href: '/user/research/buyingPower' },
-    { name: 'Lease Calculator', href: '/research/lease' },
+    { name: 'Lease Calculator', href: '/user/research/leaseCalculator' },
   ];
 
   useEffect(() => {

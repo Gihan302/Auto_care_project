@@ -8,6 +8,8 @@ const config: Config = {
         primary: '#1E201E',
         secondary: '#222725',
         tertiary:'#ECDFCC',
+        accent: '#eae3da',
+
         brand: {
           100: '#fcd9c1',
           500: '#fca36b',
