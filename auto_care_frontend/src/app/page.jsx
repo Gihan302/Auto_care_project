@@ -3,6 +3,7 @@ import { WhyAutoCare } from './user/components/homepage/whyAutoCare';
 import { VehicleTypeSelector } from './user/components/homepage/vehicleTypeSlector';
 import FeaturedTools from './user/components/homepage/featuredTools';
 import BuyingPowerCal from './user/components/homepage/buyingPowerCal';
+import { SignUpForm } from '../components/Login/SignUpForm';
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
       <WhyAutoCare />
       <BuyingPowerCal />
       <FeaturedTools />
+      <SignUpForm />
     </>
   );
 }
