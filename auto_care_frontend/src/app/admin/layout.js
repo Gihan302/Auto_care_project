@@ -1,17 +1,22 @@
+// src/app/admin/layout.js
 import React from "react";
-import Sidebar from "../admin/layout/sidebar"; // Custom sidebar component for Admin
-import Header from "../admin/layout/header";   // Admin-specific header
+import Sidebar from "./layout/sidebar"; // Adjust path as needed
+import Header from "./layout/header";   // Adjust path as needed
 
-export default function AdminLayout({ children }) {
+
+
+export default function AdminRootLayout({ children }) {
   return (
-    <div className="admin-layout">
-      <Header />
-      <div className="admin-content">
-        <Sidebar />
-        <main className="admin-main">
-          {children}
-        </main>
-      </div>
-    </div>
+    <html lang="en">
+      <body className="bg-gray-100 text-gray-900">
+        <Header />
+        <div className="flex">
+          <Sidebar />
+          <main className="flex-grow p-4">
+            {children}
+          </main>
+        </div>
+      </body>
+    </html>
   );
 }
