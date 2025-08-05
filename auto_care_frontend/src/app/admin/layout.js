@@ -1,7 +1,7 @@
 // src/app/admin/layout.js
 import React from "react";
-import Sidebar from "./layout/sidebar"; // Adjust path as needed
-import Header from "./layout/header";   // Adjust path as needed
+import Sidebar from "./layout/sidebar";
+import Header from "./layout/header";  
 
 
 
