@@ -7,8 +7,8 @@ import {
   DollarSign,
   Clock
 } from "lucide-react"
-import Sidebar from '../layout'
-import Header from '../layout'
+import Sidebar from '../../layout'
+import Header from '../../layout'
 import styles from './page.module.css'
 
 const stats = [
