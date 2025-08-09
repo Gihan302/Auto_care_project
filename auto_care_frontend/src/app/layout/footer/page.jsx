@@ -17,6 +17,7 @@ export default function Footer() {
             <div className={styles.footerList}>
               <a href="/buy">Buy a Car</a>
               <a href="/sell">Sell Your Car</a>
+              <a href="/leasing">Vehicle Leasing</a>
               <a href="/financing">Financing</a>
               <a href="/insurance">Insurance</a>
             </div>

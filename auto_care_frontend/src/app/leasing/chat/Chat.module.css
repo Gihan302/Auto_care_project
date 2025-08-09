@@ -1,0 +1,349 @@
+.chatBackground {
+  background: linear-gradient(to bottom right, #69ddbe, #ECDFCC);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.chatHeader {
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.headerButton {
+  color: #1E201E;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.headerButton:hover {
+  background-color: rgba(30, 32, 30, 0.05);
+  transform: scale(1.05);
+}
+
+.agentAvatar {
+  background: linear-gradient(135deg, #1E201E 0%, #2a2c2a 100%);
+}
+
+.onlineIndicator {
+  position: absolute;
+  bottom: -0.25rem;
+  right: -0.25rem;
+  width: 1rem;
+  height: 1rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 0 0.5rem rgba(16, 185, 129, 0.2);
+  }
+}
+
+.messagesContainer {
+  background: linear-gradient(to bottom, #f9fafb, #f3f4f6);
+  scroll-behavior: smooth;
+}
+
+.messagesContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messagesContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb {
+  background: rgba(30, 32, 30, 0.2);
+  border-radius: 3px;
+}
+
+.messagesContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(30, 32, 30, 0.3);
+}
+
+.messageWrapper {
+  animation: messageSlideIn 0.3s ease-out;
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.messageBubble {
+  position: relative;
+  transition: all 0.2s ease;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.messageBubble:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.userMessage {
+  background: linear-gradient(135deg, #1E201E 0%, #2a2c2a 100%);
+  color: #ECDFCC;
+  border-radius: 1rem 1rem 0.25rem 1rem;
+}
+
+.agentMessage {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  color: #1E201E;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 1rem 1rem 1rem 0.25rem;
+}
+
+.typingIndicator {
+  animation: typingPulse 1.4s infinite ease-in-out;
+}
+
+.typingIndicator div:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typingIndicator div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typingIndicator div:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingPulse {
+  0%, 60%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  30% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.messageInput {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  background: #ffffff;
+}
+
+.messageInput:focus {
+  border-color: #1E201E;
+  box-shadow: 0 0 0 3px rgba(30, 32, 30, 0.1);
+  transform: translateY(-1px);
+}
+
+.quickAction {
+  background: linear-gradient(135deg, #ECDFCC 0%, #d4c9b8 100%);
+  color: #1E201E;
+  transition: all 0.3s ease;
+}
+
+.quickAction:hover {
+  background: linear-gradient(135deg, #d4c9b8 0%, #c9b8a3 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(30, 32, 30, 0.15);
+}
+
+.fileUpload {
+  transition: all 0.3s ease;
+}
+
+.fileUpload:hover {
+  background-color: rgba(30, 32, 30, 0.05);
+  transform: scale(1.05);
+}
+
+.recording {
+  background: #ef4444;
+  color: white;
+  animation: recordingPulse 1s infinite;
+}
+
+@keyframes recordingPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+}
+
+.sendButton {
+  background: #1E201E;
+  color: #ECDFCC;
+  transition: all 0.3s ease;
+}
+
+.sendButton:hover {
+  background: #222725;
+  transform: scale(1.05);
+}
+
+.emojiPicker {
+  animation: emojiSlideUp 0.2s ease-out;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes emojiSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.emojiButton {
+  transition: all 0.2s ease;
+}
+
+.emojiButton:hover {
+  background-color: #f3f4f6;
+  transform: scale(1.2);
+}
+
+.agentSidebar {
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+}
+
+.specialtyTag {
+  background: linear-gradient(135deg, rgba(236, 223, 204, 0.3) 0%, rgba(212, 201, 184, 0.3) 100%);
+  transition: all 0.2s ease;
+}
+
+.specialtyTag:hover {
+  background: linear-gradient(135deg, rgba(236, 223, 204, 0.5) 0%, rgba(212, 201, 184, 0.5) 100%);
+  transform: translateY(-1px);
+}
+
+.actionButton {
+  background: #1E201E;
+  color: #ECDFCC;
+  transition: all 0.3s ease;
+}
+
+.actionButton:hover {
+  background: #222725;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 32, 30, 0.2);
+}
+
+.secondaryButton {
+  border: 2px solid #1E201E;
+  color: #1E201E;
+  transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+  background: #1E201E;
+  color: #ECDFCC;
+  transform: translateY(-2px);
+}
+
+.propertyCard {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.propertyCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: rgba(30, 32, 30, 0.15);
+}
+
+.propertyImage {
+  background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+  position: relative;
+  overflow: hidden;
+}
+
+.propertyImage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.propertyCard:hover .propertyImage::before {
+  left: 100%;
+}
+
+.viewButton {
+  background: #1E201E;
+  color: #ECDFCC;
+  transition: all 0.3s ease;
+}
+
+.viewButton:hover {
+  background: #222725;
+}
+
+.fileMessage {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.fileMessage:hover {
+  background: linear-gradient(135deg, #f1f3f4 0%, #f8f9fa 100%);
+  border-color: rgba(30, 32, 30, 0.2);
+}
+
+@media (max-width: 1024px) {
+  .agentSidebar {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    height: 100vh;
+    width: 320px;
+    z-index: 50;
+    transition: right 0.3s ease;
+  }
+  
+  .agentSidebar.open {
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .messagesContainer {
+    height: calc(100vh - 180px) !important;
+  }
+  
+  .messageWrapper {
+    max-width: 85%;
+  }
+  
+  .quickAction {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .messageInput {
+    font-size: 16px;
+  }
+}

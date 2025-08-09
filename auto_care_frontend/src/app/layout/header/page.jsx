@@ -103,6 +103,11 @@ const Header = () => {
             </div>
           </div>
 
+          {/* Leasing */}
+          <Link href="/leasing" className={styles.navItem}>
+            LEASING
+          </Link>
+
           {/* Sell Your Car */}
           <Link href="/sell" className={styles.navItem}>
             SELL YOUR CAR
