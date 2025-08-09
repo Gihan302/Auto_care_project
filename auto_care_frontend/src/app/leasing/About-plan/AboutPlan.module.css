@@ -1,0 +1,60 @@
+.background {
+  background: linear-gradient(to bottom right, #69ddbe, #ECDFCC);
+}
+
+.contentCard {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+.featureIcon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.agentAvatar {
+  background: linear-gradient(135deg, #1E201E 0%, #3a3d3a 100%);
+  border: 2px solid #ECDFCC;
+}
+
+.actionButton {
+  background: #1E201E;
+  color: #ECDFCC;
+  transition: all 0.3s ease;
+}
+
+.actionButton:hover {
+  background: #222725;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 32, 30, 0.2);
+}
+
+.secondaryButton {
+  border: 2px solid #1E201E;
+  color: #1E201E;
+  transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+  background: #1E201E;
+  color: #ECDFCC;
+  transform: translateY(-2px);
+}
+
+.resourcesCard {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(12px);
+}
+
+.resourceItem {
+  background: rgba(236, 223, 204, 0.3);
+  border: 1px solid rgba(30, 32, 30, 0.1);
+  transition: all 0.2s ease;
+}
+
+.resourceItem:hover {
+  background: rgba(236, 223, 204, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
