@@ -28,7 +28,11 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
+<<<<<<< HEAD
 , "src/app/(user)/user/components/homepage/buyingPowerCal.jsx"  ],
+=======
+, "src/app/user/components/homepage/buyingPowerCal.jsx", "src/app/page.jsx"  ],
+>>>>>>> Rangana-1st-frontend
   "exclude": [
     "node_modules"
   ]
