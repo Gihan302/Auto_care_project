@@ -19,9 +19,9 @@ import {
 import styles from './sidebar.module.css'
 
 const menuItems = [
-  { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
-  { title: "Manage Users", url: "/admin/users", icon: Users },
-  { title: "Manage Vehicles", url: "/admin/vehicles", icon: Car },
+  { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Manage Users", url: "/admin/manageUsers", icon: Users },
+  { title: "Manage Vehicles", url: "/admin/manageVehicles", icon: Car },
   { title: "Loan Applications", url: "/admin/loans", icon: FileText },
   { title: "Leasing Companies", url: "/admin/leasing", icon: Building2 },
   { title: "Insurance Companies", url: "/admin/insurance", icon: Shield },
