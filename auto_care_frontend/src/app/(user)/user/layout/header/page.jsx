@@ -104,7 +104,7 @@ const Header = () => {
           </div>
 
           {/* Sell Your Car */}
-          <Link href="/sell" className={styles.navItem}>
+          <Link href="/user/sellCar" className={styles.navItem}>
             SELL YOUR CAR
           </Link>
         </nav>
