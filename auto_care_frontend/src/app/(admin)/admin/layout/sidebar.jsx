@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -18,24 +19,28 @@ import {
 import styles from './sidebar.module.css'
 
 const menuItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Manage Users", url: "/users", icon: Users },
-  { title: "Manage Vehicles", url: "/vehicles", icon: Car },
-  { title: "Loan Applications", url: "/loans", icon: FileText },
-  { title: "Leasing Companies", url: "/leasing", icon: Building2 },
-  { title: "Insurance Companies", url: "/insurance", icon: Shield },
-  { title: "Reports & Analytics", url: "/reports", icon: BarChart3 },
-  { title: "Notifications", url: "/notifications", icon: Bell },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Manage Users", url: "/admin/manageUsers", icon: Users },
+  { title: "Manage Vehicles", url: "/admin/manageVehicles", icon: Car },
+  { title: "Loan Applications", url: "/admin/loans", icon: FileText },
+  { title: "Leasing Companies", url: "/admin/leasing", icon: Building2 },
+  { title: "Insurance Companies", url: "/admin/insurance", icon: Shield },
+  { title: "Reports & Analytics", url: "/admin/reports", icon: BarChart3 },
+  { title: "Notifications", url: "/admin/notifications", icon: Bell },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
 ]
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
   const pathname = usePathname()
   
   const isActive = (path) => {
-    if (path === "/" && pathname === "/") return true
-    if (path !== "/" && pathname.startsWith(path)) return true
+    if (path === "/admin" && pathname === "/admin") return true
+    if (path !== "/admin" && pathname.startsWith(path)) return true
     return false
+  }
+
+  const handleLinkClick = () => {
+    setIsMobileOpen(false)
   }
 
   return (
@@ -47,8 +52,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
           onClick={() => setIsMobileOpen(false)}
         />
       )}
-      
-      <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${isMobileOpen ? styles.mobileOpen : ''}`}>
+            
+      <aside className={`
+        ${styles.sidebar} 
+        ${isCollapsed ? styles.collapsed : ''} 
+        ${isMobileOpen ? styles.mobileOpen : ''}
+      `}>
         {/* Header */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
@@ -79,13 +88,25 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
             <ul className={styles.navList}>
               {menuItems.map((item) => (
                 <li key={item.title}>
-                  <Link 
+                  <Link
                     href={item.url}
-                    className={`${styles.navLink} ${isActive(item.url) ? styles.active : ''}`}
-                    onClick={() => setIsMobileOpen(false)}
+                    onClick={handleLinkClick}
+                    className={`
+                      ${styles.navLink} 
+                      ${isActive(item.url) ? styles.active : ''}
+                      ${isCollapsed ? styles.collapsed : ''}
+                    `}
                   >
                     <item.icon className={styles.navIcon} />
                     {!isCollapsed && <span>{item.title}</span>}
+                    
+                    {/* Tooltip for collapsed state */}
+                    {isCollapsed && (
+                      <div className={styles.tooltip}>
+                        {item.title}
+                        <div className={styles.tooltipArrow}></div>
+                      </div>
+                    )}
                   </Link>
                 </li>
               ))}
@@ -93,13 +114,25 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
           </div>
         </nav>
 
-        {/* Toggle button */}
+        {/* Footer with toggle button */}
         <div className={styles.sidebarFooter}>
           <button 
             className={styles.toggleButton}
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
-            <Menu size={16} />
+            <Menu 
+              size={16} 
+              className={`${styles.toggleIcon} ${isCollapsed ? styles.toggleIconRotated : ''}`} 
+            />
+            {!isCollapsed && <span>Collapse</span>}
+            
+            {/* Tooltip for collapsed state */}
+            {isCollapsed && (
+              <div className={styles.tooltip}>
+                Expand Sidebar
+                <div className={styles.tooltipArrow}></div>
+              </div>
+            )}
           </button>
         </div>
       </aside>
