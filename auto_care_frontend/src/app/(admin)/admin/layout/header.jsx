@@ -24,19 +24,16 @@ export default function Header({ setIsMobileOpen }) {
   }
 
   const handleLogout = () => {
-    // Add logout logic here
     console.log('Logging out...')
     setIsDropdownOpen(false)
   }
 
   const handleProfileSettings = () => {
-    // Add profile settings logic here
     console.log('Opening profile settings...')
     setIsDropdownOpen(false)
   }
 
   const handleAccountPreferences = () => {
-    // Add account preferences logic here
     console.log('Opening account preferences...')
     setIsDropdownOpen(false)
   }
@@ -55,7 +52,7 @@ export default function Header({ setIsMobileOpen }) {
           <p className={styles.headerSubtitle}>Welcome back, Admin</p>
         </div>
       </div>
-      
+            
       <div className={styles.headerRight}>
         <button
           className={styles.themeToggle}
@@ -63,7 +60,7 @@ export default function Header({ setIsMobileOpen }) {
         >
           {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
         </button>
-        
+                
         <div className={styles.dropdown}>
           <button 
             className={styles.dropdownTrigger}
@@ -71,32 +68,42 @@ export default function Header({ setIsMobileOpen }) {
           >
             <div className={styles.avatar}>AD</div>
             <span className={styles.adminName}>Admin</span>
-            <ChevronDown size={16} />
+            <ChevronDown 
+              size={16} 
+              className={`${styles.chevron} ${isDropdownOpen ? styles.chevronRotated : ''}`} 
+            />
           </button>
-          
+                    
           {isDropdownOpen && (
-            <div className={styles.dropdownMenu}>
-              <button 
-                className={styles.dropdownItem}
-                onClick={handleProfileSettings}
-              >
-                Profile Settings
-              </button>
-              <button 
-                className={styles.dropdownItem}
-                onClick={handleAccountPreferences}
-              >
-                Account Preferences
-              </button>
-              <hr className={styles.dropdownSeparator} />
-              <button 
-                className={`${styles.dropdownItem} ${styles.logout}`}
-                onClick={handleLogout}
-              >
-                <LogOut size={16} />
-                Logout
-              </button>
-            </div>
+            <>
+              <div 
+                className={styles.backdrop}
+                onClick={() => setIsDropdownOpen(false)}
+              />
+              
+              <div className={styles.dropdownMenu}>
+                <button 
+                  className={styles.dropdownItem}
+                  onClick={handleProfileSettings}
+                >
+                  Profile Settings
+                </button>
+                <button 
+                  className={styles.dropdownItem}
+                  onClick={handleAccountPreferences}
+                >
+                  Account Preferences
+                </button>
+                <hr className={styles.dropdownSeparator} />
+                <button 
+                  className={`${styles.dropdownItem} ${styles.logoutItem}`}
+                  onClick={handleLogout}
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>

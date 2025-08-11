@@ -27,8 +27,10 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/app/user/components/homepage/buyingPowerCal.jsx", "src/app/page.jsx"  ],
+    "**/*.tsx",
+    "src/app/user/components/homepage/buyingPowerCal.jsx",
+    "src/app/page.jsx"
+  ],
   "exclude": [
     "node_modules"
   ]

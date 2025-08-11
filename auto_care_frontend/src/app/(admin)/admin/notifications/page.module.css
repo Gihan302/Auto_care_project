@@ -1,0 +1,561 @@
+/* Container and Layout */
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 2rem;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.addButton {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.addButton:hover {
+  background-color: #2563eb;
+}
+
+.addIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.statCard {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.statIcon {
+  width: 3rem;
+  height: 3rem;
+  background-color: #dbeafe;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.statIcon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.statContent {
+  flex: 1;
+}
+
+.statNumber {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+}
+
+.statLabel {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0.25rem 0;
+}
+
+.statChange {
+  color: #10b981;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Filter Section */
+.filterSection {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.filterHeader {
+  margin-bottom: 1rem;
+}
+
+.filterTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filterTitle::before {
+  content: "🔍";
+  font-size: 1rem;
+}
+
+.filterControls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchContainer {
+  flex: 1;
+  min-width: 300px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background-color: #f9fafb;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: white;
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+.filterSelect {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  min-width: 140px;
+  cursor: pointer;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* Notifications List */
+.notificationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notificationCard {
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.notificationCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.unreadCard {
+  border-left: 4px solid #3b82f6;
+}
+
+.notificationContent {
+  padding: 1.5rem;
+}
+
+.notificationBody {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Icon Styles */
+.iconContainer {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconBgHigh {
+  background-color: #fee2e2;
+}
+
+.iconBgNormal {
+  background-color: #dbeafe;
+}
+
+.iconBgLow {
+  background-color: #f3f4f6;
+}
+
+.iconBgDefault {
+  background-color: #f3f4f6;
+}
+
+.notificationIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.iconHigh {
+  color: #dc2626;
+}
+
+.iconNormal {
+  color: #3b82f6;
+}
+
+.iconLow {
+  color: #6b7280;
+}
+
+.iconDefault {
+  color: #6b7280;
+}
+
+/* Notification Details */
+.notificationDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.notificationTitle {
+  font-weight: 600;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.unreadTitle {
+  color: #111827;
+}
+
+.readTitle {
+  color: #6b7280;
+}
+
+.unreadIndicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #3b82f6;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.notificationMessage {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.notificationTimestamp {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+/* Badges */
+.priorityBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.priorityHigh {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.priorityNormal {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+
+.priorityLow {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.priorityDefault {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.actionRequiredBadge {
+  background-color: #fef3c7;
+  color: #d97706;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+/* Actions */
+.notificationActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.approveButton {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.approveButton:hover {
+  background-color: #059669;
+}
+
+.rejectButton {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.rejectButton:hover {
+  background-color: #dc2626;
+}
+
+.viewButton,
+.deleteButton {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viewButton:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.deleteButton:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.actionButtonIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Load More */
+.loadMoreContainer {
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.loadMoreButton {
+  background: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.loadMoreButton:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .filterControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchContainer {
+    min-width: auto;
+  }
+
+  .filterSelect {
+    min-width: auto;
+  }
+
+  .notificationBody {
+    gap: 0.75rem;
+  }
+
+  .titleRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .notificationActions {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .content {
+    gap: 1.5rem;
+  }
+
+  .notificationContent {
+    padding: 1rem;
+  }
+
+  .statCard {
+    padding: 1rem;
+  }
+
+  .filterSection {
+    padding: 1rem;
+  }
+
+  .actionButtons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .notificationActions {
+    justify-content: space-between;
+  }
+}
