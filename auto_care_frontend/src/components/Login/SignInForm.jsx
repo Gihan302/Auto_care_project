@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import "./AuthForm.css";
 
-export const SignInForm = () => {
+const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -49,11 +49,18 @@ export const SignInForm = () => {
       });
 
       if (response.ok) {
-        // Handle successful login, e.g., redirect to another page
-        console.log("Sign in successful");
-        router.push('/admin/dashboard');
+        const data = await response.json();
+        // Store token and user data in local storage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data));
+
+        // Check for admin role and redirect
+        if (data.roles && data.roles.includes("ROLE_ADMIN")) {
+          router.push('/admin/dashboard');
+        } else {
+          router.push('/'); // Redirect non-admins to homepage
+        }
       } else {
-        // Handle login error
         const data = await response.json();
         setError(data.message || "Sign in failed");
       }
@@ -104,3 +111,5 @@ export const SignInForm = () => {
     </div>
   );
 };
+
+export default SignInForm;

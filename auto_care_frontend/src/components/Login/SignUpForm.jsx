@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import "./AuthForm.css";
 
-export const SignUpForm = () => {
+const SignUpForm = () => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [telephone, setTelephone] = useState("");
@@ -225,3 +225,5 @@ export const SignUpForm = () => {
     </div>
   );
 };
+
+export default SignUpForm;

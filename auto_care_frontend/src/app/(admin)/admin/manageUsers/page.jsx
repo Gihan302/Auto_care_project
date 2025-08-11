@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 import { Search, Plus, Eye, Edit, Trash2, UserCheck, UserX, Filter, Users, UserPlus, Shield } from "lucide-react"
 import styles from './page.module.css'
 
@@ -22,63 +23,33 @@ const manageUsers = () => {
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      role: "Customer",
-      status: "Active",
-      joined: "2024-01-15",
-      vehicles: 2,
-      phone: "+1 (555) 123-4567",
-      address: "123 Main St, City, State"
-    },
-    {
-      id: 2,
-      name: "Sarah Wilson",
-      email: "sarah@leasing.com",
-      role: "Leasing Company",
-      status: "Pending",
-      joined: "2024-02-01",
-      vehicles: 0,
-      phone: "+1 (555) 234-5678",
-      address: "456 Business Ave, City, State"
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      email: "mike@insurance.com",
-      role: "Insurance Company",
-      status: "Active",
-      joined: "2024-01-28",
-      vehicles: 0,
-      phone: "+1 (555) 345-6789",
-      address: "789 Corporate Blvd, City, State"
-    },
-    {
-      id: 4,
-      name: "Emily Brown",
-      email: "emily@example.com",
-      role: "Customer",
-      status: "Active",
-      joined: "2024-02-05",
-      vehicles: 1,
-      phone: "+1 (555) 456-7890",
-      address: "321 Oak St, City, State"
-    },
-    {
-      id: 5,
-      name: "David Lee",
-      email: "david@leasing.com",
-      role: "Leasing Company",
-      status: "Suspended",
-      joined: "2024-01-20",
-      vehicles: 0,
-      phone: "+1 (555) 567-8901",
-      address: "654 Commerce Dr, City, State"
-    }
-  ])
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // IMPORTANT: Replace with your actual backend URL
+        const response = await axios.get("http://localhost:8080/admin/getallusers");
+        const formattedUsers = response.data.map(user => ({
+          id: user.id,
+          name: user.username, // Assuming 'username' from backend
+          email: user.email,
+          role: "Customer", // Endpoint fetches ROLE_USER
+          status: "Active", // Default status
+          joined: "2024-01-01", // Placeholder for join date
+          vehicles: 0, // Placeholder
+          phone: "N/A", // Placeholder
+          address: "N/A" // Placeholder
+        }));
+        setUsers(formattedUsers);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        // You might want to set an error state here to show a message in the UI
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const pendingRegistrations = [
     {
