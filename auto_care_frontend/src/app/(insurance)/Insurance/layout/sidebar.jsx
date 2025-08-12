@@ -5,14 +5,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
-  Users,
-  Car,
-  FileText,
-  Building2,
-  Shield,
-  BarChart3,
+  FilePlus2,
+  ClipboardList,
   Bell,
-  Settings,
   Menu,
   X
 } from "lucide-react"
@@ -20,19 +15,14 @@ import styles from './sidebar.module.css'
 
 const menuItems = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
-  { title: "Manage Users", url: "/admin/manageUsers", icon: Users },
-  { title: "Manage Vehicles", url: "/admin/manageVehicles", icon: Car },
-  { title: "Loan Applications", url: "/admin/loans", icon: FileText },
-  { title: "Leasing Companies", url: "/admin/leasing", icon: Building2 },
-  { title: "Insurance Companies", url: "/Insurance/insuranceCompany", icon: Shield },
-  { title: "Reports & Analytics", url: "/admin/reports", icon: BarChart3 },
-  { title: "Notifications", url: "/admin/notifications", icon: Bell },
-  { title: "Settings", url: "/admin/settings", icon: Settings },
+  { title: "Create New Plan", url: "/Insurance/createPlan", icon: FilePlus2 },
+  { title: "Manage Plans", url: "/Insurance/managePlans", icon: ClipboardList },
+  { title: "Notifications", url: "/Insurance/notifications", icon: Bell },
 ]
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
   const pathname = usePathname()
-  
+
   const isActive = (path) => {
     if (path === "/admin" && pathname === "/admin") return true
     if (path !== "/admin" && pathname.startsWith(path)) return true
@@ -52,22 +42,23 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
           onClick={() => setIsMobileOpen(false)}
         />
       )}
-            
+      
       <aside className={`
         ${styles.sidebar} 
         ${isCollapsed ? styles.collapsed : ''} 
         ${isMobileOpen ? styles.mobileOpen : ''}
       `}>
+        
         {/* Header */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
             <div className={styles.logo}>
-              <Car className={styles.logoIcon} />
+              <LayoutDashboard className={styles.logoIcon} />
             </div>
             {!isCollapsed && (
               <div className={styles.logoText}>
                 <h1>Auto Care</h1>
-                <p>Admin Portal</p>
+                <p>Insurance Admin</p>
               </div>
             )}
           </div>
@@ -83,7 +74,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
         <nav className={styles.nav}>
           <div className={styles.navGroup}>
             {!isCollapsed && (
-              <div className={styles.navLabel}>MAIN NAVIGATION</div>
+              <div className={styles.navLabel}>MAIN MENU</div>
             )}
             <ul className={styles.navList}>
               {menuItems.map((item) => (
