@@ -107,6 +107,10 @@ const Header = () => {
           <Link href="/user/sellCar" className={styles.navItem}>
             SELL YOUR CAR
           </Link>
+          {/* View Leasing Plans */}
+          <Link href="/user/ViewLeasingPlans" className={styles.navItem}>
+            VIEW LEASING PLANS
+          </Link>
         </nav>
 
         {/* Search + Sign Up */}
