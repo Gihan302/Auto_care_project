@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Header from '../Insurance/layout/header'
-import Sidebar from '../Insurance/layout/sidebar'
+import Header from './layout/header'
+import Sidebar from './layout/sidebar'
 import styles from './layout.module.css'
 
 export default function AdminLayout({ children }) {

@@ -24,7 +24,7 @@ const menuItems = [
   { title: "Manage Vehicles", url: "/admin/manageVehicles", icon: Car },
   { title: "Loan Applications", url: "/admin/loans", icon: FileText },
   { title: "Leasing Companies", url: "/admin/leasing", icon: Building2 },
-  { title: "Insurance Companies", url: "/Insurance/insuranceCompany", icon: Shield },
+  { title: "Insurance Companies", url: "/insurance/insuranceCompany", icon: Shield },
   { title: "Reports & Analytics", url: "/admin/reports", icon: BarChart3 },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
   { title: "Settings", url: "/admin/settings", icon: Settings },
