@@ -14,10 +14,10 @@ import {
 import styles from './sidebar.module.css'
 
 const menuItems = [
-  { title: "Dashboard", url: "/insurance/insuranceCompany", icon: LayoutDashboard },
-  { title: "Create New Plan", url: "/insurance/createPlan", icon: FilePlus2 },
-  { title: "Manage Plans", url: "/insurance/managePlans", icon: ClipboardList },
-  { title: "Notifications", url: "/insurance/notifications", icon: Bell },
+  { title: "Dashboard", url: "/Insurance/insuranceCompany", icon: LayoutDashboard },
+  { title: "Create New Plan", url: "/Insurance/createPlan", icon: FilePlus2 },
+  { title: "Manage Plans", url: "/Insurance/managePlans", icon: ClipboardList },
+  { title: "Notifications", url: "/Insurance/notifications", icon: Bell },
 ]
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
