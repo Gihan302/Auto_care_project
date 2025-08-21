@@ -9,11 +9,12 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <SignUpForm />
       <VehicleTypeSelector />
       <WhyAutoCare />
       <BuyingPowerCal />
       <FeaturedTools />
-      <SignUpForm />
+      
     </>
   );
 }
