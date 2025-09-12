@@ -19,158 +19,210 @@ const CarListing = () => {
     priceMax: ''
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [vehicles, setVehicles] = useState([]);
   const [animationDelay, setAnimationDelay] = useState(0);
-
-  // Mock data - replace with your actual data source
-  const mockCars = [
-    {
-      id: 1,
-      title: 'Mercedes Benz C180',
-      price: 'Rs. 70,000,000',
-      image: '/hero2.jpg',
-      type: 'Cars',
-      manufacturer: 'Mercedes',
-      model: 'C180',
-      transmission: 'Automatic',
-      district: 'Colombo',
-      city: 'Colombo',
-      details: {
-        from: 'Colombo',
-        model: 'C180',
-        modelYear: '2020'
-      }
-    },
-    {
-      id: 2,
-      title: 'BMW X5',
-      price: 'Rs. 85,000,000',
-      image: '/hero3.jpg',
-      type: 'SUVs',
-      manufacturer: 'BMW',
-      model: 'X5',
-      transmission: 'Automatic',
-      district: 'Colombo',
-      city: 'Colombo',
-      details: {
-        from: 'Colombo',
-        model: 'X5',
-        modelYear: '2021'
-      }
-    },
-    {
-      id: 3,
-      title: 'Toyota Prius',
-      price: 'Rs. 45,000,000',
-      image: '/hero4.jpg',
-      type: 'Cars',
-      manufacturer: 'Toyota',
-      model: 'Prius',
-      transmission: 'Automatic',
-      district: 'Gampaha',
-      city: 'Gampaha',
-      details: {
-        from: 'Gampaha',
-        model: 'Prius',
-        modelYear: '2019'
-      }
-    },
-    {
-      id: 4,
-      title: 'Honda Civic',
-      price: 'Rs. 55,000,000',
-      image: '/hero5.jpg',
-      type: 'Cars',
-      manufacturer: 'Honda',
-      model: 'Civic',
-      transmission: 'Manual',
-      district: 'Kandy',
-      city: 'Kandy',
-      details: {
-        from: 'Kandy',
-        model: 'Civic',
-        modelYear: '2020'
-      }
-    },
-    {
-      id: 5,
-      title: 'Ford Ranger',
-      price: 'Rs. 65,000,000',
-      image: '/main.jpg',
-      type: 'Trucks',
-      manufacturer: 'Ford',
-      model: 'Ranger',
-      transmission: 'Manual',
-      district: 'Colombo',
-      city: 'Colombo',
-      details: {
-        from: 'Colombo',
-        model: 'Ranger',
-        modelYear: '2021'
-      }
-    }
-  ];
+  const [error, setError] = useState(null);
 
   const vehicleTypes = ['Cars', 'Vans', 'SUVs', 'Trucks', 'Motor Bikes', 'Threewheelers'];
+
+  // Configuration for API endpoint
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
   useEffect(() => {
     // Check if mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
-    // Simulate loading
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    
+
+    // Fetch vehicle data from backend API
+    const fetchVehicles = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        console.log('Attempting to fetch from:', `${API_BASE_URL}/advertisement/getconfrimad`);
+        
+        // Get JWT token from localStorage or wherever you store it
+        const token = localStorage.getItem('jwtToken'); // Adjust based on your auth implementation
+        
+        const headers = {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        };
+
+        // Add Authorization header if token exists
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/advertisement/getconfrimad`, {
+          method: 'GET',
+          headers: headers,
+          // Add timeout
+          signal: AbortSignal.timeout(10000) // 10 second timeout
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Fetched data:', data);
+        
+        if (Array.isArray(data)) {
+          setVehicles(data);
+        } else {
+          console.warn('API returned non-array data:', data);
+          setVehicles([]);
+        }
+      } catch (error) {
+        console.error('Error fetching vehicles:', error);
+        setError(error.message);
+        setVehicles([]);
+        
+        // You could also set some dummy data for testing
+        // setVehicles(getDummyData());
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVehicles();
+
     return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  }, [API_BASE_URL]);
 
-  const filteredCars = useMemo(() => {
-    let filtered = mockCars;
+  // Add this to your CarListing component
+useEffect(() => {
+  const fetchVehicles = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem('jwtToken');
+      const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
 
-    // Filter by vehicle type
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/advertisement/getconfrimad`, {
+        method: 'GET',
+        headers: headers,
+        signal: AbortSignal.timeout(10000)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (Array.isArray(data)) {
+        setVehicles(data);
+      } else {
+        console.warn('API returned non-array data:', data);
+        setVehicles([]);
+      }
+    } catch (error) {
+      console.error('Error fetching vehicles:', error);
+      setError(error.message);
+      setVehicles([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  fetchVehicles();
+
+  // Optional: Set up polling every 30 seconds to check for new approved ads
+  const interval = setInterval(fetchVehicles, 30000);
+  
+  return () => {
+    clearInterval(interval);
+    window.removeEventListener('resize', checkMobile);
+  };
+}, [API_BASE_URL]);
+
+
+  // Optional: Add dummy data for testing
+  const getDummyData = () => [
+    {
+      id: 1,
+      title: "Toyota Prius",
+      price: 2500000,
+      v_type: "Cars",
+      manufacturer: "Toyota",
+      model: "Prius",
+      district: "Colombo",
+      city: "Colombo",
+      m_year: 2019,
+      image1: "/placeholder.jpg"
+    },
+    {
+      id: 2,
+      title: "Honda Civic",
+      price: 3000000,
+      v_type: "Cars", 
+      manufacturer: "Honda",
+      model: "Civic",
+      district: "Gampaha",
+      city: "Gampaha",
+      m_year: 2020,
+      image1: "/placeholder.jpg"
+    }
+  ];
+
+  // Filtering logic updated to use vehicles from backend
+  const filteredVehicles = useMemo(() => {
+    let filtered = vehicles;
+
     if (selectedVehicleType !== 'All') {
-      filtered = filtered.filter(car => car.type === selectedVehicleType);
+      filtered = filtered.filter(v => v.v_type === selectedVehicleType);
     }
 
-    // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(car =>
-        car.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        car.manufacturer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        car.model.toLowerCase().includes(searchTerm.toLowerCase())
+      const lowerTerm = searchTerm.toLowerCase();
+      filtered = filtered.filter(v =>
+        (v.title && v.title.toLowerCase().includes(lowerTerm)) ||
+        (v.manufacturer && v.manufacturer.toLowerCase().includes(lowerTerm)) ||
+        (v.model && v.model.toLowerCase().includes(lowerTerm))
       );
     }
 
-    // Apply other filters
     Object.entries(filters).forEach(([key, value]) => {
       if (value) {
         if (key === 'priceMin') {
           const minPrice = parseFloat(value);
-          filtered = filtered.filter(car => {
-            const price = parseFloat(car.price.replace(/[^0-9]/g, ''));
+          filtered = filtered.filter(v => {
+            const price = parseFloat(String(v.price).replace(/[^0-9]/g, ''));
             return price >= minPrice;
           });
         } else if (key === 'priceMax') {
           const maxPrice = parseFloat(value);
-          filtered = filtered.filter(car => {
-            const price = parseFloat(car.price.replace(/[^0-9]/g, ''));
+          filtered = filtered.filter(v => {
+            const price = parseFloat(String(v.price).replace(/[^0-9]/g, ''));
             return price <= maxPrice;
           });
+        } else if (key === 'vehicleType') {
+          // Already filtered by selectedVehicleType, so skip here
         } else {
-          filtered = filtered.filter(car => 
-            car[key]?.toLowerCase().includes(value.toLowerCase())
+          filtered = filtered.filter(v =>
+            v[key] && v[key].toString().toLowerCase().includes(value.toLowerCase())
           );
         }
       }
     });
 
     return filtered;
-  }, [selectedVehicleType, searchTerm, filters]);
+  }, [vehicles, selectedVehicleType, searchTerm, filters]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
@@ -207,22 +259,25 @@ const CarListing = () => {
   );
 
   const CarCard = ({ car, index }) => (
-    <div 
+    <div
       className={styles.carCard}
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <img 
-        src={car.image} 
-        alt={car.title}
+      <img
+        src={car.image || car.image1 || car.image_url || '/placeholder.jpg'}
+        alt={car.title || `${car.manufacturer} ${car.model}`}
         className={styles.carImage}
+        onError={(e) => {
+          e.target.src = '/placeholder.jpg';
+        }}
       />
       <div className={styles.carInfo}>
-        <h3 className={styles.carTitle}>{car.title}</h3>
-        <div className={styles.carPrice}>{car.price}</div>
+        <h3 className={styles.carTitle}>{car.title || `${car.manufacturer} ${car.model}`}</h3>
+        <div className={styles.carPrice}>{car.price ? `Rs. ${car.price.toLocaleString()}` : 'Price not available'}</div>
         <div className={styles.carDetails}>
-          <div className={styles.carDetail}>From: {car.details.from}</div>
-          <div className={styles.carDetail}>Model: {car.details.model}</div>
-          <div className={styles.carDetail}>Model Year: {car.details.modelYear}</div>
+          <div className={styles.carDetail}>From: {car.district || car.city || 'Unknown'}</div>
+          <div className={styles.carDetail}>Model: {car.model}</div>
+          <div className={styles.carDetail}>Model Year: {car.m_year || car.modelYear || '---'}</div>
         </div>
       </div>
       <div className={styles.carActions}>
@@ -232,6 +287,23 @@ const CarListing = () => {
         <a href="#" className={styles.exploreBtn}>
           Explore details
         </a>
+      </div>
+    </div>
+  );
+
+  const ErrorDisplay = () => (
+    <div className={styles.errorDisplay}>
+      <div className={styles.errorIcon}>⚠️</div>
+      <div className={styles.errorMessage}>
+        <h3>Failed to load vehicles</h3>
+        <p>Error: {error}</p>
+        <p>Please check if the backend server is running on {API_BASE_URL}</p>
+        <button 
+          onClick={() => window.location.reload()} 
+          className={styles.retryBtn}
+        >
+          Retry
+        </button>
       </div>
     </div>
   );
@@ -246,7 +318,7 @@ const CarListing = () => {
       <div className={styles.mainContent}>
         {isMobile && (
           <div className={styles.mobileFilterToggle}>
-            <button 
+            <button
               className={styles.filterToggleBtn}
               onClick={toggleFilters}
             >
@@ -254,10 +326,10 @@ const CarListing = () => {
             </button>
           </div>
         )}
-        
+
         <div className={`${styles.filterSidebar} ${isMobile && !showFilters ? styles.hidden : ''}`}>
           <h2 className={styles.filterTitle}>Vehicle Types</h2>
-          
+
           <div className={styles.vehicleTypeFilters}>
             {vehicleTypes.map(type => (
               <button
@@ -377,7 +449,7 @@ const CarListing = () => {
                 value={filters.priceMin}
                 onChange={(e) => handleFilterChange('priceMin', e.target.value)}
               />
-               <br />
+              <br />
               <input
                 type="number"
                 placeholder="Max"
@@ -390,18 +462,17 @@ const CarListing = () => {
         </div>
 
         <div className={styles.carListings}>
-          {isLoading ? (
-            // Show loading skeletons
+          {error ? (
+            <ErrorDisplay />
+          ) : isLoading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <LoadingCard key={index} />
             ))
-          ) : filteredCars.length > 0 ? (
-            // Show filtered cars
-            filteredCars.map((car, index) => (
+          ) : filteredVehicles.length > 0 ? (
+            filteredVehicles.map((car, index) => (
               <CarCard key={car.id} car={car} index={index} />
             ))
           ) : (
-            // Show no results message
             <div className={styles.noResults}>
               <div className={styles.noResultsIcon}>🚗</div>
               <div>No vehicles found matching your criteria</div>
