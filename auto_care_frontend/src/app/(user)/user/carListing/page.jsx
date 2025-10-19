@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import styles from './carListing.module.css';
 
 const CarListing = () => {
@@ -205,9 +206,9 @@ const CarListing = () => {
         <button className={styles.leaseBtn}>
           Apply for lease
         </button>
-        <a href={`/vehicle/${car.id}`} className={styles.exploreBtn}>
+        <Link href={`/user/carAdd/${car.id}`} className={styles.exploreBtn}>
           Explore details
-        </a>
+        </Link>
       </div>
     </div>
   );
@@ -216,7 +217,9 @@ const CarListing = () => {
     <div className={styles.errorDisplay}>
       <div className={styles.errorIcon}>⚠️</div>
       <div className={styles.errorMessage}>
-        <h3>Failed to load vehicles</h3>
+        <h3>Failed to load vehicles</h3>le for your needs
+
+Showing 8 of 8 approved vehicles
         <p>Error: {error}</p>
         <p>Please check if the backend server is running on {API_BASE_URL}</p>
         <button 
