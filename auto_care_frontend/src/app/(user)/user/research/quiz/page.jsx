@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import './quiz.module.css';
+import styles from './quiz.module.css';
 
 export default function QuizPage() {
   const [currentStep, setCurrentStep] = useState('vehicleSelection');
@@ -434,22 +434,24 @@ export default function QuizPage() {
 
   if (currentStep === 'vehicleSelection') {
     return (
-      <div className="quiz-container">
-        <div className="quiz-header">
-          <h2>🎯 Find Your Perfect Vehicle</h2>
-          <p>Let's start by selecting your preferred vehicle type</p>
-        </div>
-        <div className="vehicle-grid">
-          {vehicleTypes.map(type => (
-            <div
-              key={type.id}
-              className="vehicle-card"
-              onClick={() => selectVehicleType(type.id)}
-            >
-              <div className="vehicle-icon">{type.icon}</div>
-              <div className="vehicle-name">{type.name}</div>
-            </div>
-          ))}
+      <div className={styles.quizApp}>
+        <div className={styles.quizContainer}>
+          <div className={styles.quizHeader}>
+            <h2>🎯 Find Your Perfect Vehicle</h2>
+            <p>Let's start by selecting your preferred vehicle type</p>
+          </div>
+          <div className={styles.vehicleGrid}>
+            {vehicleTypes.map(type => (
+              <div
+                key={type.id}
+                className={styles.vehicleCard}
+                onClick={() => selectVehicleType(type.id)}
+              >
+                <div className={styles.vehicleIcon}>{type.icon}</div>
+                <div className={styles.vehicleName}>{type.name}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -460,30 +462,32 @@ export default function QuizPage() {
     const progress = ((questionIndex + 1) / questions.length) * 100;
 
     return (
-      <div className="quiz-container">
-        <div className="quiz-header">
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+      <div className={styles.quizApp}>
+        <div className={styles.quizContainer}>
+          <div className={styles.quizHeader}>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill} style={{ width: `${progress}%` }}></div>
+            </div>
+            <h3>Question {questionIndex + 1} of {questions.length}</h3>
+            <h2>{currentQuestion.question}</h2>
           </div>
-          <h3>Question {questionIndex + 1} of {questions.length}</h3>
-          <h2>{currentQuestion.question}</h2>
-        </div>
-        <div className="options-grid">
-          {currentQuestion.options.map(option => (
-            <button
-              key={option.id}
-              className="option-btn"
-              onClick={() => handleAnswer(option.id)}
-            >
-              {option.text}
+          <div className={styles.optionsGrid}>
+            {currentQuestion.options.map(option => (
+              <button
+                key={option.id}
+                className={styles.optionBtn}
+                onClick={() => handleAnswer(option.id)}
+              >
+                {option.text}
+              </button>
+            ))}
+          </div>
+          {questionIndex > 0 && (
+            <button className={styles.backBtn} onClick={goBack}>
+              ← Back
             </button>
-          ))}
+          )}
         </div>
-        {questionIndex > 0 && (
-          <button className="back-btn" onClick={goBack}>
-            ← Back
-          </button>
-        )}
       </div>
     );
   }
@@ -493,35 +497,35 @@ export default function QuizPage() {
     const vehicleTypeDisplay = vehicleType.charAt(0).toUpperCase() + vehicleType.slice(1);
 
     return (
-      <div className="quiz-container">
-        <div className="recommendation-header">
-          <h2>🎉 Your Perfect Vehicle Match!</h2>
-          <div className="recommendation-card">
-            <h3>{vehicleTypeDisplay}</h3>
-            <div className="recommended-models">
-              {recommendation.models.map((model, index) => (
-                <span key={index} className="model-tag">{model}</span>
-              ))}
+      <div className={styles.quizApp}>
+        <div className={styles.quizContainer}>
+          <div className={styles.recommendationHeader}>
+            <h2>🎉 Your Perfect Vehicle Match!</h2>
+            <div className={styles.recommendationCard}>
+              <h3>{vehicleTypeDisplay}</h3>
+              <div className={styles.recommendedModels}>
+                {recommendation.models.map((model, index) => (
+                  <span key={index} className={styles.modelTag}>{model}</span>
+                ))}
+              </div>
+              <p className={styles.reasoning}>
+                We recommend this because it offers {recommendation.reasoning}.
+              </p>
             </div>
-            <p className="reasoning">
-              We recommend this because it offers {recommendation.reasoning}.
-            </p>
           </div>
-        </div>
-        <div className="action-buttons">
-          <button className="restart-btn" onClick={restart}>
-            Take Quiz Again
-          </button>
-          <button 
-            className="contact-btn" 
-            onClick={() => alert("Feature coming soon! We'll connect you with local dealers.")}
-          >
-            Contact Dealer
-          </button>
+          <div className={styles.actionButtons}>
+            <button className={styles.restartBtn} onClick={restart}>
+              Take Quiz Again
+            </button>
+            <button 
+              className={styles.contactBtn} 
+              onClick={() => alert("Feature coming soon! We'll connect you with local dealers.")}
+            >
+              Contact Dealer
+            </button>
+          </div>
         </div>
       </div>
     );
   }
-
-  return null;
 }

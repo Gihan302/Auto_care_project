@@ -40,6 +40,8 @@ const SignInForm = () => {
     }
 
     try {
+      console.log('🔐 Attempting login with:', email);
+      
       const response = await fetch("http://localhost:8080/api/auth/signin", {
         method: "POST",
         headers: {
@@ -50,22 +52,42 @@ const SignInForm = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Store token and user data in local storage
-        localStorage.setItem("token", data.token);
+        
+        console.log('✅ Login successful:', data);
+        
+        // FIXED: The token field is 'accessToken' not 'token'
+        const token = data.accessToken || data.token;
+        
+        if (!token) {
+          console.error('❌ No token in response:', data);
+          setError("Authentication failed - no token received");
+          setLoading(false);
+          return;
+        }
+
+        // Store token and user data in localStorage
+        localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(data));
+        
+        console.log('💾 Token stored:', token.substring(0, 20) + '...');
+        console.log('👤 User roles:', data.roles);
 
         // Check for admin role and redirect
         if (data.roles && data.roles.includes("ROLE_ADMIN")) {
+          console.log('🎯 Admin detected, redirecting to admin dashboard');
           router.push('/admin/dashboard');
         } else {
-          router.push('/'); // Redirect non-admins to homepage
+          console.log('🏠 Regular user, redirecting to homepage');
+          router.push('/');
         }
       } else {
         const data = await response.json();
-        setError(data.message || "Sign in failed");
+        console.error('❌ Login failed:', data);
+        setError(data.message || "Sign in failed - invalid credentials");
       }
     } catch (error) {
-      setError("An error occurred during sign in");
+      console.error('💥 Login error:', error);
+      setError("An error occurred during sign in. Please try again.");
     } finally {
       setLoading(false);
     }

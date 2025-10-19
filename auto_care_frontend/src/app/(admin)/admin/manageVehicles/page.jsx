@@ -57,12 +57,14 @@ const ManageVehicles = () => {
     rejected: 0
   })
 
-  // API Base URL from environment variable
+  // API Base URL
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
   // Helper function to get auth token
   const getAuthToken = () => {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    console.log('🔑 Token found:', token ? 'Yes' : 'No');
+    return token;
   };
 
   // Helper function to create request headers
@@ -70,7 +72,7 @@ const ManageVehicles = () => {
     const token = getAuthToken();
     return {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
+      'Authorization': token ? `Bearer ${token}` : ''
     };
   };
 
@@ -85,12 +87,14 @@ const ManageVehicles = () => {
     seller: ad.name,
     sellerEmail: ad.email,
     sellerPhone: ad.t_number,
+    // FIXED: Use ad.flag instead of ad.falg
     status: ad.flag === 1 ? 'Approved' : ad.flag === 0 ? 'Pending' : 'Rejected',
     flag: ad.flag,
-    posted: new Date(ad.datetime).toLocaleDateString(),
-    views: Math.floor(Math.random() * 300), // API doesn't provide views, using random for demo
-    hasInsurance: ad.iStatus === 1,
-    hasLeasing: ad.lStatus === 1,
+    // FIXED: Use ad.time instead of ad.datetime
+    posted: ad.time ? new Date(ad.time).toLocaleDateString() : 'N/A',
+    views: Math.floor(Math.random() * 300),
+    hasInsurance: ad.i_status === 1,
+    hasLeasing: ad.l_status === 1,
     image: ad.image1 || `https://via.placeholder.com/400x240/f1f5f9/64748b?text=${ad.manufacturer}+${ad.model}`,
     images: [ad.image1, ad.image2, ad.image3, ad.image4, ad.image5].filter(Boolean),
     mileage: ad.mileage ? `${ad.mileage} miles` : 'N/A',
@@ -116,173 +120,137 @@ const ManageVehicles = () => {
   const fetchAllAds = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/advertisement/all`, {
+      console.log('📡 Fetching all advertisements...');
+      
+      // FIXED: Using correct endpoint
+      const response = await fetch(`${API_BASE_URL}/admin/advertisements/all`, {
         headers: getAuthHeaders()
       });
       
       if (response.ok) {
         const ads = await response.json();
+        console.log('✅ Received', ads.length, 'advertisements');
+        
         const transformedAds = ads.map(transformAdToVehicle);
         setVehicles(transformedAds);
-      } else if (response.status === 401) {
-        console.error('Authentication failed');
-        // Handle authentication error - redirect to login or refresh token
+        
+        // Calculate stats from the data
+        updateStatsFromVehicles(transformedAds);
+      } else if (response.status === 401 || response.status === 403) {
+        console.error('❌ Authentication failed');
+        alert('Authentication failed. Please login again.');
       } else {
-        console.error('Failed to fetch advertisements');
+        console.error('❌ Failed to fetch advertisements:', response.status);
       }
     } catch (error) {
-      console.error('Error fetching advertisements:', error);
+      console.error('💥 Error fetching advertisements:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchPendingAds = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/advertisement/getnewad`, {
-        headers: getAuthHeaders()
-      });
-      
-      if (response.ok) {
-        const pendingAds = await response.json();
-        return pendingAds.map(transformAdToVehicle);
-      }
-    } catch (error) {
-      console.error('Error fetching pending ads:', error);
-    }
-    return [];
+  // Update stats from vehicles data
+  const updateStatsFromVehicles = (vehiclesList) => {
+    const stats = {
+      total: vehiclesList.length,
+      pending: vehiclesList.filter(v => v.status === 'Pending').length,
+      approved: vehiclesList.filter(v => v.status === 'Approved').length,
+      rejected: vehiclesList.filter(v => v.status === 'Rejected').length
+    };
+    setDashboardStats(stats);
+    console.log('📊 Stats updated:', stats);
   };
 
-  const fetchApprovedAds = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/advertisement/getconfrimad`, {
-        headers: getAuthHeaders()
-      });
-      
-      if (response.ok) {
-        const approvedAds = await response.json();
-        return approvedAds.map(transformAdToVehicle);
-      }
-    } catch (error) {
-      console.error('Error fetching approved ads:', error);
-    }
-    return [];
-  };
-
-  const fetchDashboardStats = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/admin/dashboard/stats`, {
-        headers: getAuthHeaders()
-      });
-      
-      if (response.ok) {
-        const stats = await response.json();
-        setDashboardStats(stats);
-      }
-    } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
-    }
-  };
-
-  const fetchNotificationCount = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/admin/notifications/count`, {
-        headers: getAuthHeaders()
-      });
-      
-      if (response.ok) {
-        const count = await response.json();
-        return count;
-      }
-    } catch (error) {
-      console.error('Error fetching notification count:', error);
-    }
-    return 0;
-  };
-
+  // FIXED: Approve ad using correct endpoint
   const approveAd = async (adId) => {
-  setLoading(true);
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/confirm/${adId}`, { // Fixed spelling
-      method: 'PUT',
-      headers: getAuthHeaders()
-    });
-    
-    if (response.ok) {
-      const result = await response.json();
-      
-      // Update local state
-      setVehicles(vehicles.map(vehicle => 
-        vehicle.id === adId 
-          ? { ...vehicle, status: 'Approved', flag: 1 }
-          : vehicle
-      ));
-      
-      alert(result.message || 'Advertisement approved successfully!');
-      
-      // Refresh data
-      fetchAllAds();
-      fetchDashboardStats();
-    } else {
-      const errorData = await response.json();
-      alert(errorData.message || 'Failed to approve advertisement');
+    if (!window.confirm('Are you sure you want to approve this advertisement?')) {
+      return;
     }
-  } catch (error) {
-    console.error('Error approving ad:', error);
-    alert('Error approving advertisement');
-  } finally {
-    setLoading(false);
-  }
-};
 
-
-  const rejectAd = async (adId) => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/reject/${adId}`, {
+      console.log('✅ Approving ad:', adId);
+      
+      // FIXED: Using correct endpoint from AdminController
+      const response = await fetch(`${API_BASE_URL}/admin/advertisements/${adId}/approve`, {
         method: 'PUT',
         headers: getAuthHeaders()
       });
       
       if (response.ok) {
         const result = await response.json();
+        console.log('✅ Advertisement approved successfully');
         
-        // Update local state
-        setVehicles(vehicles.map(vehicle => 
-          vehicle.id === adId 
-            ? { ...vehicle, status: 'Rejected', flag: -1 }
-            : vehicle
-        ));
+        alert(result.message || 'Advertisement approved successfully!');
+        
+        // Refresh data
+        await fetchAllAds();
+      } else {
+        const errorData = await response.json();
+        console.error('❌ Failed to approve:', errorData);
+        alert(errorData.message || 'Failed to approve advertisement');
+      }
+    } catch (error) {
+      console.error('💥 Error approving ad:', error);
+      alert('Error approving advertisement');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // FIXED: Reject ad using correct endpoint
+  const rejectAd = async (adId) => {
+    if (!window.confirm('Are you sure you want to reject and delete this advertisement? This action cannot be undone.')) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      console.log('🗑️ Rejecting ad:', adId);
+      
+      // FIXED: Using correct endpoint from AdminController
+      const response = await fetch(`${API_BASE_URL}/admin/advertisements/${adId}/reject`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Advertisement rejected and deleted');
         
         alert(result.message || 'Advertisement rejected successfully!');
         
         // Refresh data
-        fetchAllAds();
-        fetchDashboardStats();
+        await fetchAllAds();
       } else {
         const errorData = await response.json();
+        console.error('❌ Failed to reject:', errorData);
         alert(errorData.message || 'Failed to reject advertisement');
       }
     } catch (error) {
-      console.error('Error rejecting ad:', error);
+      console.error('💥 Error rejecting ad:', error);
       alert('Error rejecting advertisement');
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch ad details by ID
   const fetchAdById = async (id) => {
     try {
+      console.log('📡 Fetching ad details for ID:', id);
+      
       const response = await fetch(`${API_BASE_URL}/advertisement/getAdById/${id}`, {
         headers: getAuthHeaders()
       });
       
       if (response.ok) {
         const ad = await response.json();
+        console.log('✅ Ad details retrieved');
         return transformAdToVehicle(ad);
       }
     } catch (error) {
-      console.error('Error fetching ad by ID:', error);
+      console.error('💥 Error fetching ad by ID:', error);
     }
     return null;
   };
@@ -290,8 +258,15 @@ const ManageVehicles = () => {
   // Load data on component mount
   useEffect(() => {
     const initializeData = async () => {
+      const token = getAuthToken();
+      if (!token) {
+        console.error('❌ No authentication token found');
+        alert('Please login first');
+        return;
+      }
+      
+      console.log('🚀 Initializing ManageVehicles page...');
       await fetchAllAds();
-      await fetchDashboardStats();
     };
     
     initializeData();
@@ -324,7 +299,6 @@ const ManageVehicles = () => {
   const rejectedVehicles = vehicles.filter(v => v.status === 'Rejected')
 
   const handleViewVehicle = async (vehicle) => {
-    // Fetch detailed information if needed
     const detailedVehicle = await fetchAdById(vehicle.id);
     setSelectedVehicle(detailedVehicle || vehicle);
     setIsViewDialogOpen(true);
@@ -337,9 +311,7 @@ const ManageVehicles = () => {
 
   const handleDeleteVehicle = async (vehicleId) => {
     if (window.confirm('Are you sure you want to delete this vehicle listing?')) {
-      // Note: You'll need to implement a delete endpoint in your backend
-      // For now, we'll just remove from local state
-      setVehicles(vehicles.filter(vehicle => vehicle.id !== vehicleId))
+      await rejectAd(vehicleId);
     }
   }
 
@@ -357,7 +329,7 @@ const ManageVehicles = () => {
             </div>
             <div className={styles.headerActions}>
               <NotificationBell 
-                pendingCount={dashboardStats.pending || pendingVehicles.length}
+                pendingCount={dashboardStats.pending}
                 onClick={() => setIsNotificationOpen(true)}
               />
               <Button className={styles.addButton}>
@@ -375,7 +347,7 @@ const ManageVehicles = () => {
                   <Car className={styles.statIcon} size={24} />
                 </div>
                 <div className={styles.statInfo}>
-                  <div className={styles.statNumber}>{dashboardStats.total || vehicles.length}</div>
+                  <div className={styles.statNumber}>{dashboardStats.total}</div>
                   <div className={styles.statLabel}>Total Vehicles</div>
                   <div className={styles.statChange}>
                     <TrendingUp size={14} />
@@ -391,7 +363,7 @@ const ManageVehicles = () => {
                   <Clock className={styles.statIcon} size={24} />
                 </div>
                 <div className={styles.statInfo}>
-                  <div className={styles.statNumber}>{dashboardStats.pending || pendingVehicles.length}</div>
+                  <div className={styles.statNumber}>{dashboardStats.pending}</div>
                   <div className={styles.statLabel}>Pending Approval</div>
                   <div className={styles.statChange}>
                     <AlertTriangle size={14} />
@@ -407,7 +379,7 @@ const ManageVehicles = () => {
                   <Check className={styles.statIcon} size={24} />
                 </div>
                 <div className={styles.statInfo}>
-                  <div className={styles.statNumber}>{dashboardStats.approved || approvedVehicles.length}</div>
+                  <div className={styles.statNumber}>{dashboardStats.approved}</div>
                   <div className={styles.statLabel}>Approved</div>
                   <div className={styles.statChange}>
                     <TrendingUp size={14} />
@@ -423,7 +395,7 @@ const ManageVehicles = () => {
                   <XCircle className={styles.statIcon} size={24} />
                 </div>
                 <div className={styles.statInfo}>
-                  <div className={styles.statNumber}>{dashboardStats.rejected || rejectedVehicles.length}</div>
+                  <div className={styles.statNumber}>{dashboardStats.rejected}</div>
                   <div className={styles.statLabel}>Rejected</div>
                   <div className={styles.statChange}>
                     <span>Quality control</span>
@@ -566,12 +538,6 @@ const ManageVehicles = () => {
                     </>
                   )}
                   
-                  <Button 
-                    className={styles.editButton}
-                    onClick={() => handleEditVehicle(vehicle)}
-                  >
-                    <Edit size={16} />
-                  </Button>
                   <Button 
                     className={styles.deleteButton}
                     onClick={() => handleDeleteVehicle(vehicle.id)}
