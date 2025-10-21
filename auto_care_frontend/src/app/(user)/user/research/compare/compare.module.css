@@ -1,14 +1,19 @@
 /* Container and Layout */
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg,var(--color-tertiary), #aba8ad 100%);
+  background: linear-gradient(135deg, var(--color-tertiary), #aba8ad 100%);
   padding: 2rem 1rem;
+  /* Changed: Add horizontal padding like footer */
 }
 
 .header {
   text-align: center;
   margin-bottom: 3rem;
   animation: fadeInUp 0.6s ease-out;
+  max-width: 72rem;
+  /* Match footer max-width */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .title {
@@ -32,7 +37,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
-  max-width: 1200px;
+  max-width: 72rem;
+  /* Match footer max-width */
   margin: 0 auto 2rem;
 }
 
@@ -135,7 +141,8 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  max-width: 400px;
+  max-width: 72rem;
+  /* Match footer max-width */
   margin: 0 auto;
 }
 
@@ -201,7 +208,7 @@
 }
 
 .backButton {
-  background:var(--color-secondary);
+  background: var(--color-secondary);
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -234,6 +241,9 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
+  max-width: 72rem;
+  /* Match footer max-width */
+  margin: 0 auto;
 }
 
 .filterOptions {
@@ -278,18 +288,20 @@
 
 /* Comparison Table */
 .comparisonTable {
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 72rem;
+  /* Match footer max-width */
+  margin: 2rem auto;
+  /* Center with auto margins */
+  padding: 0 1rem;
+  /* Add horizontal padding */
   background: white;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  margin-top: 2rem;
-  margin-bottom: 2rem;
 }
 
 .tableHeader {
-  background:var(--color-tertiary);
+  background: var(--color-tertiary);
   color: white;
   display: grid;
   grid-template-columns: 200px repeat(auto-fit, minmax(250px, 1fr));
@@ -365,6 +377,8 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
+  display: block;
 }
 
 .secondaryButton:hover {
@@ -406,51 +420,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-}
-
-.rating {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: center;
-}
-
-.ratingValue {
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.stars {
-  display: flex;
-  gap: 0.125rem;
-}
-
-.star {
-  color: #d1d5db;
-  font-size: 1rem;
-}
-
-.star.filled {
-  color: #fbbf24;
-}
-
-.reviewCount {
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-.linkButton {
-  background: none;
-  border: none;
-  color: #2563eb;
-  cursor: pointer;
-  text-decoration: underline;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-}
-
-.linkButton:hover {
-  color: #1d4ed8;
 }
 
 /* Animations */
@@ -540,6 +509,7 @@
 
   .comparisonTable {
     margin: 1rem;
+    padding: 0;
     border-radius: 8px;
   }
 
@@ -604,68 +574,6 @@
   .vehicleImage {
     height: 60px;
   }
-
-  .rating {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .stars {
-    font-size: 0.9rem;
-  }
-
-  .reviewCount {
-    font-size: 0.7rem;
-  }
-}
-
-/* Loading States */
-.loading {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.loading::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  margin: -10px 0 0 -10px;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #667eea;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Hover Effects */
-.vehicleSelector:hover .vehicleTitle {
-  color: #667eea;
-}
-
-.specRow:hover {
-  background: #f1f5f9 !important;
-}
-
-.specRow:hover .specName {
-  color: #667eea;
-}
-
-/* Focus States */
-.select:focus,
-.searchInput:focus {
-  transform: translateY(-1px);
 }
 
 /* Accessibility */
@@ -684,42 +592,5 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-}
-
-/* Print Styles */
-@media print {
-  .container {
-    background: white;
-    padding: 0;
-  }
-
-  .backButton,
-  .addButton,
-  .compareButton,
-  .primaryButton,
-  .secondaryButton,
-  .removeButton {
-    display: none;
-  }
-
-  .filterControls {
-    display: none;
-  }
-
-  .comparisonTable {
-    box-shadow: none;
-    border: 1px solid #000;
-  }
-
-  .tableHeader {
-    background: #f0f0f0 !important;
-    color: #000 !important;
-  }
-
-  .specColumn,
-  .vehicleColumn {
-    background: #f0f0f0 !important;
-    color: #000 !important;
   }
 }
