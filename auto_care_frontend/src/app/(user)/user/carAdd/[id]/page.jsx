@@ -6,6 +6,30 @@ import { useParams, useRouter } from 'next/navigation';
 import styles from './carAdd.module.css';
 import { Phone, Mail, MapPin, Fuel, Settings, Calendar, Gauge, ChevronLeft, ChevronRight, ArrowLeft, FileText, Shield, X } from 'lucide-react';
 
+// Import axios config - adjust path based on your project structure
+const getApiClient = () => {
+  if (typeof window === 'undefined') return null;
+  
+  const token = localStorage.getItem('token');
+  if (!token) return null;
+
+  // Using fetch API instead of axios for simplicity
+  return {
+    post: async (url, data) => {
+      const response = await fetch(`http://localhost:8080${url}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return await response.json();
+    }
+  };
+};
+
 const VehicleDetailPage = () => {
   const params = useParams();
   const router = useRouter();
@@ -130,6 +154,105 @@ const VehicleDetailPage = () => {
     fetchVehicleDetails();
   }, [params.id, API_BASE_URL]);
 
+  // Function to create draft message and navigate to messaging
+  const handleApplyNow = async (companyName, companyType, plan) => {
+    const apiClient = getApiClient();
+    
+    if (!apiClient) {
+      alert('Please log in to apply for this plan.');
+      router.push('/signin');
+      return;
+    }
+
+    try {
+      console.log('🚀 Creating conversation with', companyName);
+      
+      // Create or get existing conversation
+      const response = await apiClient.post('/user/conversations', {
+        companyName,
+        companyType,
+        vehicleId: params.id,
+        inquiryType: companyType === 'leasing' ? 'leasing_inquiry' : 'insurance_inquiry'
+      });
+
+      const conversationId = response.conversationId;
+      console.log('✅ Conversation created/found:', conversationId);
+
+      // Generate draft message based on vehicle and plan details
+      const draftMessage = generateDraftMessage(companyType, plan, vehicleData);
+
+      // Store draft message in sessionStorage to be used in messaging page
+      sessionStorage.setItem('draftMessage', JSON.stringify({
+        conversationId,
+        companyName,
+        message: draftMessage,
+        vehicleId: params.id
+      }));
+
+      // Navigate to messaging page
+      router.push('/user/message');
+    } catch (error) {
+      console.error('❌ Error creating conversation:', error);
+      if (error.message.includes('401')) {
+        alert('Session expired. Please log in again.');
+        router.push('/signin');
+      } else {
+        alert('Failed to start conversation. Please try again.');
+      }
+    }
+  };
+
+  // Generate draft message based on plan type
+  const generateDraftMessage = (type, plan, vehicle) => {
+    const vehicleTitle = vehicle.title || `${vehicle.m_year} ${vehicle.manufacturer} ${vehicle.model}`;
+    const vehiclePrice = vehicle.price ? `Rs. ${parseFloat(vehicle.price).toLocaleString()}` : '';
+
+    if (type === 'leasing') {
+      return `Hello ${plan.company},
+
+I am interested in applying for your leasing plan for the following vehicle:
+
+Vehicle Details:
+- ${vehicleTitle}
+- Price: ${vehiclePrice}
+- Year: ${vehicle.m_year}
+- Mileage: ${vehicle.mileage ? parseFloat(vehicle.mileage).toLocaleString() + ' km' : 'N/A'}
+- Location: ${vehicle.location || 'N/A'}
+
+Leasing Plan:
+- Interest Rate: ${plan.interestRate}
+- Duration: ${plan.duration}
+- Monthly Payment: ${plan.monthlyPayment}
+- Down Payment: ${plan.downPayment}
+
+Could you please provide more information about the application process and required documents?
+
+Thank you.`;
+    } else if (type === 'insurance') {
+      return `Hello ${plan.company},
+
+I would like to get a quote for insurance coverage for the following vehicle:
+
+Vehicle Details:
+- ${vehicleTitle}
+- Price: ${vehiclePrice}
+- Year: ${vehicle.m_year}
+- Type: ${vehicle.v_type || 'N/A'}
+- Location: ${vehicle.location || 'N/A'}
+
+Insurance Plan of Interest:
+- Type: ${plan.type}
+- Coverage: ${plan.coverage}
+- Premium: ${plan.premium}
+
+Please provide me with a detailed quote and the necessary documentation required.
+
+Thank you.`;
+    }
+
+    return '';
+  };
+
   const nextImage = () => {
     if (!vehicleData) return;
     const images = getVehicleImages();
@@ -215,7 +338,6 @@ const VehicleDetailPage = () => {
 
   return (
     <div className={styles.container}>
-
       {/* Back Button */}
       <div className={styles.backButtonContainer}>
         <button onClick={handleBackToListings} className={styles.backButton}>
@@ -504,7 +626,12 @@ const VehicleDetailPage = () => {
                       ))}
                     </ul>
                   </div>
-                  <button className={styles.btnApply}>Apply Now</button>
+                  <button 
+                    className={styles.btnApply}
+                    onClick={() => handleApplyNow(plan.company, 'leasing', plan)}
+                  >
+                    Apply Now
+                  </button>
                 </div>
               ))}
             </div>
@@ -551,7 +678,12 @@ const VehicleDetailPage = () => {
                       ))}
                     </ul>
                   </div>
-                  <button className={styles.btnApply}>Get Quote</button>
+                  <button 
+                    className={styles.btnApply}
+                    onClick={() => handleApplyNow(plan.company, 'insurance', plan)}
+                  >
+                    Get Quote
+                  </button>
                 </div>
               ))}
             </div>

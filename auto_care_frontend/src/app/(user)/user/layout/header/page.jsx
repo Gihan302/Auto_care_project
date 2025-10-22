@@ -15,7 +15,7 @@ const Header = () => {
 
   const vehicleCategories = [
     { name: 'Cars', href: '/user/carListing' },
-    { name: 'Vans', href: '/vehicles/vans' },
+    { name: 'Vans', href: '/user/message' },
     { name: 'SUVs', href: '/vehicles/suvs' },
     { name: 'Trucks', href: '/vehicles/trucks' },
     { name: 'Motor Bikes', href: '/vehicles/motorbikes' },
