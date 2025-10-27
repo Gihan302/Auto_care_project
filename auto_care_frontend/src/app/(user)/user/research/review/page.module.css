@@ -1,0 +1,801 @@
+/* Page Container */
+.pageContainer {
+  min-height: 100vh;
+  background-color: #ECDFCC;
+}
+
+/* Hero Section */
+.heroSection {
+  background: linear-gradient(135deg, #1E201E 0%, #222725 100%);
+  color: white;
+  padding: 3rem 1rem;
+}
+
+.heroContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.heroSubtitle {
+  font-size: 1.125rem;
+  color: #ECDFCC;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+/* Statistics Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.statCard {
+  background: rgba(236, 223, 204, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #ECDFCC;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
+
+.statStar {
+  fill: #FFD700;
+  color: #FFD700;
+}
+
+/* Main Content */
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Filters Card */
+.filtersCard {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filtersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.searchContainer {
+  position: relative;
+  width: 90%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #222725;
+  opacity: 0.5;
+}
+
+.searchInput {
+  width: 90%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 2px solid #ECDFCC;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #222725;
+  background: #ECDFCC;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #222725;
+  background: white;
+}
+
+.filterSelect {
+  padding: 0.75rem 1rem;
+  border: 2px solid #ECDFCC;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #222725;
+  background: #ECDFCC;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #222725;
+  background: white;
+}
+
+/* Quick Filters */
+.quickFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.quickFilterBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid #ECDFCC;
+  border-radius: 9999px;
+  background: white;
+  color: #222725;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quickFilterBtn:hover {
+  background: #ECDFCC;
+  border-color: #222725;
+}
+
+.quickFilterActive {
+  background: #10B981;
+  color: white;
+  border-color: #10B981;
+}
+
+/* Reviews List */
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Review Card */
+.reviewCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.reviewCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Review Header */
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border-bottom: 1px solid #ECDFCC;
+}
+
+.reviewerInfo {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #222725, #1E201E);
+  color: #ECDFCC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.reviewerDetails {
+  flex: 1;
+}
+
+.reviewerName {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #222725;
+}
+
+.verifiedBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #10B981;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.reviewMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #222725;
+  opacity: 0.6;
+}
+
+.overallRating {
+  text-align: right;
+}
+
+.ratingNumber {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #222725;
+}
+
+.ratingStars {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+.starFilled {
+  fill: #FFD700;
+  color: #FFD700;
+}
+
+.starEmpty {
+  fill: none;
+  color: #ECDFCC;
+}
+
+/* Car Info */
+.carInfo {
+  padding: 1rem 1.5rem;
+}
+
+.carModel {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1E201E;
+  margin-bottom: 0.5rem;
+}
+
+.reviewTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #222725;
+  margin: 0;
+}
+
+/* Category Ratings */
+.categoryRatings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #ECDFCC;
+  border-top: 1px solid rgba(34, 39, 37, 0.1);
+  border-bottom: 1px solid rgba(34, 39, 37, 0.1);
+}
+
+.categoryItem {
+  text-align: center;
+}
+
+.categoryLabel {
+  font-size: 0.875rem;
+  color: #222725;
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+}
+
+.categoryStars {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+}
+
+.categoryScore {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #222725;
+}
+
+/* Review Content */
+.reviewContent {
+  padding: 1.5rem;
+}
+
+.reviewText {
+  color: #222725;
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.reviewTextExpanded {
+  color: #222725;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.readMoreBtn {
+  color: #222725;
+  font-weight: 600;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  padding: 0;
+}
+
+/* Pros and Cons */
+.prosConsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.prosSection {
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.prosTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #10B981;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.prosIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #10B981;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.875rem;
+}
+
+.prosList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.prosList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #222725;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.prosList li:before {
+  content: "•";
+  color: #10B981;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.consSection {
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.consTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #EF4444;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.consIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #EF4444;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.875rem;
+}
+
+.consList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.consList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #222725;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.consList li:before {
+  content: "•";
+  color: #EF4444;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+/* Review Images */
+.reviewImages {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.imageThumb {
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.imageThumb:hover {
+  transform: scale(1.05);
+}
+
+.imageThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Review Footer */
+.reviewFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: #ECDFCC;
+  gap: 1rem;
+}
+
+.helpfulBtn,
+.commentBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: #222725;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.helpfulBtn:hover,
+.commentBtn:hover {
+  border-color: #222725;
+}
+
+.readFullBtn {
+  color: #222725;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.readFullBtn:hover {
+  text-decoration: underline;
+}
+
+/* Loading & Empty States */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  color: #222725;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #ECDFCC;
+  border-top-color: #222725;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #222725;
+  font-size: 1.125rem;
+}
+
+/* Load More */
+.loadMoreContainer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.loadMoreBtn {
+  padding: 0.75rem 2rem;
+  background: #222725;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.loadMoreBtn:hover {
+  background: #1E201E;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Floating Button */
+.floatingBtn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: #222725;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+  z-index: 1000;
+}
+
+.floatingBtn:hover {
+  background: #1E201E;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.floatingBtnIcon {
+  fill: white;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .categoryRatings {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .prosConsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .reviewImages {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 2rem 1rem;
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .statCard {
+    padding: 1rem;
+  }
+
+  .mainContent {
+    padding: 1rem;
+  }
+
+  .filtersCard {
+    padding: 1rem;
+  }
+
+  .filtersGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quickFilters {
+    flex-wrap: wrap;
+  }
+
+  .reviewCard {
+    border-radius: 8px;
+  }
+
+  .reviewHeader {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .overallRating {
+    text-align: left;
+    width: 100%;
+  }
+
+  .carModel {
+    font-size: 1.5rem;
+  }
+
+  .reviewTitle {
+    font-size: 1rem;
+  }
+
+  .categoryRatings {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .reviewContent {
+    padding: 1rem;
+  }
+
+  .prosConsGrid {
+    padding: 0 1rem 1rem;
+  }
+
+  .reviewImages {
+    grid-template-columns: 1fr;
+    padding: 0 1rem 1rem;
+  }
+
+  .reviewFooter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .helpfulBtn,
+  .commentBtn {
+    justify-content: center;
+  }
+
+  .floatingBtn {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroTitle {
+    font-size: 1.5rem;
+  }
+
+  .statNumber {
+    font-size: 1.5rem;
+  }
+
+  .statLabel {
+    font-size: 0.75rem;
+  }
+
+  .carModel {
+    font-size: 1.25rem;
+  }
+
+  .ratingNumber {
+    font-size: 1.5rem;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.875rem;
+  }
+
+  .reviewerName {
+    font-size: 0.875rem;
+  }
+
+  .verifiedBadge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .reviewMeta {
+    font-size: 0.75rem;
+  }
+}

@@ -1,34 +1,29 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./page.module.css";
+'use client'
 
-import Header from "./layout/header/page";
-import Footer from "./layout/footer/page";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata = {
-  title: "Auto Care",
-  description: "Smooth Rides, Start Here",
-};
+import { usePathname } from 'next/navigation'
+import Header from './(user)/user/layout/header/page'
+import Footer from './(user)/user/layout/footer/page'
 
 export default function RootLayout({ children }) {
+  const pathname = usePathname()
+  
+  // Define routes where you want header/footer
+  const showHeaderFooter = pathname === '/' || pathname === '/home'
+  
+  // Or define routes where you DON'T want header/footer
+  // const hideHeaderFooter = pathname.startsWith('/admin') || pathname.startsWith('/user')
+  
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-secondary text-primary`}
-      >
-        <Header />
-        <main className="min-h-screen px-4">{children}</main>
-        <Footer />
+      <body>
+        {showHeaderFooter && <Header />}
+        
+        <main className={showHeaderFooter ? 'with-header-footer' : 'full-page'}>
+          {children}
+        </main>
+        
+        {showHeaderFooter && <Footer />}
       </body>
     </html>
-  );
+  )
 }
