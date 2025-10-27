@@ -28,7 +28,7 @@ const Header = () => {
   ];
 
   const researchOptions = [
-    { name: 'Car Reviews', href: '/research/reviews' },
+    { name: 'Car Reviews', href: '/user/research/review' },
     { name: 'Compare Cars', href: '/user/research/compare' },
     { name: 'Car Finder Quiz', href: '/research/quiz' },
     { name: 'Buying Power Calculator', href: '/user/research/buyingPower' },
