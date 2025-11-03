@@ -3,149 +3,39 @@
 import React, { useState, useEffect } from 'react';
 import styles from './compare.module.css';
 
-// Mock data for vehicle makes and models
-const carMakes = [
-  'Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz', 'Audi', 'Nissan', 'Hyundai', 'Mazda'
-];
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-const carModels = {
-  'Toyota': ['Camry', 'Corolla', 'RAV4', 'Prius', 'Highlander', 'Sienna'],
-  'Honda': ['Civic', 'Accord', 'CR-V', 'Pilot', 'Odyssey', 'HR-V'],
-  'Ford': ['F-150', 'Explorer', 'Escape', 'Mustang', 'Edge', 'Fusion'],
-  'Chevrolet': ['Silverado', 'Equinox', 'Malibu', 'Tahoe', 'Cruze', 'Impala'],
-  'BMW': ['3 Series', '5 Series', 'X3', 'X5', 'i3', 'i8'],
-  'Mercedes-Benz': ['C-Class', 'E-Class', 'GLC', 'GLE', 'S-Class', 'A-Class'],
-  'Audi': ['A3', 'A4', 'Q3', 'Q5', 'A6', 'Q7'],
-  'Nissan': ['Altima', 'Sentra', 'Rogue', 'Pathfinder', 'Murano', 'Maxima'],
-  'Hyundai': ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Accent', 'Genesis'],
-  'Mazda': ['Mazda3', 'Mazda6', 'CX-5', 'CX-9', 'MX-5', 'CX-3']
-};
+const VehicleSelector = ({ id, selectedVehicle, onVehicleChange, onRemove, canRemove, index, availableVehicles, manufacturers }) => {
+  const [selectedMake, setSelectedMake] = useState('');
+  const [availableModels, setAvailableModels] = useState([]);
 
-// Mock vehicle data
-const vehicleData = {
-  'Toyota Camry': {
-    year: 2024,
-    make: 'Toyota',
-    model: 'Camry',
-    trim: 'LE',
-    msrp: 25295,
-    marketAverage: 26500,
-    rating: 4.2,
-    totalReviews: 1247,
-    image: '/car 1.jpg',
-    specs: {
-      'Engine': '2.5L 4-Cylinder',
-      'MPG City/Highway': '28/39',
-      'Transmission': '8-Speed Automatic',
-      'Drivetrain': 'FWD',
-      'Seating': '5 passengers',
-      'Safety Rating': '5 stars'
-    }
-  },
-  'Honda Civic': {
-    year: 2024,
-    make: 'Honda',
-    model: 'Civic',
-    trim: 'LX',
-    msrp: 23750,
-    marketAverage: 24800,
-    rating: 4.5,
-    totalReviews: 892,
-    image: '/car 3.jpg',
-    specs: {
-      'Engine': '2.0L 4-Cylinder',
-      'MPG City/Highway': '31/40',
-      'Transmission': 'CVT',
-      'Drivetrain': 'FWD',
-      'Seating': '5 passengers',
-      'Safety Rating': '5 stars'
-    }
-  },
-  'Ford F-150': {
-    year: 2024,
-    make: 'Ford',
-    model: 'F-150',
-    trim: 'Regular Cab',
-    msrp: 33695,
-    marketAverage: 35200,
-    rating: 4.3,
-    totalReviews: 2156,
-    image: '/car 1.jpg',
-    specs: {
-      'Engine': '3.3L V6',
-      'MPG City/Highway': '19/25',
-      'Transmission': '10-Speed Automatic',
-      'Drivetrain': 'RWD',
-      'Seating': '3 passengers',
-      'Safety Rating': '4 stars'
-    }
-  },
-  'BMW 3 Series': {
-    year: 2024,
-    make: 'BMW',
-    model: '3 Series',
-    trim: '330i',
-    msrp: 36350,
-    marketAverage: 38500,
-    rating: 4.4,
-    totalReviews: 734,
-    image: '/car 1.jpg',
-    specs: {
-      'Engine': '2.0L Turbo 4-Cylinder',
-      'MPG City/Highway': '26/36',
-      'Transmission': '8-Speed Automatic',
-      'Drivetrain': 'RWD',
-      'Seating': '5 passengers',
-      'Safety Rating': '5 stars'
-    }
-  }
-};
-
-const VehicleSelector = ({ id, selectedMake, selectedModel, onMakeChange, onModelChange, onRemove, canRemove, index }) => {
-  const availableModels = selectedMake ? carModels[selectedMake] || [] : [];
-
-  const handleMakeChange = (e) => {
-    const value = e.target.value;
-    onMakeChange(value);
-    // Reset model when make changes
-    if (selectedModel) {
-      onModelChange('');
-    }
-  };
-
-  const handleModelChange = (e) => {
-    const value = e.target.value;
-    onModelChange(value);
+  const handleMakeChange = (make) => {
+    setSelectedMake(make);
+    // Filter vehicles by manufacturer
+    const models = availableVehicles.filter(v => v.manufacturer === make);
+    setAvailableModels(models);
+    onVehicleChange(null); // Reset selection
   };
 
   return (
     <div className={styles.vehicleSelector}>
       {canRemove && onRemove && (
-        <button
-          className={styles.removeButton}
-          onClick={onRemove}
-        >
-          ×
-        </button>
+        <button className={styles.removeButton} onClick={onRemove}>×</button>
       )}
       
-      <h3 className={styles.vehicleTitle}>
-        Vehicle {index + 1}
-      </h3>
+      <h3 className={styles.vehicleTitle}>Vehicle {index + 1}</h3>
       
       <div className={styles.selectGroup}>
         <div className={styles.selectContainer}>
-          <label className={styles.label}>Make</label>
+          <label className={styles.label}>Manufacturer</label>
           <select 
             value={selectedMake} 
-            onChange={handleMakeChange}
+            onChange={(e) => handleMakeChange(e.target.value)}
             className={styles.select}
           >
-            <option value="">Select make</option>
-            {carMakes.map((make) => (
-              <option key={make} value={make}>
-                {make}
-              </option>
+            <option value="">Select manufacturer</option>
+            {manufacturers.map((make) => (
+              <option key={make} value={make}>{make}</option>
             ))}
           </select>
         </div>
@@ -153,15 +43,18 @@ const VehicleSelector = ({ id, selectedMake, selectedModel, onMakeChange, onMode
         <div className={styles.selectContainer}>
           <label className={styles.label}>Model</label>
           <select 
-            value={selectedModel} 
-            onChange={handleModelChange}
+            value={selectedVehicle?.id || ''} 
+            onChange={(e) => {
+              const vehicle = availableModels.find(v => v.id === parseInt(e.target.value));
+              onVehicleChange(vehicle);
+            }}
             disabled={!selectedMake}
             className={styles.select}
           >
             <option value="">Select model</option>
-            {availableModels.map((model) => (
-              <option key={model} value={model}>
-                {model}
+            {availableModels.map((vehicle) => (
+              <option key={vehicle.id} value={vehicle.id}>
+                {vehicle.m_year} {vehicle.model}
               </option>
             ))}
           </select>
@@ -175,21 +68,31 @@ const ComparisonView = ({ vehicles, onBack }) => {
   const [hideSimmilarities, setHideSimilarities] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredSpecs = (vehicle) => {
-    if (!vehicle.specs) return {};
-    
-    let specs = { ...vehicle.specs };
-    
-    if (searchTerm) {
-      specs = Object.fromEntries(
-        Object.entries(specs).filter(([key, value]) =>
-          key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      );
-    }
-    
-    return specs;
+  // Define which specs to compare
+  const specsToCompare = [
+    { key: 'price', label: 'Price', format: (val) => `Rs. ${parseFloat(val).toLocaleString()}` },
+    { key: 'm_year', label: 'Manufacture Year' },
+    { key: 'r_year', label: 'Registration Year' },
+    { key: 'mileage', label: 'Mileage', format: (val) => `${parseFloat(val).toLocaleString()} km` },
+    { key: 'fuel_type', label: 'Fuel Type' },
+    { key: 'transmission', label: 'Transmission' },
+    { key: 'e_capacity', label: 'Engine Capacity', format: (val) => `${val}cc` },
+    { key: 'v_condition', label: 'Condition' },
+    { key: 'colour', label: 'Color' },
+    { key: 'v_type', label: 'Vehicle Type' },
+    { key: 'location', label: 'Location' }
+  ];
+
+  const filteredSpecs = specsToCompare.filter(spec => {
+    if (!searchTerm) return true;
+    return spec.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           vehicles.some(v => v[spec.key]?.toString().toLowerCase().includes(searchTerm.toLowerCase()));
+  });
+
+  const formatValue = (value, spec) => {
+    if (!value) return 'N/A';
+    if (spec.format) return spec.format(value);
+    return value;
   };
 
   return (
@@ -198,9 +101,7 @@ const ComparisonView = ({ vehicles, onBack }) => {
         <button onClick={onBack} className={styles.backButton}>
           ← Back to Selection
         </button>
-        <h1 className={styles.comparisonTitle}>
-          Vehicle Comparison
-        </h1>
+        <h1 className={styles.comparisonTitle}>Vehicle Comparison</h1>
       </div>
 
       <div className={styles.filterControls}>
@@ -233,102 +134,82 @@ const ComparisonView = ({ vehicles, onBack }) => {
             <div key={index} className={styles.vehicleColumn}>
               <div className={styles.vehicleInfo}>
                 <img
-                  src={vehicle.image}
-                  alt={`${vehicle.make} ${vehicle.model}`}
+                  src={vehicle.image1 || '/placeholder.jpg'}
+                  alt={vehicle.title}
                   className={styles.vehicleImage}
+                  onError={(e) => e.target.src = '/placeholder.jpg'}
                 />
                 <div className={styles.vehicleDetails}>
-                  <h3>{vehicle.year} {vehicle.make} {vehicle.model}</h3>
-                  <p className={styles.trim}>{vehicle.trim}</p>
+                  <h3>{vehicle.title}</h3>
+                  <p className={styles.trim}>{vehicle.manufacturer} {vehicle.model}</p>
                 </div>
               </div>
               <div className={styles.actionButtons}>
-                <button className={styles.primaryButton}>
-                  Build & Price
+                <button 
+                  className={styles.primaryButton}
+                  onClick={() => window.location.href = `tel:${vehicle.t_number}`}
+                >
+                  Contact Seller
                 </button>
-                <button className={styles.secondaryButton}>
-                  See Overview
-                </button>
+                <a href={`/user/carAdd/${vehicle.id}`} className={styles.secondaryButton}>
+                  View Details
+                </a>
               </div>
             </div>
           ))}
         </div>
 
         <div className={styles.tableBody}>
-          {/* Basic Info */}
+          {/* Seller Information */}
           <div className={styles.specRow}>
-            <div className={styles.specName}>Starting MSRP</div>
+            <div className={styles.specName}>Seller Name</div>
             {vehicles.map((vehicle, index) => (
-              <div key={index} className={styles.specValue}>
-                ${vehicle.msrp.toLocaleString()}*
-              </div>
+              <div key={index} className={styles.specValue}>{vehicle.name || 'N/A'}</div>
             ))}
           </div>
 
           <div className={styles.specRow}>
-            <div className={styles.specName}>Market Average</div>
+            <div className={styles.specName}>Contact Number</div>
             {vehicles.map((vehicle, index) => (
-              <div key={index} className={styles.specValue}>
-                ${vehicle.marketAverage.toLocaleString()}
-              </div>
+              <div key={index} className={styles.specValue}>{vehicle.t_number || 'N/A'}</div>
             ))}
           </div>
 
           <div className={styles.specRow}>
-            <div className={styles.specName}>Rating</div>
+            <div className={styles.specName}>Email</div>
             {vehicles.map((vehicle, index) => (
-              <div key={index} className={styles.specValue}>
-                <div className={styles.rating}>
-                  <span className={styles.ratingValue}>{vehicle.rating}</span>
-                  <div className={styles.stars}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <span
-                        key={star}
-                        className={`${styles.star} ${star <= Math.floor(vehicle.rating) ? styles.filled : ''}`}
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                  <span className={styles.reviewCount}>({vehicle.totalReviews.toLocaleString()})</span>
-                </div>
-              </div>
+              <div key={index} className={styles.specValue}>{vehicle.email || 'N/A'}</div>
             ))}
           </div>
 
           {/* Specifications */}
-          {vehicles.length > 0 && filteredSpecs(vehicles[0]) && 
-            Object.keys(filteredSpecs(vehicles[0])).map((specKey) => (
-              <div key={specKey} className={styles.specRow}>
-                <div className={styles.specName}>{specKey}</div>
+          {filteredSpecs.map((spec) => {
+            // Check if all vehicles have the same value (for hide similarities)
+            const values = vehicles.map(v => v[spec.key]);
+            const allSame = hideSimmilarities && values.every(val => val === values[0]);
+            
+            if (allSame) return null;
+
+            return (
+              <div key={spec.key} className={styles.specRow}>
+                <div className={styles.specName}>{spec.label}</div>
                 {vehicles.map((vehicle, index) => (
                   <div key={index} className={styles.specValue}>
-                    {filteredSpecs(vehicle)[specKey] || 'N/A'}
+                    {formatValue(vehicle[spec.key], spec)}
                   </div>
                 ))}
               </div>
-            ))
-          }
+            );
+          })}
 
-          {/* Additional Options */}
+          {/* Description */}
           <div className={styles.specRow}>
-            <div className={styles.specName}>TruePrice</div>
+            <div className={styles.specName}>Description</div>
             {vehicles.map((vehicle, index) => (
               <div key={index} className={styles.specValue}>
-                <button className={styles.linkButton}>
-                  {vehicle.make} {vehicle.model} Pricing
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.specRow}>
-            <div className={styles.specName}>Lease Deals</div>
-            {vehicles.map((vehicle, index) => (
-              <div key={index} className={styles.specValue}>
-                <button className={styles.linkButton}>
-                  {vehicle.make} {vehicle.model} Lease Deals
-                </button>
+                <div style={{ maxHeight: '100px', overflow: 'auto', textAlign: 'left' }}>
+                  {vehicle.description || 'No description available'}
+                </div>
               </div>
             ))}
           </div>
@@ -340,57 +221,120 @@ const ComparisonView = ({ vehicles, onBack }) => {
 
 export default function VehicleComparisonPage() {
   const [vehicles, setVehicles] = useState([
-    { id: '1', make: '', model: '' },
-    { id: '2', make: '', model: '' }
+    { id: '1', vehicle: null },
+    { id: '2', vehicle: null }
   ]);
   const [showComparison, setShowComparison] = useState(false);
   const [comparisonData, setComparisonData] = useState([]);
+  const [availableVehicles, setAvailableVehicles] = useState([]);
+  const [manufacturers, setManufacturers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch available vehicles on mount
+  useEffect(() => {
+    fetchAvailableVehicles();
+  }, []);
+
+  const fetchAvailableVehicles = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      console.log('📡 Fetching available vehicles from:', `${API_BASE_URL}/advertisement/compare/available`);
+      
+      const response = await fetch(`${API_BASE_URL}/advertisement/compare/available`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Response error:', response.status, errorText);
+        throw new Error(`Failed to fetch vehicles: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Fetched', data.length, 'vehicles for comparison');
+      
+      setAvailableVehicles(data);
+      
+      // Extract unique manufacturers
+      const uniqueManufacturers = [...new Set(data.map(v => v.manufacturer))].filter(Boolean).sort();
+      setManufacturers(uniqueManufacturers);
+      
+      console.log('✅ Found', uniqueManufacturers.length, 'manufacturers');
+      
+    } catch (error) {
+      console.error('❌ Error fetching vehicles:', error);
+      setError(`Failed to load vehicles: ${error.message}. Please ensure backend is running on ${API_BASE_URL}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addVehicle = () => {
     if (vehicles.length < 4) {
-      setVehicles([...vehicles, { id: Date.now().toString(), make: '', model: '' }]);
+      setVehicles([...vehicles, { id: Date.now().toString(), vehicle: null }]);
     }
   };
 
   const removeVehicle = (id) => {
     if (vehicles.length > 2) {
-      setVehicles(vehicles.filter(vehicle => vehicle.id !== id));
+      setVehicles(vehicles.filter(v => v.id !== id));
     }
   };
 
-  const updateVehicle = (id, field, value) => {
-    setVehicles(vehicles.map(vehicle => 
-      vehicle.id === id ? { ...vehicle, [field]: value } : vehicle
+  const updateVehicle = (id, vehicle) => {
+    setVehicles(vehicles.map(v => 
+      v.id === id ? { ...v, vehicle } : v
     ));
   };
 
-  const handleCompare = () => {
-    const validVehicles = vehicles.filter(v => v.make && v.model);
-    if (validVehicles.length >= 2) {
-      const comparison = validVehicles.map(v => {
-        const key = `${v.make} ${v.model}`;
-        return vehicleData[key] || {
-          year: 2024,
-          make: v.make,
-          model: v.model,
-          trim: 'Base',
-          msrp: 25000,
-          marketAverage: 26000,
-          rating: 4.0,
-          totalReviews: 100,
-          image: '/api/placeholder/300/200',
-          specs: {
-            'Engine': 'N/A',
-            'MPG City/Highway': 'N/A',
-            'Transmission': 'N/A',
-            'Drivetrain': 'N/A',
-            'Seating': 'N/A',
-            'Safety Rating': 'N/A'
-          }
-        };
+  const handleCompare = async () => {
+    const selectedVehicles = vehicles.filter(v => v.vehicle).map(v => v.vehicle);
+    
+    if (selectedVehicles.length < 2) {
+      alert('Please select at least 2 vehicles to compare');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const ids = selectedVehicles.map(v => v.id);
+      console.log('🔍 Comparing vehicles with IDs:', ids);
+      
+      // Build query string
+      const queryString = ids.map(id => `ids=${id}`).join('&');
+      const url = `${API_BASE_URL}/advertisement/compare?${queryString}`;
+      
+      console.log('📡 Fetching comparison from:', url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
       });
-      setComparisonData(comparison);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to compare vehicles: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Comparison data received:', data.length, 'vehicles');
+      
+      setComparisonData(data);
       setShowComparison(true);
+    } catch (error) {
+      console.error('❌ Error comparing vehicles:', error);
+      alert(`Failed to compare vehicles: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -398,7 +342,32 @@ export default function VehicleComparisonPage() {
     setShowComparison(false);
   };
 
-  const canCompare = vehicles.filter(v => v.make && v.model).length >= 2;
+  const canCompare = vehicles.filter(v => v.vehicle).length >= 2;
+
+  if (loading && availableVehicles.length === 0) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Loading vehicles...</h1>
+          <p className={styles.subtitle}>Please wait while we fetch available vehicles</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Error Loading Vehicles</h1>
+          <p className={styles.subtitle} style={{ color: '#ff6b6b' }}>{error}</p>
+          <button onClick={fetchAvailableVehicles} className={styles.compareButton}>
+            Retry Connection
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (showComparison) {
     return <ComparisonView vehicles={comparisonData} onBack={handleBackToSelection} />;
@@ -409,41 +378,53 @@ export default function VehicleComparisonPage() {
       <div className={styles.header}>
         <h1 className={styles.title}>Vehicle Comparison Tool</h1>
         <p className={styles.subtitle}>
-          Compare up to 4 vehicles side by side to find the perfect match for your needs
+          Compare up to 4 vehicles side by side from our {availableVehicles.length} approved listings
         </p>
       </div>
 
-      <div className={styles.selectionGrid}>
-        {vehicles.map((vehicle, index) => (
-          <VehicleSelector
-            key={vehicle.id}
-            id={vehicle.id}
-            selectedMake={vehicle.make}
-            selectedModel={vehicle.model}
-            onMakeChange={(make) => updateVehicle(vehicle.id, 'make', make)}
-            onModelChange={(model) => updateVehicle(vehicle.id, 'model', model)}
-            onRemove={() => removeVehicle(vehicle.id)}
-            canRemove={vehicles.length > 2}
-            index={index}
-          />
-        ))}
-      </div>
+      {availableVehicles.length === 0 && !loading && (
+        <div className={styles.header}>
+          <p className={styles.subtitle} style={{ color: '#ffa500' }}>
+            No vehicles available for comparison yet. Check back later or ensure your backend is running!
+          </p>
+        </div>
+      )}
 
-      <div className={styles.actions}>
-        {vehicles.length < 4 && (
-          <button onClick={addVehicle} className={styles.addButton}>
-            + Add another vehicle to compare
-          </button>
-        )}
-        
-        <button 
-          onClick={handleCompare} 
-          disabled={!canCompare}
-          className={`${styles.compareButton} ${!canCompare ? styles.disabled : ''}`}
-        >
-          Compare {vehicles.filter(v => v.make && v.model).length} Vehicle{vehicles.filter(v => v.make && v.model).length !== 1 ? 's' : ''}
-        </button>
-      </div>
+      {availableVehicles.length > 0 && (
+        <>
+          <div className={styles.selectionGrid}>
+            {vehicles.map((vehicle, index) => (
+              <VehicleSelector
+                key={vehicle.id}
+                id={vehicle.id}
+                selectedVehicle={vehicle.vehicle}
+                onVehicleChange={(v) => updateVehicle(vehicle.id, v)}
+                onRemove={() => removeVehicle(vehicle.id)}
+                canRemove={vehicles.length > 2}
+                index={index}
+                availableVehicles={availableVehicles}
+                manufacturers={manufacturers}
+              />
+            ))}
+          </div>
+
+          <div className={styles.actions}>
+            {vehicles.length < 4 && (
+              <button onClick={addVehicle} className={styles.addButton}>
+                + Add another vehicle to compare
+              </button>
+            )}
+            
+            <button 
+              onClick={handleCompare} 
+              disabled={!canCompare || loading}
+              className={`${styles.compareButton} ${!canCompare || loading ? styles.disabled : ''}`}
+            >
+              {loading ? 'Loading...' : `Compare ${vehicles.filter(v => v.vehicle).length} Vehicle${vehicles.filter(v => v.vehicle).length !== 1 ? 's' : ''}`}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -1,9 +1,8 @@
-
 'use client'
 
 import { useState, useEffect } from "react"
 import axios from "axios"
-import { Search, CheckCircle, XCircle, Eye, ShieldCheck } from "lucide-react"
+import { Search, CheckCircle, XCircle, Eye, ShieldCheck, Trash2, AlertCircle } from "lucide-react"
 import styles from './page.module.css'
 
 // Component imports
@@ -16,60 +15,201 @@ import Badge from "../components/ui/Badge"
 const ManageAdsPage = () => {
   const [ads, setAds] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [filter, setFilter] = useState("pending") // pending, approved
+  const [filter, setFilter] = useState("pending")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Get token from localStorage
+  const getAuthToken = () => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+    console.log('🔑 Token found:', token ? 'Yes' : 'No')
+    if (!token) {
+      console.error('❌ No authentication token found!')
+    }
+    return token
+  }
+
+  // Axios instance with auth header
+  const getAxiosInstance = () => {
+    const token = getAuthToken()
+    return axios.create({
+      baseURL: 'http://localhost:8080',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json'
+      }
+    })
+  }
 
   useEffect(() => {
-    const fetchAds = async () => {
-      try {
-        // NOTE: Please ensure you have a backend endpoint like GET /admin/getallads
-        // that returns all advertisements.
-        const response = await axios.get("http://localhost:8080/admin/getallads");
-        const formattedAds = response.data.map(ad => ({
-          id: ad.id,
-          title: ad.title,
-          seller: ad.sellerName, // Assuming these fields from backend
-          price: ad.price,
-          status: ad.falg === 1 ? 'Approved' : 'Pending',
-          date: ad.datePosted ? new Date(ad.datePosted).toLocaleDateString() : 'N/A'
-        }));
-        setAds(formattedAds);
-      } catch (error) {
-        console.error("Error fetching ads:", error);
-        // Mock data for demonstration if the endpoint doesn't exist yet
-        setAds([
-          { id: 1, title: "Toyota Camry 2021", seller: "John Doe", price: 25000, status: "Pending", date: "2024-02-12" },
-          { id: 2, title: "Honda Civic 2020", seller: "Jane Smith", price: 22000, status: "Approved", date: "2024-02-11" },
-          { id: 3, title: "Ford Mustang 2022", seller: "Mike Brown", price: 45000, status: "Pending", date: "2024-02-13" },
-        ]);
-      }
-    };
-
-    fetchAds();
-  }, []);
-
-  const handleConfirmAd = async (adId) => {
-    try {
-      // NOTE: The backend endpoint has a typo 'confrim'. It should be 'confirm'.
-      await axios.put(`http://localhost:8080/admin/confrim/${adId}`);
-      setAds(ads.map(ad => ad.id === adId ? { ...ad, status: 'Approved' } : ad));
-    } catch (error) {
-      console.error("Error confirming ad:", error);
-      // Add user feedback here, e.g., a toast notification
+    // Check token on mount
+    const token = getAuthToken()
+    if (!token) {
+      setError('No authentication token found. Please login first.')
+      setLoading(false)
+      return
     }
-  };
+    fetchAds()
+  }, [filter])
+
+  const fetchAds = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      let endpoint = '/admin/advertisements/all'
+      if (filter === 'pending') {
+        endpoint = '/admin/advertisements/pending'
+      } else if (filter === 'approved') {
+        endpoint = '/admin/advertisements/approved'
+      }
+
+      console.log('📡 Fetching from:', endpoint)
+      const axiosInstance = getAxiosInstance()
+      const response = await axiosInstance.get(endpoint)
+      
+      console.log('✅ Response received:', response.data.length, 'ads')
+      
+      const formattedAds = response.data.map(ad => ({
+        id: ad.id,
+        title: ad.title || 'Untitled',
+        seller: ad.name || 'Unknown Seller',
+        email: ad.email || 'N/A',
+        phone: ad.t_number || 'N/A',
+        price: ad.price || '0',
+        location: ad.location || 'N/A',
+        manufacturer: ad.manufacturer || 'N/A',
+        model: ad.model || 'N/A',
+        year: ad.m_year || 'N/A',
+        mileage: ad.mileage || 'N/A',
+        condition: ad.v_condition || 'N/A',
+        transmission: ad.transmission || 'N/A',
+        fuelType: ad.fuel_type || 'N/A',
+        colour: ad.colour || 'N/A',
+        description: ad.description || 'No description',
+        // FIXED: Use ad.flag instead of ad.falg
+        status: ad.flag === 1 ? 'Approved' : ad.flag === 0 ? 'Pending' : 'Rejected',
+        // FIXED: Use ad.time instead of ad.datetime
+        date: ad.time ? new Date(ad.time).toLocaleDateString() : 'N/A',
+        image1: ad.image1,
+        image2: ad.image2,
+        image3: ad.image3,
+        image4: ad.image4,
+        image5: ad.image5,
+        rawData: ad
+      }))
+      
+      setAds(formattedAds)
+    } catch (error) {
+      console.error("❌ Error fetching ads:", error)
+      console.error("Error details:", error.response?.data)
+      
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        setError('Authentication failed. You may not have admin permissions or your session has expired. Please login again.')
+      } else {
+        setError(error.response?.data?.message || "Failed to fetch advertisements")
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleApproveAd = async (adId) => {
+    if (!window.confirm('Are you sure you want to approve this advertisement?')) {
+      return
+    }
+
+    try {
+      const axiosInstance = getAxiosInstance()
+      await axiosInstance.put(`/admin/advertisements/${adId}/approve`)
+      
+      alert('Advertisement approved successfully!')
+      fetchAds()
+    } catch (error) {
+      console.error("Error approving ad:", error)
+      alert(error.response?.data?.message || "Failed to approve advertisement")
+    }
+  }
+
+  const handleRejectAd = async (adId) => {
+    if (!window.confirm('Are you sure you want to reject and delete this advertisement? This action cannot be undone.')) {
+      return
+    }
+
+    try {
+      const axiosInstance = getAxiosInstance()
+      await axiosInstance.delete(`/admin/advertisements/${adId}/reject`)
+      
+      alert('Advertisement rejected and deleted successfully!')
+      fetchAds()
+    } catch (error) {
+      console.error("Error rejecting ad:", error)
+      alert(error.response?.data?.message || "Failed to reject advertisement")
+    }
+  }
+
+  const handleViewDetails = (ad) => {
+    const details = `
+Advertisement Details:
+━━━━━━━━━━━━━━━━━━━━
+Title: ${ad.title}
+Seller: ${ad.seller}
+Email: ${ad.email}
+Phone: ${ad.phone}
+Location: ${ad.location}
+
+Vehicle Information:
+━━━━━━━━━━━━━━━━━━━━
+Manufacturer: ${ad.manufacturer}
+Model: ${ad.model}
+Year: ${ad.year}
+Condition: ${ad.condition}
+Mileage: ${ad.mileage}
+Transmission: ${ad.transmission}
+Fuel Type: ${ad.fuelType}
+Colour: ${ad.colour}
+
+Price: $${ad.price}
+
+Description:
+${ad.description}
+    `
+    alert(details)
+  }
 
   const filteredAds = ads.filter(ad => {
-    const matchesSearch = ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ad.seller.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filter === 'all' || ad.status.toLowerCase() === filter;
-    return matchesSearch && matchesFilter;
-  });
+    const matchesSearch = 
+      ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.seller.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.manufacturer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ad.location.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    return matchesSearch
+  })
 
   const stats = {
     totalAds: ads.length,
     pendingAds: ads.filter(ad => ad.status === 'Pending').length,
     approvedAds: ads.filter(ad => ad.status === 'Approved').length,
-  };
+  }
+
+  if (loading && ads.length === 0) {
+    return (
+      <SidebarProvider>
+        <div className={styles.container}>
+          <div className={styles.main}>
+            <div className={styles.content}>
+              <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <p>Loading advertisements...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SidebarProvider>
+    )
+  }
 
   return (
     <SidebarProvider>
@@ -84,29 +224,38 @@ const ManageAdsPage = () => {
               </div>
             </div>
 
+            {/* Error Message */}
+            {error && (
+              <Card className={styles.errorCard}>
+                <AlertCircle size={20} />
+                <span>{error}</span>
+                <Button onClick={fetchAds} className={styles.retryButton}>Retry</Button>
+              </Card>
+            )}
+
             {/* Stats */}
             <div className={styles.statsGrid}>
-                <Card className={styles.statCard}>
-                    <div className={styles.statIcon}><Eye size={24} /></div>
-                    <div className={styles.statContent}>
-                        <div className={styles.statNumber}>{stats.totalAds}</div>
-                        <div className={styles.statLabel}>Total Ads</div>
-                    </div>
-                </Card>
-                <Card className={styles.statCard}>
-                    <div className={styles.statIcon}><XCircle size={24} /></div>
-                    <div className={styles.statContent}>
-                        <div className={styles.statNumber}>{stats.pendingAds}</div>
-                        <div className={styles.statLabel}>Pending Approval</div>
-                    </div>
-                </Card>
-                <Card className={styles.statCard}>
-                    <div className={styles.statIcon}><CheckCircle size={24} /></div>
-                    <div className={styles.statContent}>
-                        <div className={styles.statNumber}>{stats.approvedAds}</div>
-                        <div className={styles.statLabel}>Approved Ads</div>
-                    </div>
-                </Card>
+              <Card className={styles.statCard}>
+                <div className={styles.statIcon}><Eye size={24} /></div>
+                <div className={styles.statContent}>
+                  <div className={styles.statNumber}>{stats.totalAds}</div>
+                  <div className={styles.statLabel}>Total Ads</div>
+                </div>
+              </Card>
+              <Card className={styles.statCard}>
+                <div className={styles.statIcon}><XCircle size={24} /></div>
+                <div className={styles.statContent}>
+                  <div className={styles.statNumber}>{stats.pendingAds}</div>
+                  <div className={styles.statLabel}>Pending Approval</div>
+                </div>
+              </Card>
+              <Card className={styles.statCard}>
+                <div className={styles.statIcon}><CheckCircle size={24} /></div>
+                <div className={styles.statContent}>
+                  <div className={styles.statNumber}>{stats.approvedAds}</div>
+                  <div className={styles.statLabel}>Approved Ads</div>
+                </div>
+              </Card>
             </div>
 
             {/* Search and Filter */}
@@ -114,60 +263,138 @@ const ManageAdsPage = () => {
               <div className={styles.searchContainer}>
                 <Search className={styles.searchIcon} size={20} />
                 <Input
-                  placeholder="Search by title or seller..."
+                  placeholder="Search by title, seller, manufacturer, or model..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={styles.searchInput}
                 />
               </div>
               <div className={styles.filters}>
-                <Button onClick={() => setFilter('all')} className={filter === 'all' ? styles.activeFilter : styles.filterButton}>All</Button>
-                <Button onClick={() => setFilter('pending')} className={filter === 'pending' ? styles.activeFilter : styles.filterButton}>Pending</Button>
-                <Button onClick={() => setFilter('approved')} className={filter === 'approved' ? styles.activeFilter : styles.filterButton}>Approved</Button>
+                <Button 
+                  onClick={() => setFilter('all')} 
+                  className={filter === 'all' ? styles.activeFilter : styles.filterButton}
+                >
+                  All
+                </Button>
+                <Button 
+                  onClick={() => setFilter('pending')} 
+                  className={filter === 'pending' ? styles.activeFilter : styles.filterButton}
+                >
+                  Pending
+                </Button>
+                <Button 
+                  onClick={() => setFilter('approved')} 
+                  className={filter === 'approved' ? styles.activeFilter : styles.filterButton}
+                >
+                  Approved
+                </Button>
               </div>
             </Card>
 
             {/* Ads Table */}
             <Card className={styles.tableCard}>
               <div className={styles.tableContainer}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Advertisement</th>
-                      <th>Seller</th>
-                      <th>Price</th>
-                      <th>Date Posted</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredAds.map((ad) => (
-                      <tr key={ad.id}>
-                        <td>{ad.title}</td>
-                        <td>{ad.seller}</td>
-                        <td>${ad.price.toLocaleString()}</td>
-                        <td>{ad.date}</td>
-                        <td>
-                          <Badge className={ad.status === 'Approved' ? styles.approvedBadge : styles.pendingBadge}>
-                            {ad.status}
-                          </Badge>
-                        </td>
-                        <td>
-                          {ad.status === 'Pending' && (
-                            <Button 
-                              className={styles.approveButton}
-                              onClick={() => handleConfirmAd(ad.id)}
-                            >
-                              <ShieldCheck size={16} />
-                              Approve
-                            </Button>
-                          )}
-                        </td>
+                {filteredAds.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    <AlertCircle size={48} />
+                    <h3>No advertisements found</h3>
+                    <p>There are no advertisements matching your criteria.</p>
+                  </div>
+                ) : (
+                  <table className={styles.table}>
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Advertisement</th>
+                        <th>Vehicle</th>
+                        <th>Seller</th>
+                        <th>Price</th>
+                        <th>Date Posted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {filteredAds.map((ad) => (
+                        <tr key={ad.id}>
+                          <td>#{ad.id}</td>
+                          <td>
+                            <div className={styles.adTitle}>
+                              {ad.title}
+                              {ad.image1 && (
+                                <img 
+                                  src={ad.image1} 
+                                  alt={ad.title} 
+                                  className={styles.thumbnail}
+                                />
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <div className={styles.vehicleInfo}>
+                              <strong>{ad.manufacturer} {ad.model}</strong>
+                              <small>{ad.year}</small>
+                            </div>
+                          </td>
+                          <td>
+                            <div className={styles.sellerInfo}>
+                              <div>{ad.seller}</div>
+                              <small>{ad.phone}</small>
+                            </div>
+                          </td>
+                          <td>
+                            <strong className={styles.price}>
+                              ${parseFloat(ad.price).toLocaleString()}
+                            </strong>
+                          </td>
+                          <td>{ad.date}</td>
+                          <td>
+                            <Badge 
+                              className={
+                                ad.status === 'Approved' 
+                                  ? styles.approvedBadge 
+                                  : ad.status === 'Pending'
+                                  ? styles.pendingBadge
+                                  : styles.rejectedBadge
+                              }
+                            >
+                              {ad.status}
+                            </Badge>
+                          </td>
+                          <td>
+                            <div className={styles.actionButtons}>
+                              <Button 
+                                className={styles.viewButton}
+                                onClick={() => handleViewDetails(ad)}
+                                title="View Details"
+                              >
+                                <Eye size={16} />
+                              </Button>
+                              {ad.status === 'Pending' && (
+                                <>
+                                  <Button 
+                                    className={styles.approveButton}
+                                    onClick={() => handleApproveAd(ad.id)}
+                                    title="Approve"
+                                  >
+                                    <ShieldCheck size={16} />
+                                  </Button>
+                                  <Button 
+                                    className={styles.rejectButton}
+                                    onClick={() => handleRejectAd(ad.id)}
+                                    title="Reject"
+                                  >
+                                    <Trash2 size={16} />
+                                  </Button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </Card>
           </div>
