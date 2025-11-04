@@ -1,0 +1,466 @@
+/* Main Dashboard Container */
+.dashboard {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Welcome Section */
+.welcomeSection {
+  margin-bottom: 2rem;
+}
+
+.welcomeContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.welcomeText {
+  flex: 1;
+}
+
+.welcomeTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.25rem 0;
+}
+
+.welcomeSubtitle {
+  color: #64748b;
+  margin: 0;
+}
+
+.dateSection {
+  text-align: right;
+}
+
+.dateLabel {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.dateValue {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Stats Cards */
+.statCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.statCard:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.statCard1 {
+  animation: fadeInUp 0.6s ease-out 0ms forwards;
+}
+
+.statCard2 {
+  animation: fadeInUp 0.6s ease-out 100ms forwards;
+}
+
+.statCard3 {
+  animation: fadeInUp 0.6s ease-out 200ms forwards;
+}
+
+.statCard4 {
+  animation: fadeInUp 0.6s ease-out 300ms forwards;
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.statIcon {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.statChange {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.changePositive {
+  color: #059669;
+}
+
+.changeNegative {
+  color: #dc2626;
+}
+
+.statContent {
+  display: block;
+}
+
+.statTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0 0 0.25rem 0;
+}
+
+.statValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* Stat Icon Colors */
+.bg-blue-50 {
+  background-color: #eff6ff;
+}
+
+.text-blue-500 {
+  color: #3b82f6;
+}
+
+.bg-green-50 {
+  background-color: #f0fdf4;
+}
+
+.text-green-500 {
+  color: #22c55e;
+}
+
+.bg-yellow-50 {
+  background-color: #fefce8;
+}
+
+.text-yellow-500 {
+  color: #eab308;
+}
+
+.bg-red-50 {
+  background-color: #fef2f2;
+}
+
+.text-red-500 {
+  color: #ef4444;
+}
+
+/* Quick Actions */
+.quickActionsCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  transform: scale(1.05);
+}
+
+.actionBlue {
+  background-color: #3b82f6;
+}
+
+.actionBlue:hover {
+  background-color: #2563eb;
+}
+
+.actionGreen {
+  background-color: #22c55e;
+}
+
+.actionGreen:hover {
+  background-color: #16a34a;
+}
+
+.actionYellow {
+  background-color: #eab308;
+}
+
+.actionYellow:hover {
+  background-color: #ca8a04;
+}
+
+.actionIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.actionText {
+  font-weight: 500;
+}
+
+/* Activity Card */
+.activityCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.cardHeader {
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cardHeaderContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 1.5rem 0;
+}
+
+.viewAllButton {
+  font-size: 0.875rem;
+  color: #3b82f6;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.viewAllButton:hover {
+  color: #1d4ed8;
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activityItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.activityItem:hover {
+  background-color: #f8fafc;
+}
+
+.activityItem:last-child {
+  border-bottom: none;
+}
+
+.activityLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.activityAvatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+.avatarBlue {
+  background-color: #3b82f6;
+}
+
+.avatarGreen {
+  background-color: #22c55e;
+}
+
+.avatarPurple {
+  background-color: #a855f7;
+}
+
+.avatarPink {
+  background-color: #ec4899;
+}
+
+.avatarOrange {
+  background-color: #f97316;
+}
+
+.avatarDefault {
+  background-color: #64748b;
+}
+
+.activityText {
+  flex: 1;
+}
+
+.activityDescription {
+  font-size: 0.875rem;
+  color: #0f172a;
+  margin: 0;
+}
+
+.userName {
+  font-weight: 500;
+}
+
+.activityTime {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.clockIcon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.statusPending {
+  background-color: #fef3c7;
+  color: #d97706;
+  border-color: #fbbf24;
+}
+
+.statusApproved {
+  background-color: #dcfce7;
+  color: #16a34a;
+  border-color: #4ade80;
+}
+
+.statusReview {
+  background-color: #dbeafe;
+  color: #2563eb;
+  border-color: #60a5fa;
+}
+
+.statusRejected {
+  background-color: #fecaca;
+  color: #dc2626;
+  border-color: #f87171;
+}
+
+.statusDefault {
+  background-color: #f1f5f9;
+  color: #64748b;
+  border-color: #cbd5e1;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .actionsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import "./AuthForm.css";
 
+import apiClient from '@/utils/axiosConfig';
+
 const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,20 +44,16 @@ const SignInForm = () => {
     try {
       console.log('🔐 Attempting login with:', email);
       
-      const response = await fetch("http://localhost:8080/api/auth/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username: email, password }),
+      const response = await apiClient.post("/api/auth/signin", {
+        username: email,
+        password,
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = response.data;
         
         console.log('✅ Login successful:', data);
         
-        // FIXED: The token field is 'accessToken' not 'token'
         const token = data.accessToken || data.token;
         
         if (!token) {
@@ -65,29 +63,41 @@ const SignInForm = () => {
           return;
         }
 
-        // Store token and user data in localStorage
+        // Store token in localStorage
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(data));
+
+        // Fetch current user details
+        const currentUserResponse = await apiClient.get("/user/currentuser");
+        const currentUserData = currentUserResponse.data;
+
+        // Store current user data in localStorage
+        localStorage.setItem("user", JSON.stringify(currentUserData));
         
         console.log('💾 Token stored:', token.substring(0, 20) + '...');
-        console.log('👤 User roles:', data.roles);
+        console.log('👤 User roles:', currentUserData.roles);
 
         // Check for admin role and redirect
-        if (data.roles && data.roles.includes("ROLE_ADMIN")) {
+        const userRoles = currentUserData.roles.map(role => role.name || role);
+        if (userRoles.includes("ROLE_ADMIN")) {
           console.log('🎯 Admin detected, redirecting to admin dashboard');
           router.push('/admin/dashboard');
+        } else if (userRoles.includes("ROLE_ICOMPANY")) {
+          console.log('🎯 Insurance company detected, redirecting to insurance dashboard');
+          router.push('/Insurance/dashboard');
         } else {
           console.log('🏠 Regular user, redirecting to homepage');
           router.push('/');
         }
       } else {
-        const data = await response.json();
-        console.error('❌ Login failed:', data);
-        setError(data.message || "Sign in failed - invalid credentials");
+        setError(response.data.message || "Sign in failed - invalid credentials");
       }
-    } catch (error) {
-      console.error('💥 Login error:', error);
-      setError("An error occurred during sign in. Please try again.");
+    } catch (err) {
+      console.error('💥 Login error:', err);
+      if (err.response?.status === 401) {
+        setError("Invalid email or password. Please try again.");
+      } else {
+        setError(err.response?.data?.message || "An error occurred during sign in. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

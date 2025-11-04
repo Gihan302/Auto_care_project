@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Moon,
   Sun,
@@ -10,9 +10,31 @@ import {
 } from "lucide-react"
 import styles from './header.module.css'
 
+import { useRouter } from 'next/navigation'
+
 export default function Header({ setIsMobileOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [userData, setUserData] = useState(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        setUserData(parsedUser);
+      } catch (e) {
+        console.error("Failed to parse user data from localStorage", e);
+      }
+    }
+  }, []);
+
+  const getCompanyInitials = () => {
+    if (!userData) return 'C';
+    const companyName = userData.companyName || userData.fname || '';
+    return companyName.charAt(0).toUpperCase();
+  };
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -24,7 +46,8 @@ export default function Header({ setIsMobileOpen }) {
   }
 
   const handleLogout = () => {
-    console.log('Logging out...')
+    localStorage.removeItem('user')
+    router.push('/signin')
     setIsDropdownOpen(false)
   }
 
@@ -49,7 +72,7 @@ export default function Header({ setIsMobileOpen }) {
         </button>
         <div>
           <h1 className={styles.headerTitle}>Dashboard Overview</h1>
-          <p className={styles.headerSubtitle}>Welcome back, Admin</p>
+          <p className={styles.headerSubtitle}>Welcome back, {userData?.companyName || userData?.fname || 'Company'}</p>
         </div>
       </div>
             
@@ -66,8 +89,8 @@ export default function Header({ setIsMobileOpen }) {
             className={styles.dropdownTrigger}
             onClick={handleDropdownToggle}
           >
-            <div className={styles.avatar}>AD</div>
-            <span className={styles.adminName}>Admin</span>
+            <div className={styles.avatar}>{getCompanyInitials()}</div>
+            <span className={styles.adminName}>{userData?.companyName || userData?.fname || 'Company'}</span>
             <ChevronDown 
               size={16} 
               className={`${styles.chevron} ${isDropdownOpen ? styles.chevronRotated : ''}`} 
