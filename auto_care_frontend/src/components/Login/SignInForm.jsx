@@ -85,11 +85,9 @@ const SignInForm = () => {
           console.log('🎯 Insurance company detected, redirecting to insurance dashboard');
           router.push('/Insurance/dashboard');
         } else {
-          console.log('🏠 Regular user, redirecting to homepage');
-          router.push('/');
+          console.log('🎯 Regular user, redirecting to dashboard');
+          router.push('/dashboard');
         }
-      } else {
-        setError(response.data.message || "Sign in failed - invalid credentials");
       }
     } catch (err) {
       console.error('💥 Login error:', err);

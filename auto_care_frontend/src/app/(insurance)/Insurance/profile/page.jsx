@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './profile.module.css'; // Assuming you'll create this CSS module
 import { Building, Mail, Phone, MapPin, Edit, Save, XCircle } from 'lucide-react';
-
 import apiClient from '@/utils/axiosConfig';
 
 const InsuranceCompanyProfilePage = () => {

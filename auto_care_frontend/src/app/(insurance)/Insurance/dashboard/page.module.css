@@ -309,6 +309,26 @@
   border-bottom: none;
 }
 
+.activityItem1 {
+  animation: fadeInLeft 0.6s ease-out 0ms forwards;
+}
+
+.activityItem2 {
+  animation: fadeInLeft 0.6s ease-out 100ms forwards;
+}
+
+.activityItem3 {
+  animation: fadeInLeft 0.6s ease-out 200ms forwards;
+}
+
+.activityItem4 {
+  animation: fadeInLeft 0.6s ease-out 300ms forwards;
+}
+
+.activityItem5 {
+  animation: fadeInLeft 0.6s ease-out 400ms forwards;
+}
+
 .activityLeft {
   display: flex;
   align-items: center;
