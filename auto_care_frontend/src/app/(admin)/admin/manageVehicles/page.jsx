@@ -120,10 +120,10 @@ const ManageVehicles = () => {
   const fetchAllAds = async () => {
     setLoading(true);
     try {
-      console.log('📡 Fetching all advertisements...');
+      console.log('📡 Fetching all advertisements from AdminController...');
       
-      // FIXED: Using correct endpoint
-      const response = await fetch(`${API_BASE_URL}/admin/advertisements/all`, {
+      // FIXED: Using correct endpoint with /api/ prefix (same pattern as reviews)
+      const response = await fetch(`${API_BASE_URL}/api/admin/advertisements/all`, {
         headers: getAuthHeaders()
       });
       
@@ -141,9 +141,12 @@ const ManageVehicles = () => {
         alert('Authentication failed. Please login again.');
       } else {
         console.error('❌ Failed to fetch advertisements:', response.status);
+        const errorText = await response.text();
+        console.error('Error details:', errorText);
       }
     } catch (error) {
       console.error('💥 Error fetching advertisements:', error);
+      alert('Error connecting to server. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -171,8 +174,8 @@ const ManageVehicles = () => {
     try {
       console.log('✅ Approving ad:', adId);
       
-      // FIXED: Using correct endpoint from AdminController
-      const response = await fetch(`${API_BASE_URL}/admin/advertisements/${adId}/approve`, {
+      // FIXED: Using correct endpoint with /api/ prefix (same pattern as reviews)
+      const response = await fetch(`${API_BASE_URL}/api/admin/advertisements/${adId}/approve`, {
         method: 'PUT',
         headers: getAuthHeaders()
       });
@@ -186,13 +189,13 @@ const ManageVehicles = () => {
         // Refresh data
         await fetchAllAds();
       } else {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ message: 'Failed to approve advertisement' }));
         console.error('❌ Failed to approve:', errorData);
         alert(errorData.message || 'Failed to approve advertisement');
       }
     } catch (error) {
       console.error('💥 Error approving ad:', error);
-      alert('Error approving advertisement');
+      alert('Error approving advertisement. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -208,8 +211,8 @@ const ManageVehicles = () => {
     try {
       console.log('🗑️ Rejecting ad:', adId);
       
-      // FIXED: Using correct endpoint from AdminController
-      const response = await fetch(`${API_BASE_URL}/admin/advertisements/${adId}/reject`, {
+      // FIXED: Using correct endpoint with /api/ prefix (same pattern as reviews)
+      const response = await fetch(`${API_BASE_URL}/api/admin/advertisements/${adId}/reject`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
@@ -223,13 +226,13 @@ const ManageVehicles = () => {
         // Refresh data
         await fetchAllAds();
       } else {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ message: 'Failed to reject advertisement' }));
         console.error('❌ Failed to reject:', errorData);
         alert(errorData.message || 'Failed to reject advertisement');
       }
     } catch (error) {
       console.error('💥 Error rejecting ad:', error);
-      alert('Error rejecting advertisement');
+      alert('Error rejecting advertisement. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -456,7 +459,7 @@ const ManageVehicles = () => {
           <h3 className={styles.resultsTitle}>
             Vehicle Listings ({filteredVehicles.length})
           </h3>
-          {loading && <div className={styles.loadingSpinner}>Loading...</div>}
+          {loading && <div className={styles.loadingSpinner}>⏳ Loading...</div>}
         </div>
 
         {/* Vehicles Grid */}

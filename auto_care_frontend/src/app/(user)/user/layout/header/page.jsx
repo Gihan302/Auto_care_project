@@ -30,7 +30,7 @@ const Header = () => {
   const researchOptions = [
     { name: 'Car Reviews', href: '/user/research/review' },
     { name: 'Compare Cars', href: '/user/research/compare' },
-    { name: 'Car Finder Quiz', href: '/research/quiz' },
+    { name: 'Car Finder Quiz', href: '/user/research/quiz' },
     { name: 'Buying Power Calculator', href: '/user/research/buyingPower' },
     { name: 'Lease Calculator', href: '/user/research/leaseCalculator' },
   ];
