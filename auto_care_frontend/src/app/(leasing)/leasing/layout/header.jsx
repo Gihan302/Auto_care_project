@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation';
@@ -9,7 +9,7 @@ import {
   ChevronDown,
   Menu
 } from "lucide-react"
-import styles from './header.module.css'
+import styles from '../../../(admin)/admin/layout/header.module.css' // Reusing admin header styles
 
 export default function Header({ setIsMobileOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(true)
@@ -52,8 +52,8 @@ export default function Header({ setIsMobileOpen }) {
           <Menu size={20} />
         </button>
         <div>
-          <h1 className={styles.headerTitle}>Dashboard Overview</h1>
-          <p className={styles.headerSubtitle}>Welcome back, Admin</p>
+          <h1 className={styles.headerTitle}>Leasing Company Portal</h1>
+          <p className={styles.headerSubtitle}>Welcome, Leasing Company</p>
         </div>
       </div>
             
@@ -70,8 +70,8 @@ export default function Header({ setIsMobileOpen }) {
             className={styles.dropdownTrigger}
             onClick={handleDropdownToggle}
           >
-            <div className={styles.avatar}>AD</div>
-            <span className={styles.adminName}>Admin</span>
+            <div className={styles.avatar}>LC</div>
+            <span className={styles.adminName}>Leasing Co.</span>
             <ChevronDown 
               size={16} 
               className={`${styles.chevron} ${isDropdownOpen ? styles.chevronRotated : ''}`} 

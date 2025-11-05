@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, FileText } from "lucide-react";
-import styles from "./managePlans.module.css";
+import styles from "../../../(insurance)/Insurance/managePlans/managePlans.module.css";
 import { useRouter } from "next/navigation";
 import apiClient from "@/utils/axiosConfig";
 
-export default function ManagePlansPage() {
+export default function ManageLeasingPlansPage() {
   const router = useRouter();
 
   const [plans, setPlans] = useState([]);
@@ -16,7 +16,7 @@ export default function ManagePlansPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await apiClient.get("/api/insurance-plans");
+        const response = await apiClient.get("/api/leasing-plans");
         setPlans(response.data);
       } catch (err) {
         setError("Failed to fetch plans.");
@@ -31,7 +31,7 @@ export default function ManagePlansPage() {
 
   const deletePlan = async (id) => {
     try {
-      await apiClient.delete(`/api/insurance-plans/${id}`);
+      await apiClient.delete(`/api/leasing-plans/${id}`);
       setPlans((prev) => prev.filter((plan) => plan.id !== id));
     } catch (err) {
       console.error("Error deleting plan:", err);
@@ -42,10 +42,10 @@ export default function ManagePlansPage() {
     <div className={styles.container}>
       {/* Header */}
       <div className={styles.header}>
-        <h1>Manage Plans</h1>
+        <h1>Manage Leasing Plans</h1>
         <button
           className={styles.addButton}
-          onClick={() => router.push("/Insurance/createPlan")}
+          onClick={() => router.push("/leasing/create-plan")}
         >
           <Plus className={styles.addIcon} /> Create New Plan
         </button>
@@ -57,11 +57,11 @@ export default function ManagePlansPage() {
           <thead>
             <tr>
               <th>Plan Name</th>
-              <th>Description</th>
-              <th>Coverage</th>
-              <th>Price</th>
-              <th>Status</th>
-              <th className={styles.actionsHeader}>Actions</th>
+              <th>Vehicle Type</th>
+              <th>Lease Term</th>
+              <th>Interest Rate</th>
+              <th>Monthly Payment</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -81,30 +81,14 @@ export default function ManagePlansPage() {
               plans.map((plan) => (
                 <tr key={plan.id}>
                   <td>{plan.planName}</td>
-                  <td>{plan.description}</td>
-                  <td>{plan.coverage}</td>
-                  <td>{plan.price}</td>
-                  <td>
-                    <span
-                      className={`${styles.status} ${
-                        plan.status === "Active"
-                          ? styles.active
-                          : styles.inactive
-                      }`}
-                    >
-                      {plan.status}
-                    </span>
-                  </td>
+                  <td>{plan.vehicleType}</td>
+                  <td>{plan.leaseTerm}</td>
+                  <td>{plan.interestRate}</td>
+                  <td>{plan.monthlyPayment}</td>
                   <td className={styles.actions}>
                     <button
-                      className={styles.viewBtn}
-                      onClick={() => router.push(`/Insurance/plans/${plan.id}`)}
-                    >
-                      <FileText size={16} />
-                    </button>
-                    <button
                       className={styles.editBtn}
-                      onClick={() => router.push(`/Insurance/plans/edit/${plan.id}`)}
+                      onClick={() => router.push(`/leasing/edit-plan/${plan.id}`)}
                     >
                       <Edit size={16} />
                     </button>

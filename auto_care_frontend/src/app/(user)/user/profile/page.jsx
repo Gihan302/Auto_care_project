@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './profile.module.css'; // Assuming you'll create this CSS module
 import { User, Mail, Phone, Edit, Save, XCircle } from 'lucide-react';
+import apiClient from '@/utils/axiosConfig';
 
 const UserProfilePage = () => {
   const [userData, setUserData] = useState(null);
@@ -75,35 +76,27 @@ const UserProfilePage = () => {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/${userData.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          fname: editedFname,
-          lname: editedLname,
-          username: editedEmail,
-          tnumber: editedTelephone,
-          nic: editedNic,
-        }),
+      const response = await apiClient.put(`/user/editprofile`, {
+        fname: editedFname,
+        lname: editedLname,
+        username: editedEmail,
+        tnumber: editedTelephone,
+        nic: editedNic,
+        address: userData.address, // assuming address is not editable in this form
       });
 
-      if (response.ok) {
-        const updatedUser = await response.json();
-        // Update localStorage with new user data
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        setUserData(updatedUser);
+      if (response.status === 200) {
+        const updatedUserData = { ...userData, fname: editedFname, lname: editedLname, username: editedEmail, tnumber: editedTelephone, nic: editedNic };
+        localStorage.setItem('user', JSON.stringify(updatedUserData));
+        setUserData(updatedUserData);
         setIsEditing(false);
         console.log("Profile updated successfully!");
       } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Failed to update profile.");
+        setError(response.data.message || "Failed to update profile.");
       }
     } catch (err) {
       console.error("Error updating profile:", err);
-      setError("An error occurred while updating your profile.");
+      setError(err.response?.data?.message || "An error occurred while updating your profile.");
     } finally {
       setLoading(false);
     }

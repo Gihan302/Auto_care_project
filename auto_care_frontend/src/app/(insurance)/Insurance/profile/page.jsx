@@ -1,176 +1,207 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import styles from './profile.module.css'; // Assuming you'll create this CSS module
-import { Building, Mail, Phone, MapPin, Edit, Save, XCircle } from 'lucide-react';
-import apiClient from '@/utils/axiosConfig';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./profile.module.css";
+import { Edit, Save, XCircle, Lock } from "lucide-react";
+import apiClient from "@/utils/axiosConfig";
 
-const InsuranceCompanyProfilePage = () => {
-  const [companyData, setCompanyData] = useState(null);
+const UserProfilePage = () => {
+  const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState('');
-  const [editedEmail, setEditedEmail] = useState('');
-  const [editedPhone, setEditedPhone] = useState('');
-  const [editedLocation, setEditedLocation] = useState('');
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [editedFname, setEditedFname] = useState("");
+  const [editedLname, setEditedLname] = useState("");
+  const [editedPhone, setEditedPhone] = useState("");
+  const [editedAddress, setEditedAddress] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+  // 🔹 Load user data
   useEffect(() => {
-    // Fetch user data from localStorage
-    const user = localStorage.getItem('user');
-    if (user) {
-      try {
-        const parsedUser = JSON.parse(user);
-        console.log('User data from localStorage:', parsedUser);
-        // Assuming the user object for an insurance company contains company details
-        setCompanyData({
-          id: parsedUser.id,
-          companyId: parsedUser.companyId, // Assuming the user object has a companyId field
-          name: parsedUser.companyName || parsedUser.fname + ' ' + parsedUser.lname || '',
-          email: parsedUser.username || '',
-          phone: parsedUser.tnumber || '',
-          address: parsedUser.address || '',
-          // Add other relevant company fields here
-        });
-        setEditedName(parsedUser.companyName || parsedUser.fname + ' ' + parsedUser.lname || '');
-        setEditedEmail(parsedUser.username || '');
-        setEditedPhone(parsedUser.tnumber || '');
-        setEditedLocation(parsedUser.address || '');
-      } catch (e) {
-        console.error("Failed to parse user data from localStorage", e);
-        setError("Failed to load company data.");
-      }
-    } else {
-      // If no user data, redirect to sign-in
-      router.push('/signin');
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/signin");
+      return;
     }
+
+    const fetchUserData = async () => {
+      try {
+        const response = await apiClient.get("/user/currentuser");
+        const data = response.data;
+        setUserData(data);
+        setEditedFname(data.fname || "");
+        setEditedLname(data.lname || "");
+        setEditedPhone(data.tnumber || "");
+        setEditedAddress(data.address || "");
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setMessage("⚠️ Failed to load user profile.");
+        if (err.response?.status === 401) {
+          router.push("/signin");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
   }, [router]);
+
+  const isInsuranceCompany =
+  userData?.role === "ROLE_ICOMPANY" || userData?.role === "ROLE_LCOMPANY";
+
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
-    // Reset edited fields if cancelling edit
-    if (isEditing && companyData) {
-      setEditedName(companyData.name || '');
-      setEditedEmail(companyData.email || '');
-      setEditedPhone(companyData.phone || '');
-      setEditedLocation(companyData.address || '');
+    if (isEditing && userData) {
+      setEditedFname(userData.fname || "");
+      setEditedLname(userData.lname || "");
+      setEditedPhone(userData.tnumber || "");
+      setEditedAddress(userData.address || "");
     }
-    setError(null);
+    setMessage("");
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-
-    // Basic validation
-    if (!editedName || !editedEmail || !editedPhone) {
-      setError("Company name, email, and phone are required.");
-      setLoading(false);
-      return;
-    }
+    setMessage("");
 
     try {
-      const response = await apiClient.put(`/user/editprofile`, {
-        fname: editedName.split(' ')[0],
-        lname: editedName.split(' ').slice(1).join(' '),
+      const response = await apiClient.put("/user/editprofile", {
+        fname: editedFname,
+        lname: editedLname,
         tnumber: editedPhone,
-        address: editedLocation,
+        address: editedAddress,
       });
 
       if (response.status === 200) {
         const updatedUser = response.data;
-        // Update localStorage with new user data
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        setCompanyData(updatedUser);
+        setUserData({
+          ...userData,
+          fname: editedFname,
+          lname: editedLname,
+          tnumber: editedPhone,
+          address: editedAddress,
+        });
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...userData,
+            fname: editedFname,
+            lname: editedLname,
+            tnumber: editedPhone,
+            address: editedAddress,
+          })
+        );
         setIsEditing(false);
-        console.log("Profile updated successfully!");
+        setMessage("✅ Profile updated successfully!");
       } else {
-        setError(response.data.message || "Failed to update profile.");
+        setMessage("⚠️ Failed to update profile.");
       }
     } catch (err) {
       console.error("Error updating profile:", err);
-      setError(err.response?.data?.message || "An error occurred while updating your company profile. See console for details.");
+      setMessage(
+        err.response?.data?.message ||
+          "⚠️ An error occurred while updating your profile."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  if (!companyData && !error) {
-    return <div className={styles.loading}>Loading company profile...</div>;
-  }
-
-  if (error && !companyData) {
-    return <div className={styles.errorContainer}>Error: {error}</div>;
-  }
+  if (loading) return <div className={styles.loading}>Loading user profile...</div>;
 
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileCard}>
-        <h2 className={styles.profileTitle}>Company Profile</h2>
-        {error && <p className={styles.errorMessage}>{error}</p>}
+        <h2 className={styles.profileTitle}>My Profile</h2>
+        {message && <p className={styles.message}>{message}</p>}
+
+        {isInsuranceCompany && (
+          <div className={styles.lockNotice}>
+            <Lock size={18} /> Insurance company profiles cannot be edited here.
+          </div>
+        )}
+
         <form onSubmit={handleSave}>
           <div className={styles.formGroup}>
-            <label htmlFor="name">Company Name</label>
+            <label htmlFor="fname">First Name</label>
             <input
+              id="fname"
               type="text"
-              id="name"
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-              disabled={!isEditing}
-              className={styles.inputField}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={editedEmail}
-              onChange={(e) => setEditedEmail(e.target.value)}
-              disabled={!isEditing}
-              className={styles.inputField}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="phone">Phone</label>
-            <input
-              type="text"
-              id="phone"
-              value={editedPhone}
-              onChange={(e) => setEditedPhone(e.target.value)}
-              disabled={!isEditing}
-              className={styles.inputField}
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="address">Address</label>
-            <input
-              type="text"
-              id="address"
-              value={editedLocation}
-              onChange={(e) => setEditedLocation(e.target.value)}
-              disabled={!isEditing}
+              value={editedFname}
+              onChange={(e) => setEditedFname(e.target.value)}
+              disabled={!isEditing || isInsuranceCompany}
               className={styles.inputField}
             />
           </div>
 
+          <div className={styles.formGroup}>
+            <label htmlFor="lname">Last Name</label>
+            <input
+              id="lname"
+              type="text"
+              value={editedLname}
+              onChange={(e) => setEditedLname(e.target.value)}
+              disabled={!isEditing || isInsuranceCompany}
+              className={styles.inputField}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="tnumber">Phone Number</label>
+            <input
+              id="tnumber"
+              type="text"
+              value={editedPhone}
+              onChange={(e) => setEditedPhone(e.target.value)}
+              disabled={!isEditing || isInsuranceCompany}
+              className={styles.inputField}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="address">Address</label>
+            <textarea
+              id="address"
+              value={editedAddress}
+              onChange={(e) => setEditedAddress(e.target.value)}
+              disabled={!isEditing || isInsuranceCompany}
+              className={styles.inputField}
+            ></textarea>
+          </div>
+
           <div className={styles.profileActions}>
-            {!isEditing ? (
-              <button type="button" onClick={handleEditToggle} className={`${styles.button} ${styles.editButton}`}>
+            {!isEditing && !isInsuranceCompany ? (
+              <button
+                type="button"
+                onClick={handleEditToggle}
+                className={`${styles.button} ${styles.editButton}`}
+              >
                 <Edit size={18} /> Edit Profile
               </button>
             ) : (
-              <>
-                <button type="submit" className={`${styles.button} ${styles.saveButton}`} disabled={loading}>
-                  {loading ? 'Saving...' : <><Save size={18} /> Save Changes</>}
-                </button>
-                <button type="button" onClick={handleEditToggle} className={`${styles.button} ${styles.cancelButton}`} disabled={loading}>
-                  <XCircle size={18} /> Cancel
-                </button>
-              </>
+              !isInsuranceCompany && (
+                <>
+                  <button
+                    type="submit"
+                    className={`${styles.button} ${styles.saveButton}`}
+                    disabled={loading}
+                  >
+                    {loading ? "Saving..." : <><Save size={18} /> Save</>}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleEditToggle}
+                    className={`${styles.button} ${styles.cancelButton}`}
+                    disabled={loading}
+                  >
+                    <XCircle size={18} /> Cancel
+                  </button>
+                </>
+              )
             )}
           </div>
         </form>
@@ -179,4 +210,4 @@ const InsuranceCompanyProfilePage = () => {
   );
 };
 
-export default InsuranceCompanyProfilePage;
+export default UserProfilePage;

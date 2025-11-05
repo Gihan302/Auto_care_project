@@ -1,0 +1,243 @@
+.sidebar {
+  width: 260px;
+  background-color: var(--sidebar-bg-light);
+  border-right: 1px solid var(--border-color-light);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoIcon {
+  color: white;
+}
+
+.logoText h1 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.logoText p {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary-light);
+  margin: 0;
+}
+
+.mobileClose {
+  display: none;
+}
+
+.nav {
+  flex-grow: 1;
+  padding: 20px 0;
+}
+
+.navGroup {
+  padding: 0 20px;
+}
+
+.navLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-color-secondary-light);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: var(--text-color-secondary-light);
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  position: relative;
+}
+
+.navLink.collapsed {
+  justify-content: center;
+}
+
+.navLink:hover {
+  background-color: var(--hover-bg-light);
+  color: var(--primary-color);
+}
+
+.navLink.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.navIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.tooltip {
+  position: absolute;
+  left: 90px;
+  background-color: var(--tooltip-bg-light);
+  color: var(--tooltip-text-light);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 10;
+}
+
+.navLink.collapsed:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltipArrow {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent var(--tooltip-bg-light) transparent transparent;
+}
+
+.sidebarFooter {
+  padding: 20px;
+  border-top: 1px solid var(--border-color-light);
+}
+
+.toggleButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  color: var(--text-color-secondary-light);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 8px;
+}
+
+.toggleButton:hover {
+  background-color: var(--hover-bg-light);
+  color: var(--primary-color);
+}
+
+.toggleIcon.toggleIconRotated {
+  transform: rotate(180deg);
+}
+
+/* Dark mode styles */
+html.dark .sidebar {
+  background-color: var(--sidebar-bg-dark);
+  border-right: 1px solid var(--border-color-dark);
+}
+
+html.dark .sidebarHeader, html.dark .sidebarFooter {
+  border-color: var(--border-color-dark);
+}
+
+html.dark .logoText p, html.dark .navLabel, html.dark .toggleButton {
+  color: var(--text-color-secondary-dark);
+}
+
+html.dark .navLink {
+  color: var(--text-color-secondary-dark);
+}
+
+html.dark .navLink:hover {
+  background-color: var(--hover-bg-dark);
+  color: var(--primary-color);
+}
+
+html.dark .navLink.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+html.dark .tooltip {
+  background-color: var(--tooltip-bg-dark);
+  color: var(--tooltip-text-dark);
+}
+
+html.dark .tooltipArrow {
+  border-color: transparent var(--tooltip-bg-dark) transparent transparent;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    height: 100%;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.mobileOpen {
+    left: 0;
+  }
+
+  .mobileClose {
+    display: block;
+    background: none;
+    border: none;
+    color: var(--text-color-secondary-light);
+    cursor: pointer;
+  }
+
+  html.dark .mobileClose {
+    color: var(--text-color-secondary-dark);
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+}

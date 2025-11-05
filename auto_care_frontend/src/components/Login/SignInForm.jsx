@@ -84,9 +84,12 @@ const SignInForm = () => {
         } else if (userRoles.includes("ROLE_ICOMPANY")) {
           console.log('🎯 Insurance company detected, redirecting to insurance dashboard');
           router.push('/Insurance/dashboard');
+        } else if (userRoles.includes("ROLE_LCOMPANY")) {
+          console.log('🎯 Leasing company detected, redirecting to leasing dashboard');
+          router.push('/leasing/dashboard');
         } else {
-          console.log('🎯 Regular user, redirecting to dashboard');
-          router.push('/dashboard');
+          console.log('🎯 Regular user, redirecting to home page');
+          router.push('/');
         }
       }
     } catch (err) {

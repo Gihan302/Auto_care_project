@@ -8,7 +8,7 @@ export default function RootLayout({ children }) {
   const pathname = usePathname()
   
   // Define routes where you want header/footer
-  const showHeaderFooter = pathname === '/' || pathname === '/home'
+  const showHeaderFooter = pathname === '/' || pathname === '/home' || pathname === '/signin' || pathname === '/signup'
   
   // Or define routes where you DON'T want header/footer
   // const hideHeaderFooter = pathname.startsWith('/admin') || pathname.startsWith('/user')

@@ -14,8 +14,13 @@ export default function AdminLayout({ children }) {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.roles && user.roles.includes('ROLE_ADMIN')) {
-      setIsAuthorized(true);
+    if (user && user.roles) {
+      const userRoles = user.roles.map(role => role.name || role);
+      if (userRoles.includes('ROLE_ADMIN')) {
+        setIsAuthorized(true);
+      } else {
+        router.push('/signin');
+      }
     } else {
       router.push('/signin');
     }

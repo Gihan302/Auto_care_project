@@ -1,17 +1,12 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
-  Users,
   Car,
   FileText,
-  Building2,
-  Shield,
-  BarChart3,
-  Bell,
   Settings,
   Menu,
   X
@@ -19,25 +14,17 @@ import {
 import styles from './sidebar.module.css'
 
 const menuItems = [
-  { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
-  { title: "Manage Users", url: "/admin/manageUsers", icon: Users },
-  { title: "Manage Vehicles", url: "/admin/manageVehicles", icon: Car },
-  { title: "Manage Reviews", url: "/admin/manageReviews", icon: FileText },
-  { title: "Leasing Companies", url: "/admin/leasing", icon: Building2 },
-  { title: "Leasing Plans", url: "/admin/leasing-plans", icon: FileText },
-  { title: "Insurance Companies", url: "/admin/insurance", icon: Shield },
-  { title: "Insurance Plans", url: "/admin/insurance-plans", icon: FileText },
-  { title: "Reports & Analytics", url: "/admin/reports", icon: BarChart3 },
-  { title: "Notifications", url: "/admin/notifications", icon: Bell },
-  { title: "Settings", url: "/admin/settings", icon: Settings },
+  { title: "Dashboard", url: "/leasing/dashboard", icon: LayoutDashboard },
+  { title: "Manage Plans", url: "/leasing/manage-plans", icon: FileText },
+  { title: "Profile", url: "/leasing/profile", icon: Settings },
 ]
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
   const pathname = usePathname()
   
   const isActive = (path) => {
-    if (path === "/admin" && pathname === "/admin") return true
-    if (path !== "/admin" && pathname.startsWith(path)) return true
+    if (path === "/leasing" && pathname === "/leasing") return true
+    if (path !== "/leasing" && pathname.startsWith(path)) return true
     return false
   }
 
@@ -46,7 +33,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
   }
 
   return (
-    <>
+    <div>
       {/* Mobile overlay */}
       {isMobileOpen && (
         <div 
@@ -55,11 +42,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
         />
       )}
             
-      <aside className={`
-        ${styles.sidebar} 
-        ${isCollapsed ? styles.collapsed : ''} 
-        ${isMobileOpen ? styles.mobileOpen : ''}
-      `}>
+      <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${isMobileOpen ? styles.mobileOpen : ''}`}>
         {/* Header */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
@@ -69,7 +52,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
             {!isCollapsed && (
               <div className={styles.logoText}>
                 <h1>Auto Care</h1>
-                <p>Admin Portal</p>
+                <p>Leasing Portal</p>
               </div>
             )}
           </div>
@@ -138,6 +121,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
           </button>
         </div>
       </aside>
-    </>
+    </div>
   )
 }
