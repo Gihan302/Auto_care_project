@@ -33,6 +33,7 @@ const Header = () => {
     { name: 'Car Finder Quiz', href: '/user/research/quiz' },
     { name: 'Buying Power Calculator', href: '/user/research/buyingPower' },
     { name: 'Lease Calculator', href: '/user/research/leaseCalculator' },
+    { name: 'Chat with Auto Genie AI', href: '/user/research/autoGenie' }
   ];
 
   // Check authentication status on component mount and when storage changes

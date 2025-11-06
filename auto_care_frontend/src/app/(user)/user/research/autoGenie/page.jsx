@@ -1,63 +1,58 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Minimize2, Bot, User } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { Send, Mic, Paperclip, Bot, User, Trash2, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
 import styles from './page.module.css';
 
-export default function FloatingChat() {
+export default function ChatPage() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: 'ai',
-      text: "Hi! I'm AutoBot. How can I help you today?",
+      text: "Hello! I'm AutoBot, your Auto Care assistant. How can I help you with your vehicle today?",
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Load messages from sessionStorage when popup opens
+  // Load messages from sessionStorage on mount
   useEffect(() => {
-    if (isOpen) {
-      const savedMessages = sessionStorage.getItem('autobot_messages');
-      if (savedMessages) {
-        try {
-          const parsed = JSON.parse(savedMessages);
-          // Convert timestamp strings back to Date objects
-          const messagesWithDates = parsed.map(msg => ({
-            ...msg,
-            timestamp: new Date(msg.timestamp)
-          }));
-          setMessages(messagesWithDates);
-        } catch (error) {
-          console.error('Error loading messages:', error);
-        }
+    const savedMessages = sessionStorage.getItem('autobot_messages');
+    if (savedMessages) {
+      try {
+        const parsed = JSON.parse(savedMessages);
+        // Convert timestamp strings back to Date objects
+        const messagesWithDates = parsed.map(msg => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+        setMessages(messagesWithDates);
+      } catch (error) {
+        console.error('Error loading messages:', error);
       }
-      scrollToBottom();
     }
-  }, [isOpen]);
+  }, []);
 
   // Save messages to sessionStorage whenever they change
   useEffect(() => {
-    if (messages.length > 1) { // Only save if there are messages beyond the initial one
+    if (messages.length > 0) {
       sessionStorage.setItem('autobot_messages', JSON.stringify(messages));
     }
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen) {
-      scrollToBottom();
-    }
-  }, [messages, isOpen]);
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
@@ -105,11 +100,10 @@ export default function FloatingChat() {
       };
       
       setMessages(prev => [...prev, aiMessage]);
-      setIsTyping(false);
     } catch (error) {
       console.error('Error calling N8N webhook:', error);
       
-      // Show error message to user
+      // Fallback error message
       const errorMessage = {
         id: Date.now() + 1,
         type: 'ai',
@@ -118,6 +112,7 @@ export default function FloatingChat() {
       };
       
       setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
     }
   };
@@ -129,66 +124,63 @@ export default function FloatingChat() {
     }
   };
 
-  const handleOpenFullChat = () => {
-    // Save current messages to sessionStorage
-    sessionStorage.setItem('autobot_messages', JSON.stringify(messages));
-    // Navigate to full chat page
-    router.push('/user/research/autoGenie');
+  const handleClearChat = () => {
+    if (confirm('Are you sure you want to clear the conversation?')) {
+      const initialMessage = {
+        id: Date.now(),
+        type: 'ai',
+        text: "Hello! I'm AutoBot, your Auto Care assistant. How can I help you with your vehicle today?",
+        timestamp: new Date()
+      };
+      setMessages([initialMessage]);
+      sessionStorage.setItem('autobot_messages', JSON.stringify([initialMessage]));
+    }
+  };
+
+  const handleGoBack = () => {
+    router.back();
   };
 
   return (
-    <>
-      {/* Floating Button */}
-      {!isOpen && (
-        <button
-          className={styles.floatingButton}
-          onClick={() => setIsOpen(true)}
-          aria-label="Open AutoBot chat"
-        >
-          <MessageCircle size={28} />
-          {messages.length > 1 && (
-            <span className={styles.badge}>{messages.length - 1}</span>
-          )}
-        </button>
-      )}
-
-      {/* Chat Popup */}
-      {isOpen && (
-        <div className={styles.chatPopup}>
-          {/* Header */}
-          <div className={styles.popupHeader}>
-            <div className={styles.headerLeft}>
-              <div className={styles.botAvatarSmall}>
-                <Bot size={20} />
+    <div className={styles.pageContainer}>
+      {/* Main Chat Container */}
+      <main className={styles.mainContent}>
+        <div className={styles.backgroundPattern}></div>
+        
+        <div className={styles.chatContainer}>
+          {/* Chat Header */}
+          <div className={styles.chatHeader}>
+            <button 
+              className={styles.backButton}
+              onClick={handleGoBack}
+              aria-label="Go back"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className={styles.botInfo}>
+              <div className={styles.botAvatar}>
+                <Bot size={24} />
               </div>
-              <div>
-                <h3 className={styles.popupTitle}>AutoBot</h3>
-                <span className={styles.popupStatus}>
+              <div className={styles.botDetails}>
+                <h2 className={styles.botName}>AutoBot</h2>
+                <span className={styles.botStatus}>
                   <span className={styles.statusDot}></span>
                   Online
                 </span>
               </div>
             </div>
-            <div className={styles.headerActions}>
-              <button
-                className={styles.iconButton}
-                onClick={() => setIsOpen(false)}
-                aria-label="Minimize chat"
-              >
-                <Minimize2 size={18} />
-              </button>
-              <button
-                className={styles.iconButton}
-                onClick={() => setIsOpen(false)}
-                aria-label="Close chat"
-              >
-                <X size={18} />
-              </button>
-            </div>
+            <button 
+              className={styles.clearButton}
+              onClick={handleClearChat}
+              aria-label="Clear chat"
+              title="Clear conversation"
+            >
+              <Trash2 size={20} />
+            </button>
           </div>
 
-          {/* Messages */}
-          <div className={styles.popupMessages}>
+          {/* Messages Area */}
+          <div className={styles.messagesContainer}>
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -198,23 +190,29 @@ export default function FloatingChat() {
               >
                 <div className={styles.messageAvatar}>
                   {message.type === 'ai' ? (
-                    <Bot size={16} />
+                    <Bot size={20} />
                   ) : (
-                    <User size={16} />
+                    <User size={20} />
                   )}
                 </div>
                 <div className={styles.messageBubble}>
                   <div className={styles.messageText}>
                     <ReactMarkdown>{message.text}</ReactMarkdown>
                   </div>
+                  <span className={styles.messageTime}>
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
                 </div>
               </div>
             ))}
-
+            
             {isTyping && (
               <div className={`${styles.messageWrapper} ${styles.aiMessage}`}>
                 <div className={styles.messageAvatar}>
-                  <Bot size={16} />
+                  <Bot size={20} />
                 </div>
                 <div className={styles.messageBubble}>
                   <div className={styles.typingIndicator}>
@@ -228,45 +226,49 @@ export default function FloatingChat() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Actions */}
-          <div className={styles.quickActions}>
-            <button className={styles.quickButton} onClick={() => setInputValue('Find a car')}>Find a car</button>
-            <button className={styles.quickButton} onClick={() => setInputValue('Book service')}>Book service</button>
-            <button className={styles.quickButton} onClick={() => setInputValue('Contact us')}>Contact us</button>
-          </div>
-
-          {/* Input */}
-          <div className={styles.popupInput}>
+          {/* Input Area */}
+          <div className={styles.inputContainer}>
+            <button className={styles.attachButton} aria-label="Attach file">
+              <Paperclip size={20} />
+            </button>
             <input
+              ref={inputRef}
               type="text"
-              className={styles.input}
-              placeholder="Type your message..."
+              className={styles.messageInput}
+              placeholder="Ask AutoBot anything..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={isTyping}
             />
+            <button className={styles.micButton} aria-label="Voice input">
+              <Mic size={20} />
+            </button>
             <button
               className={styles.sendButton}
               onClick={handleSend}
               disabled={!inputValue.trim() || isTyping}
               aria-label="Send message"
             >
-              <Send size={18} />
-            </button>
-          </div>
-
-          {/* Footer */}
-          <div className={styles.popupFooter}>
-            <button 
-              onClick={handleOpenFullChat} 
-              className={styles.expandLink}
-            >
-              Open full chat
+              <Send size={20} />
             </button>
           </div>
         </div>
-      )}
-    </>
+      </main>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div className={styles.footerContent}>
+          <p className={styles.footerText}>
+            © 2024 Auto Care. Your trusted vehicle marketplace and service partner.
+          </p>
+          <div className={styles.footerLinks}>
+            <a href="/privacy">Privacy</a>
+            <a href="/terms">Terms</a>
+            <a href="/contact">Contact</a>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }

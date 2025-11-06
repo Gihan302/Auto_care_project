@@ -141,82 +141,6 @@
   box-shadow: 0 4px 12px rgba(236, 223, 204, 0.3);
 }
 
-/* Markdown Styling for AI Messages */
-.messageText :global(strong) {
-  font-weight: 700;
-  color: inherit;
-}
-
-.messageText :global(em) {
-  font-style: italic;
-}
-
-.messageText :global(p) {
-  margin: 0;
-  line-height: 1.6;
-}
-
-.messageText :global(p + p) {
-  margin-top: 0.75rem;
-}
-
-.messageText :global(ul),
-.messageText :global(ol) {
-  margin: 0.5rem 0;
-  padding-left: 1.5rem;
-}
-
-.messageText :global(li) {
-  margin: 0.25rem 0;
-}
-
-.messageText :global(code) {
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-family: 'Courier New', monospace;
-  font-size: 0.9em;
-}
-
-.messageText :global(pre) {
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  margin: 0.5rem 0;
-}
-
-.messageText :global(pre code) {
-  background-color: transparent;
-  padding: 0;
-}
-
-.messageText :global(a) {
-  color: #2563eb;
-  text-decoration: underline;
-}
-.messageText strong {
-  font-weight: 700;
-}
-
-.messageText em {
-  font-style: italic;
-}
-
-.messageText :global(h1),
-.messageText :global(h2),
-.messageText :global(h3) {
-  margin: 0.75rem 0 0.5rem 0;
-  font-weight: 600;
-}
-
-.messageText :global(blockquote) {
-  border-left: 3px solid #e5e7eb;
-  padding-left: 1rem;
-  margin: 0.5rem 0;
-  color: #6b7280;
-}
-
 .popupTitle {
   font-size: 1rem;
   font-weight: 600;
@@ -495,6 +419,11 @@
   text-decoration: none;
   font-size: 0.85rem;
   transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
 }
 
 .expandLink:hover {
