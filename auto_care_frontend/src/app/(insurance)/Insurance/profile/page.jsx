@@ -1,213 +1,174 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import styles from "./profile.module.css";
-import { Edit, Save, XCircle, Lock } from "lucide-react";
-import apiClient from "@/utils/axiosConfig";
+import React, { useState, useEffect } from 'react';
+import apiClient from '@/utils/axios';
+import styles from './profile.module.css';
 
-const UserProfilePage = () => {
-  const [userData, setUserData] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedFname, setEditedFname] = useState("");
-  const [editedLname, setEditedLname] = useState("");
-  const [editedPhone, setEditedPhone] = useState("");
-  const [editedAddress, setEditedAddress] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+import useLocalStorage from '@/utils/useLocalStorage';
 
-  // 🔹 Load user data
+const InsuranceProfilePage = () => {
+  const [user, setUser] = useLocalStorage('user', null);
+  const [formData, setFormData] = useState({
+    fname: '',
+    lname: '',
+    cName: '',
+    regNum: '',
+    address: '',
+    imgId: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/signin");
-      return;
+    if (user) {
+      setFormData({
+        fname: user.fname || '',
+        lname: user.lname || '',
+        cName: user.cName || '',
+        regNum: user.regNum || '',
+        address: user.address || '',
+        imgId: user.imgId || '',
+      });
     }
+  }, [user]);
 
-    const fetchUserData = async () => {
-      try {
-        const response = await apiClient.get("/user/currentuser");
-        const data = response.data;
-        setUserData(data);
-        setEditedFname(data.fname || "");
-        setEditedLname(data.lname || "");
-        setEditedPhone(data.tnumber || "");
-        setEditedAddress(data.address || "");
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-        setMessage("⚠️ Failed to load user profile.");
-        if (err.response?.status === 401) {
-          router.push("/signin");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [router]);
-
-  const isInsuranceCompany =
-  userData?.role === "ROLE_ICOMPANY" || userData?.role === "ROLE_LCOMPANY";
-
-
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
-    if (isEditing && userData) {
-      setEditedFname(userData.fname || "");
-      setEditedLname(userData.lname || "");
-      setEditedPhone(userData.tnumber || "");
-      setEditedAddress(userData.address || "");
-    }
-    setMessage("");
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async (e) => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, imgId: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
+    setError(null);
+    setSuccess(null);
 
     try {
-      const response = await apiClient.put("/user/editprofile", {
-        fname: editedFname,
-        lname: editedLname,
-        tnumber: editedPhone,
-        address: editedAddress,
-      });
+      const profileData = { ...formData };
+      delete profileData.imgId; // Remove imgId from the main request
 
-      if (response.status === 200) {
-        const updatedUser = response.data;
-        setUserData({
-          ...userData,
-          fname: editedFname,
-          lname: editedLname,
-          tnumber: editedPhone,
-          address: editedAddress,
-        });
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            ...userData,
-            fname: editedFname,
-            lname: editedLname,
-            tnumber: editedPhone,
-            address: editedAddress,
-          })
-        );
-        setIsEditing(false);
-        setMessage("✅ Profile updated successfully!");
-      } else {
-        setMessage("⚠️ Failed to update profile.");
+      // Update profile details
+      await apiClient.put('/user/editprofile', profileData);
+
+      // Update profile picture if it has changed
+      if (formData.imgId && formData.imgId.startsWith('data:image')) {
+        await apiClient.put('/user/changephoto', formData.imgId);
       }
+
+      setSuccess('Profile updated successfully!');
+
+      // Update user in local storage
+      setUser({ ...user, ...formData });
+
     } catch (err) {
-      console.error("Error updating profile:", err);
-      setMessage(
-        err.response?.data?.message ||
-          "⚠️ An error occurred while updating your profile."
-      );
+      setError(err.response?.data?.message || 'An error occurred while updating the profile.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div className={styles.loading}>Loading user profile...</div>;
-
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileCard}>
-        <h2 className={styles.profileTitle}>My Profile</h2>
-        {message && <p className={styles.message}>{message}</p>}
+        <h1 className={styles.profileTitle}>Insurance Company Profile</h1>
+        <p>Manage your insurance company profile here.</p>
 
-        {isInsuranceCompany && (
-          <div className={styles.lockNotice}>
-            <Lock size={18} /> Insurance company profiles cannot be edited here.
-          </div>
-        )}
-
-        <form onSubmit={handleSave}>
+        <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label htmlFor="fname">First Name</label>
             <input
-              id="fname"
               type="text"
-              value={editedFname}
-              onChange={(e) => setEditedFname(e.target.value)}
-              disabled={!isEditing || isInsuranceCompany}
+              id="fname"
+              name="fname"
+              value={formData.fname}
+              onChange={handleInputChange}
               className={styles.inputField}
             />
           </div>
-
           <div className={styles.formGroup}>
             <label htmlFor="lname">Last Name</label>
             <input
+              type="text"
               id="lname"
-              type="text"
-              value={editedLname}
-              onChange={(e) => setEditedLname(e.target.value)}
-              disabled={!isEditing || isInsuranceCompany}
+              name="lname"
+              value={formData.lname}
+              onChange={handleInputChange}
               className={styles.inputField}
             />
           </div>
-
           <div className={styles.formGroup}>
-            <label htmlFor="tnumber">Phone Number</label>
+            <label htmlFor="cName">Company Name</label>
             <input
-              id="tnumber"
               type="text"
-              value={editedPhone}
-              onChange={(e) => setEditedPhone(e.target.value)}
-              disabled={!isEditing || isInsuranceCompany}
+              id="cName"
+              name="cName"
+              value={formData.cName}
+              onChange={handleInputChange}
               className={styles.inputField}
             />
           </div>
-
+          <div className={styles.formGroup}>
+            <label htmlFor="regNum">Registration Number</label>
+            <input
+              type="text"
+              id="regNum"
+              name="regNum"
+              value={formData.regNum}
+              onChange={handleInputChange}
+              className={styles.inputField}
+            />
+          </div>
           <div className={styles.formGroup}>
             <label htmlFor="address">Address</label>
-            <textarea
+            <input
+              type="text"
               id="address"
-              value={editedAddress}
-              onChange={(e) => setEditedAddress(e.target.value)}
-              disabled={!isEditing || isInsuranceCompany}
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
               className={styles.inputField}
-            ></textarea>
+            />
           </div>
-
-          <div className={styles.profileActions}>
-            {!isEditing && !isInsuranceCompany ? (
-              <button
-                type="button"
-                onClick={handleEditToggle}
-                className={`${styles.button} ${styles.editButton}`}
-              >
-                <Edit size={18} /> Edit Profile
-              </button>
-            ) : (
-              !isInsuranceCompany && (
-                <>
-                  <button
-                    type="submit"
-                    className={`${styles.button} ${styles.saveButton}`}
-                    disabled={loading}
-                  >
-                    {loading ? "Saving..." : <><Save size={18} /> Save</>}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleEditToggle}
-                    className={`${styles.button} ${styles.cancelButton}`}
-                    disabled={loading}
-                  >
-                    <XCircle size={18} /> Cancel
-                  </button>
-                </>
-              )
+          <div className={styles.formGroup}>
+            <label htmlFor="logo">Company Logo</label>
+            <input
+              type="file"
+              id="logo"
+              name="logo"
+              accept="image/*"
+              onChange={handleFileChange}
+              className={styles.inputField}
+            />
+            {formData.imgId && (
+              <img
+                src={formData.imgId.startsWith('data:image') ? formData.imgId : `http://localhost:8080/images/${formData.imgId}`}
+                alt="Company Logo"
+                style={{ width: '100px', height: '100px', marginTop: '10px' }}
+              />
             )}
           </div>
+
+          {error && <p className={`${styles.message} ${styles.error}`}>{error}</p>}
+          {success && <p className={`${styles.message} ${styles.success}`}>{success}</p>}
+
+          <button type="submit" className={`${styles.button} ${styles.saveButton}`} disabled={loading}>
+            {loading ? 'Updating...' : 'Update Profile'}
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default UserProfilePage;
+export default InsuranceProfilePage;

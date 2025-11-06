@@ -9,30 +9,25 @@ import {
   Menu
 } from "lucide-react"
 import styles from './header.module.css'
+import Link from 'next/link';
+import useLocalStorage from '@/utils/useLocalStorage';
 
 import { useRouter } from 'next/navigation'
 
 export default function Header({ setIsMobileOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [userData, setUserData] = useState(null)
+  const [user, setUser] = useLocalStorage('user', null)
+  const [clientLoaded, setClientLoaded] = useState(false);
   const router = useRouter()
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      try {
-        const parsedUser = JSON.parse(user);
-        setUserData(parsedUser);
-      } catch (e) {
-        console.error("Failed to parse user data from localStorage", e);
-      }
-    }
+    setClientLoaded(true);
   }, []);
 
   const getCompanyInitials = () => {
-    if (!userData) return 'C';
-    const companyName = userData.companyName || userData.fname || '';
+    if (!user) return 'C';
+    const companyName = user.cName || '';
     return companyName.charAt(0).toUpperCase();
   };
 
@@ -47,17 +42,8 @@ export default function Header({ setIsMobileOpen }) {
 
   const handleLogout = () => {
     localStorage.removeItem('user')
+    localStorage.removeItem('token')
     router.push('/signin')
-    setIsDropdownOpen(false)
-  }
-
-  const handleProfileSettings = () => {
-    console.log('Opening profile settings...')
-    setIsDropdownOpen(false)
-  }
-
-  const handleAccountPreferences = () => {
-    console.log('Opening account preferences...')
     setIsDropdownOpen(false)
   }
 
@@ -71,8 +57,8 @@ export default function Header({ setIsMobileOpen }) {
           <Menu size={20} />
         </button>
         <div>
-          <h1 className={styles.headerTitle}>Dashboard Overview</h1>
-          <p className={styles.headerSubtitle}>Welcome back, {userData?.companyName || userData?.fname || 'Company'}</p>
+          <h1 className={styles.headerTitle}>Insurance Company Portal</h1>
+          <p className={styles.headerSubtitle}>Welcome back, {clientLoaded && (user?.cName || 'Company')}</p>
         </div>
       </div>
             
@@ -89,8 +75,8 @@ export default function Header({ setIsMobileOpen }) {
             className={styles.dropdownTrigger}
             onClick={handleDropdownToggle}
           >
-            <div className={styles.avatar}>{getCompanyInitials()}</div>
-            <span className={styles.adminName}>{userData?.companyName || userData?.fname || 'Company'}</span>
+            <div className={styles.avatar}>{clientLoaded && getCompanyInitials()}</div>
+            <span className={styles.adminName}>{clientLoaded && (user?.cName || 'Company')}</span>
             <ChevronDown 
               size={16} 
               className={`${styles.chevron} ${isDropdownOpen ? styles.chevronRotated : ''}`} 
@@ -105,15 +91,12 @@ export default function Header({ setIsMobileOpen }) {
               />
               
               <div className={styles.dropdownMenu}>
-                <button 
-                  className={styles.dropdownItem}
-                  onClick={handleProfileSettings}
-                >
+                <Link href="/Insurance/profile" className={styles.dropdownItem}>
                   Profile Settings
-                </button>
+                </Link>
                 <button 
                   className={styles.dropdownItem}
-                  onClick={handleAccountPreferences}
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   Account Preferences
                 </button>

@@ -1,29 +1,72 @@
+/* Layout Container */
 .container {
   display: flex;
   min-height: 100vh;
-  background-color: var(--background-light);
-  color: var(--text-color-dark);
+  background-color: #f8fafc;
 }
 
-.mainContent {
-  flex-grow: 1;
+/* Main Content Area */
+.main {
+  flex: 1;
+  margin-left: 256px;
+  /* Default sidebar width */
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
-  transition: margin-left 0.3s ease;
+  min-height: 100vh;
 }
 
+.mainCollapsed {
+  margin-left: 64px;
+  /* Collapsed sidebar width */
+}
+
+/* Content Section */
 .content {
-  flex-grow: 1;
-  padding: 20px;
-  background-color: var(--background-light);
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background-color: #f8fafc;
 }
 
-/* Dark mode styles */
-html.dark .container {
-  background-color: var(--background-dark);
-  color: var(--text-color-light);
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .main {
+    margin-left: 0;
+  }
+
+  .mainCollapsed {
+    margin-left: 0;
+  }
 }
 
-html.dark .content {
-  background-color: var(--background-dark);
+@media (max-width: 768px) {
+  .content {
+    padding: 1rem;
+  }
+}
+
+/* Smooth transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .main {
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Ensure proper stacking context */
+.container {
+  position: relative;
+  z-index: 1;
+}
+
+.main {
+  position: relative;
+  z-index: 2;
+}
+
+/* Content area adjustments for better spacing */
+.content {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }

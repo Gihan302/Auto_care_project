@@ -10,23 +10,21 @@ export default function LeasingLayout({ children }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   return (
-    <html lang="en">
-      <body>
-        <div className={styles.container}>
-          <Sidebar 
-            isCollapsed={isCollapsed} 
-            setIsCollapsed={setIsCollapsed}
-            isMobileOpen={isMobileOpen}
-            setIsMobileOpen={setIsMobileOpen}
-          />
-          <div className={styles.mainContent}>
-            <Header setIsMobileOpen={setIsMobileOpen} />
-            <main className={styles.content}>
-              {children}
-            </main>
-          </div>
-        </div>
-      </body>
-    </html>
+    <div className={styles.container}>
+      <Sidebar 
+        isCollapsed={isCollapsed} 
+        setIsCollapsed={setIsCollapsed}
+        isMobileOpen={isMobileOpen}
+        setIsMobileOpen={setIsMobileOpen}
+      />
+      
+      <div className={`${styles.main} ${isCollapsed ? styles.mainCollapsed : ''}`}>
+        <Header setIsMobileOpen={setIsMobileOpen} />
+        
+        <main className={styles.content}>
+          {children}
+        </main>
+      </div>
+    </div>
   )
 }

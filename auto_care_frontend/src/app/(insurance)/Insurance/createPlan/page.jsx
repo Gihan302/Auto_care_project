@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import styles from "./createPlan.module.css";
-import apiClient from "@/utils/axiosConfig";
+import apiClient from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
 const CreatePlanPage = () => {

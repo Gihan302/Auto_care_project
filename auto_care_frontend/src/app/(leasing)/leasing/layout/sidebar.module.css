@@ -1,243 +1,321 @@
+/* Sidebar Container */
 .sidebar {
-  width: 260px;
-  background-color: var(--sidebar-bg-light);
-  border-right: 1px solid var(--border-color-light);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 256px;
+  background-color: #0f172a;
+  border-right: 1px solid #334155;
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 50;
 }
 
 .sidebar.collapsed {
-  width: 80px;
+  width: 64px;
 }
 
+/* Sidebar Header */
 .sidebarHeader {
+  height: 64px;
+  padding: 0 1rem;
+  border-bottom: 1px solid #334155;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
-  border-bottom: 1px solid var(--border-color-light);
+  flex-shrink: 0;
 }
 
 .logoContainer {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
+  overflow: hidden;
 }
 
 .logo {
-  width: 40px;
-  height: 40px;
-  background-color: var(--primary-color);
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  background-color: #3b82f6;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .logoIcon {
-  color: white;
+  width: 20px;
+  height: 20px;
+  color: #ffffff;
+}
+
+.logoText {
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .logoText h1 {
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
   margin: 0;
+  line-height: 1.2;
 }
 
 .logoText p {
-  font-size: 0.8rem;
-  color: var(--text-color-secondary-light);
+  font-size: 0.75rem;
+  color: #94a3b8;
   margin: 0;
+  margin-top: 2px;
 }
 
 .mobileClose {
   display: none;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
+.mobileClose:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+/* Navigation */
 .nav {
-  flex-grow: 1;
-  padding: 20px 0;
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+}
+
+.nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+.nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nav::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 2px;
+}
+
+.nav::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 .navGroup {
-  padding: 0 20px;
+  padding: 0 1rem;
 }
 
 .navLabel {
-  font-size: 0.7rem;
+  color: #64748b;
+  font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-color-secondary-light);
   text-transform: uppercase;
-  margin-bottom: 10px;
+  letter-spacing: 0.025em;
+  margin-bottom: 0.5rem;
+  padding: 0 0.75rem;
 }
 
 .navList {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .navLink {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  color: var(--text-color-secondary-light);
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  color: #94a3b8;
   text-decoration: none;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
   position: relative;
+  min-height: 40px;
+}
+
+.navLink:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+.navLink.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .navLink.collapsed {
   justify-content: center;
-}
-
-.navLink:hover {
-  background-color: var(--hover-bg-light);
-  color: var(--primary-color);
-}
-
-.navLink.active {
-  background-color: var(--primary-color);
-  color: white;
+  padding: 0.625rem;
 }
 
 .navIcon {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
 }
 
+/* Tooltip for collapsed sidebar */
 .tooltip {
   position: absolute;
-  left: 90px;
-  background-color: var(--tooltip-bg-light);
-  color: var(--tooltip-text-light);
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.8rem;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #1e293b;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-  z-index: 10;
-}
-
-.navLink.collapsed:hover .tooltip {
-  opacity: 1;
-  visibility: visible;
+  transition: all 0.2s ease;
+  z-index: 60;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .tooltipArrow {
   position: absolute;
   top: 50%;
-  right: 100%;
-  margin-top: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent var(--tooltip-bg-light) transparent transparent;
+  left: -4px;
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background-color: #1e293b;
 }
 
+.navLink:hover .tooltip,
+.toggleButton:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Sidebar Footer */
 .sidebarFooter {
-  padding: 20px;
-  border-top: 1px solid var(--border-color-light);
+  padding: 1rem;
+  border-top: 1px solid #334155;
+  flex-shrink: 0;
 }
 
 .toggleButton {
+  width: 100%;
+  height: 40px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 10px;
-  background-color: transparent;
-  border: none;
-  color: var(--text-color-secondary-light);
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  border-radius: 8px;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  position: relative;
 }
 
 .toggleButton:hover {
-  background-color: var(--hover-bg-light);
-  color: var(--primary-color);
+  background-color: #1e293b;
+  color: #ffffff;
 }
 
-.toggleIcon.toggleIconRotated {
+.toggleIcon {
+  transition: transform 0.3s ease;
+}
+
+.toggleIconRotated {
   transform: rotate(180deg);
 }
 
-/* Dark mode styles */
-html.dark .sidebar {
-  background-color: var(--sidebar-bg-dark);
-  border-right: 1px solid var(--border-color-dark);
+/* Mobile Styles */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 49;
+  display: none;
 }
 
-html.dark .sidebarHeader, html.dark .sidebarFooter {
-  border-color: var(--border-color-dark);
-}
-
-html.dark .logoText p, html.dark .navLabel, html.dark .toggleButton {
-  color: var(--text-color-secondary-dark);
-}
-
-html.dark .navLink {
-  color: var(--text-color-secondary-dark);
-}
-
-html.dark .navLink:hover {
-  background-color: var(--hover-bg-dark);
-  color: var(--primary-color);
-}
-
-html.dark .navLink.active {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-html.dark .tooltip {
-  background-color: var(--tooltip-bg-dark);
-  color: var(--tooltip-text-dark);
-}
-
-html.dark .tooltipArrow {
-  border-color: transparent var(--tooltip-bg-dark) transparent transparent;
-}
-
-/* Mobile styles */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sidebar {
-    position: fixed;
-    left: -260px;
-    top: 0;
-    height: 100%;
-    z-index: 1000;
-    transition: left 0.3s ease;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
 
   .sidebar.mobileOpen {
-    left: 0;
+    transform: translateX(0);
+  }
+
+  .overlay {
+    display: block;
   }
 
   .mobileClose {
     display: block;
-    background: none;
-    border: none;
-    color: var(--text-color-secondary-light);
-    cursor: pointer;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 280px;
+  }
+}
+
+/* Accessibility improvements */
+.navLink:focus,
+.toggleButton:focus,
+.mobileClose:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Animation for sidebar transitions */
+@media (prefers-reduced-motion: no-preference) {
+  .sidebar {
+    animation: slideIn 0.3s ease-out;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
   }
 
-  html.dark .mobileClose {
-    color: var(--text-color-secondary-dark);
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .sidebar {
+    border-right-width: 2px;
   }
 
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
+  .navLink.active {
+    box-shadow: inset 3px 0 0 #ffffff;
   }
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import "./AuthForm.css";
 
-import apiClient from '@/utils/axiosConfig';
+import apiClient, { updateApiToken } from '@/utils/axios';
 
 const SignInForm = () => {
   const [email, setEmail] = useState("");
@@ -65,6 +65,7 @@ const SignInForm = () => {
 
         // Store token in localStorage
         localStorage.setItem("token", token);
+        updateApiToken(token);
 
         // Fetch current user details
         const currentUserResponse = await apiClient.get("/user/currentuser");

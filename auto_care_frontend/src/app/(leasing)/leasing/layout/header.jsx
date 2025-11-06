@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Moon,
   Sun,
@@ -10,11 +11,17 @@ import {
   Menu
 } from "lucide-react"
 import styles from '../../../(admin)/admin/layout/header.module.css' // Reusing admin header styles
+import useLocalStorage from '@/utils/useLocalStorage';
 
 export default function Header({ setIsMobileOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const router = useRouter();
+  const [user, setUser] = useLocalStorage('user', null);
+  const [clientLoaded, setClientLoaded] = useState(false);
+
+  useEffect(() => {
+    setClientLoaded(true);
+  }, []);
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -32,16 +39,6 @@ export default function Header({ setIsMobileOpen }) {
     setIsDropdownOpen(false)
   }
 
-  const handleProfileSettings = () => {
-    console.log('Opening profile settings...')
-    setIsDropdownOpen(false)
-  }
-
-  const handleAccountPreferences = () => {
-    console.log('Opening account preferences...')
-    setIsDropdownOpen(false)
-  }
-
   return (
     <header className={styles.header}>
       <div className={styles.headerLeft}>
@@ -53,7 +50,7 @@ export default function Header({ setIsMobileOpen }) {
         </button>
         <div>
           <h1 className={styles.headerTitle}>Leasing Company Portal</h1>
-          <p className={styles.headerSubtitle}>Welcome, Leasing Company</p>
+          <p className={styles.headerSubtitle}>Welcome, {clientLoaded && (user?.cName || 'Leasing Company')}</p>
         </div>
       </div>
             
@@ -70,8 +67,8 @@ export default function Header({ setIsMobileOpen }) {
             className={styles.dropdownTrigger}
             onClick={handleDropdownToggle}
           >
-            <div className={styles.avatar}>LC</div>
-            <span className={styles.adminName}>Leasing Co.</span>
+            <div className={styles.avatar}>{clientLoaded && (user?.cName?.charAt(0) || 'L')}</div>
+            <span className={styles.adminName}>{clientLoaded && (user?.cName || 'Leasing Co.')}</span>
             <ChevronDown 
               size={16} 
               className={`${styles.chevron} ${isDropdownOpen ? styles.chevronRotated : ''}`} 
@@ -86,15 +83,12 @@ export default function Header({ setIsMobileOpen }) {
               />
               
               <div className={styles.dropdownMenu}>
-                <button 
-                  className={styles.dropdownItem}
-                  onClick={handleProfileSettings}
-                >
+                <Link href="/leasing/profile" className={styles.dropdownItem}>
                   Profile Settings
-                </button>
+                </Link>
                 <button 
                   className={styles.dropdownItem}
-                  onClick={handleAccountPreferences}
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   Account Preferences
                 </button>

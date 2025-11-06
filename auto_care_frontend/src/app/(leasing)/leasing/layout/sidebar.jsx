@@ -5,18 +5,22 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
-  Car,
-  FileText,
-  Settings,
+  FilePlus2,
+  ClipboardList,
+  Bell,
   Menu,
-  X
+  X,
+  Users,
+  Building
 } from "lucide-react"
 import styles from './sidebar.module.css'
 
 const menuItems = [
   { title: "Dashboard", url: "/leasing/dashboard", icon: LayoutDashboard },
-  { title: "Manage Plans", url: "/leasing/manage-plans", icon: FileText },
-  { title: "Profile", url: "/leasing/profile", icon: Settings },
+  { title: "Create New Plan", url: "/leasing/create-plan", icon: FilePlus2 },
+  { title: "Manage Plans", url: "/leasing/manage-plans", icon: ClipboardList },
+  { title: "Notifications", url: "/leasing/notifications", icon: Bell },
+  { title: "Company Profile", url: "/leasing/profile", icon: Building },
 ]
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
@@ -33,7 +37,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
   }
 
   return (
-    <div>
+    <>
       {/* Mobile overlay */}
       {isMobileOpen && (
         <div 
@@ -47,12 +51,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
             <div className={styles.logo}>
-              <Car className={styles.logoIcon} />
+              <LayoutDashboard className={styles.logoIcon} />
             </div>
             {!isCollapsed && (
               <div className={styles.logoText}>
                 <h1>Auto Care</h1>
-                <p>Leasing Portal</p>
+                <p>Leasing Company</p>
               </div>
             )}
           </div>
@@ -68,7 +72,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
         <nav className={styles.nav}>
           <div className={styles.navGroup}>
             {!isCollapsed && (
-              <div className={styles.navLabel}>MAIN NAVIGATION</div>
+              <div className={styles.navLabel}>MAIN MENU</div>
             )}
             <ul className={styles.navList}>
               {menuItems.map((item) => (
@@ -121,6 +125,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
           </button>
         </div>
       </aside>
-    </div>
+    </>
   )
 }

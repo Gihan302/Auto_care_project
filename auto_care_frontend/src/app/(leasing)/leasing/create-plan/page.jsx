@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import styles from "../../../(insurance)/Insurance/createPlan/createPlan.module.css";
-import apiClient from "@/utils/axiosConfig";
+import apiClient from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
 const CreateLeasingPlanPage = () => {
