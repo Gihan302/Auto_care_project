@@ -3,385 +3,399 @@
 import React, { useState } from 'react';
 import styles from './quiz.module.css';
 
-export default function QuizPage() {
+const WEBHOOK_URL = process.env.NEXT_PUBLIC_WEBHOOK_URL;
+
+export default function VehicleQuiz() {
   const [currentStep, setCurrentStep] = useState('vehicleSelection');
   const [vehicleType, setVehicleType] = useState('');
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [recommendations, setRecommendations] = useState(null);
+  const [error, setError] = useState(null);
 
   const vehicleTypes = [
-    { id: 'cars', name: 'Cars', icon: '🚗' },
-    { id: 'vans', name: 'Vans', icon: '🚐' },
-    { id: 'suvs', name: 'SUVs', icon: '🚙' },
-    { id: 'trucks', name: 'Trucks', icon: '🚛' },
-    { id: 'bikes', name: 'Bikes', icon: '🏍️' },
-    { id: 'threewheelers', name: 'Threewheelers', icon: '🛺' },
-    { id: 'lorries', name: 'Lorries', icon: '🚚' },
-    { id: 'buses', name: 'Buses', icon: '🚌' }
+    { id: 'Cars', name: 'Cars' },
+    { id: 'Vans', name: 'Vans' },
+    { id: 'SUVs', name: 'SUVs' },
+    { id: 'Trucks', name: 'Trucks' },
+    { id: 'Bikes', name: 'Bikes' },
+    { id: 'Threewheelers', name: 'Three Wheelers' },
+    { id: 'Lorries', name: 'Lorries' },
+    { id: 'Buses', name: 'Buses' }
   ];
 
   const questionSets = {
-    cars: [
+    Cars: [
       {
+        key: 'priority',
         question: "What's your top priority?",
         options: [
-          { id: 'fuel_efficiency', text: 'Fuel efficiency' },
-          { id: 'stylish_design', text: 'Stylish design' },
-          { id: 'performance_speed', text: 'Performance & speed' },
-          { id: 'affordability', text: 'Affordability' }
+          { id: 'Fuel efficiency', text: 'Fuel efficiency' },
+          { id: 'Stylish design', text: 'Stylish design' },
+          { id: 'Performance & speed', text: 'Performance & speed' },
+          { id: 'Affordability', text: 'Affordability' }
         ]
       },
       {
+        key: 'passengers',
         question: "How many passengers do you usually travel with?",
         options: [
-          { id: '1_2', text: '1–2 passengers' },
-          { id: '3_4', text: '3–4 passengers' },
-          { id: '5_plus', text: '5+ passengers' }
+          { id: '1-2 passengers', text: '1–2 passengers' },
+          { id: '3-4 passengers', text: '3–4 passengers' },
+          { id: '5+ passengers', text: '5+ passengers' }
         ]
       },
       {
+        key: 'drivingEnvironment',
         question: "What's your driving environment?",
         options: [
-          { id: 'city', text: 'Mostly city' },
-          { id: 'highway', text: 'Highway/long distance' },
-          { id: 'mixed', text: 'Mixed' }
+          { id: 'Mostly city', text: 'Mostly city' },
+          { id: 'Highway/long distance', text: 'Highway/long distance' },
+          { id: 'Mixed', text: 'Mixed' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $15,000)' },
-          { id: 'medium', text: 'Medium ($15,000–$30,000)' },
-          { id: 'premium', text: 'Premium ($30,000+)' }
+          { id: 'Low (< $15,000)', text: 'Low (< $15,000)' },
+          { id: 'Medium ($15,000–$30,000)', text: 'Medium ($15,000–$30,000)' },
+          { id: 'Premium ($30,000+)', text: 'Premium ($30,000+)' }
         ]
       },
       {
+        key: 'transmission',
         question: "Do you prefer manual or automatic?",
         options: [
-          { id: 'manual', text: 'Manual' },
-          { id: 'automatic', text: 'Automatic' }
+          { id: 'Manual', text: 'Manual' },
+          { id: 'Automatic', text: 'Automatic' }
         ]
       }
     ],
-    vans: [
+    Vans: [
       {
+        key: 'purpose',
         question: "What's the main purpose?",
         options: [
-          { id: 'family_trips', text: 'Family trips' },
-          { id: 'cargo_transport', text: 'Cargo transport' },
-          { id: 'business_shuttle', text: 'Business shuttle' }
+          { id: 'Family trips', text: 'Family trips' },
+          { id: 'Cargo transport', text: 'Cargo transport' },
+          { id: 'Business shuttle', text: 'Business shuttle' }
         ]
       },
       {
+        key: 'seats',
         question: "How many seats do you need?",
         options: [
-          { id: '5_7', text: '5–7 seats' },
-          { id: '8_12', text: '8–12 seats' },
-          { id: '12_plus', text: '12+ seats' }
+          { id: '5-7 seats', text: '5–7 seats' },
+          { id: '8-12 seats', text: '8–12 seats' },
+          { id: '12+ seats', text: '12+ seats' }
         ]
       },
       {
+        key: 'luxuryFeatures',
         question: "Do you need luxury interior features?",
         options: [
-          { id: 'yes', text: 'Yes' },
-          { id: 'no', text: 'No' }
+          { id: 'Yes', text: 'Yes' },
+          { id: 'No', text: 'No' }
         ]
       },
       {
+        key: 'drivingEnvironment',
         question: "What's your driving environment?",
         options: [
-          { id: 'city', text: 'City' },
-          { id: 'highway', text: 'Highway' },
-          { id: 'mixed', text: 'Mixed' }
+          { id: 'City', text: 'City' },
+          { id: 'Highway', text: 'Highway' },
+          { id: 'Mixed', text: 'Mixed' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $15,000)' },
-          { id: 'medium', text: 'Medium ($15,000–$30,000)' },
-          { id: 'premium', text: 'Premium ($30,000+)' }
+          { id: 'Low (< $15,000)', text: 'Low (< $15,000)' },
+          { id: 'Medium ($15,000–$30,000)', text: 'Medium ($15,000–$30,000)' },
+          { id: 'Premium ($30,000+)', text: 'Premium ($30,000+)' }
         ]
       }
     ],
-    suvs: [
+    SUVs: [
       {
+        key: 'priority',
         question: "What's most important?",
         options: [
-          { id: 'offroad', text: 'Off-road capability' },
-          { id: 'family_space', text: 'Family space' },
-          { id: 'comfort_luxury', text: 'Comfort & luxury' },
-          { id: 'fuel_economy', text: 'Fuel economy' }
+          { id: 'Off-road capability', text: 'Off-road capability' },
+          { id: 'Family space', text: 'Family space' },
+          { id: 'Comfort & luxury', text: 'Comfort & luxury' },
+          { id: 'Fuel economy', text: 'Fuel economy' }
         ]
       },
       {
+        key: 'seats',
         question: "How many seats do you need?",
         options: [
-          { id: '5', text: '5 seats' },
-          { id: '7', text: '7 seats' },
-          { id: 'more', text: 'More than 7' }
+          { id: '5 seats', text: '5 seats' },
+          { id: '7 seats', text: '7 seats' },
+          { id: 'More than 7', text: 'More than 7' }
         ]
       },
       {
+        key: 'size',
         question: "What size do you prefer?",
         options: [
-          { id: 'compact', text: 'Compact' },
-          { id: 'midsize', text: 'Mid-size' },
-          { id: 'fullsize', text: 'Full-size' }
+          { id: 'Compact', text: 'Compact' },
+          { id: 'Mid-size', text: 'Mid-size' },
+          { id: 'Full-size', text: 'Full-size' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $15,000)' },
-          { id: 'medium', text: 'Medium ($15,000–$30,000)' },
-          { id: 'premium', text: 'Premium ($30,000+)' }
+          { id: 'Low (< $15,000)', text: 'Low (< $15,000)' },
+          { id: 'Medium ($15,000–$30,000)', text: 'Medium ($15,000–$30,000)' },
+          { id: 'Premium ($30,000+)', text: 'Premium ($30,000+)' }
         ]
       },
       {
+        key: 'advancedFeatures',
         question: "Do you need advanced features (navigation, cameras, smart tech)?",
         options: [
-          { id: 'yes', text: 'Yes' },
-          { id: 'no', text: 'No' }
+          { id: 'Yes', text: 'Yes' },
+          { id: 'No', text: 'No' }
         ]
       }
     ],
-    trucks: [
+    Trucks: [
       {
+        key: 'usage',
         question: "What's the main usage?",
         options: [
-          { id: 'work_transport', text: 'Work transport' },
-          { id: 'heavy_duty', text: 'Heavy duty' },
-          { id: 'personal_use', text: 'Personal use' }
+          { id: 'Work transport', text: 'Work transport' },
+          { id: 'Heavy duty', text: 'Heavy duty' },
+          { id: 'Personal use', text: 'Personal use' }
         ]
       },
       {
+        key: 'payloadCapacity',
         question: "What payload capacity do you need?",
         options: [
-          { id: 'light', text: 'Light' },
-          { id: 'medium', text: 'Medium' },
-          { id: 'heavy', text: 'Heavy' }
+          { id: 'Light', text: 'Light' },
+          { id: 'Medium', text: 'Medium' },
+          { id: 'Heavy', text: 'Heavy' }
         ]
       },
       {
+        key: 'drivePreference',
         question: "Drive preference?",
         options: [
-          { id: '2wd', text: '2WD' },
-          { id: '4wd', text: '4WD' }
+          { id: '2WD', text: '2WD' },
+          { id: '4WD', text: '4WD' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $15,000)' },
-          { id: 'medium', text: 'Medium ($15,000–$30,000)' },
-          { id: 'premium', text: 'Premium ($30,000+)' }
+          { id: 'Low (< $15,000)', text: 'Low (< $15,000)' },
+          { id: 'Medium ($15,000–$30,000)', text: 'Medium ($15,000–$30,000)' },
+          { id: 'Premium ($30,000+)', text: 'Premium ($30,000+)' }
         ]
       },
       {
+        key: 'transmission',
         question: "Transmission preference?",
         options: [
-          { id: 'manual', text: 'Manual' },
-          { id: 'automatic', text: 'Automatic' }
+          { id: 'Manual', text: 'Manual' },
+          { id: 'Automatic', text: 'Automatic' }
         ]
       }
     ],
-    bikes: [
+    Bikes: [
       {
+        key: 'purpose',
         question: "What's the main purpose?",
         options: [
-          { id: 'daily_commute', text: 'Daily commute' },
-          { id: 'long_rides', text: 'Long rides' },
-          { id: 'sports', text: 'Sports' },
-          { id: 'adventure', text: 'Adventure' }
+          { id: 'Daily commute', text: 'Daily commute' },
+          { id: 'Long rides', text: 'Long rides' },
+          { id: 'Sports', text: 'Sports' },
+          { id: 'Adventure', text: 'Adventure' }
         ]
       },
       {
+        key: 'engineSize',
         question: "Engine size preference?",
         options: [
-          { id: '100_150cc', text: '100–150cc' },
-          { id: '150_300cc', text: '150–300cc' },
-          { id: '300cc_plus', text: '300+cc' }
+          { id: '100-150cc', text: '100–150cc' },
+          { id: '150-300cc', text: '150–300cc' },
+          { id: '300+cc', text: '300+cc' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $3,000)' },
-          { id: 'medium', text: 'Medium ($3,000–$8,000)' },
-          { id: 'premium', text: 'Premium ($8,000+)' }
+          { id: 'Low (< $3,000)', text: 'Low (< $3,000)' },
+          { id: 'Medium ($3,000–$8,000)', text: 'Medium ($3,000–$8,000)' },
+          { id: 'Premium ($8,000+)', text: 'Premium ($8,000+)' }
         ]
       },
       {
+        key: 'priorityPreference',
         question: "Priority preference?",
         options: [
-          { id: 'comfort', text: 'Comfort' },
-          { id: 'performance', text: 'Performance' }
+          { id: 'Comfort', text: 'Comfort' },
+          { id: 'Performance', text: 'Performance' }
         ]
       },
       {
+        key: 'brandPreference',
         question: "Any brand preference?",
         options: [
-          { id: 'honda', text: 'Honda' },
-          { id: 'yamaha', text: 'Yamaha' },
-          { id: 'kawasaki', text: 'Kawasaki' },
-          { id: 'no_preference', text: 'No preference' }
+          { id: 'Honda', text: 'Honda' },
+          { id: 'Yamaha', text: 'Yamaha' },
+          { id: 'Kawasaki', text: 'Kawasaki' },
+          { id: 'No preference', text: 'No preference' }
         ]
       }
     ],
-    threewheelers: [
+    Threewheelers: [
       {
+        key: 'useCase',
         question: "What's the use case?",
         options: [
-          { id: 'passenger_transport', text: 'Passenger transport' },
-          { id: 'goods_transport', text: 'Goods transport' }
+          { id: 'Passenger transport', text: 'Passenger transport' },
+          { id: 'Goods transport', text: 'Goods transport' }
         ]
       },
       {
+        key: 'dailyDistance',
         question: "Daily distance covered?",
         options: [
-          { id: 'short', text: 'Short (< 50km)' },
-          { id: 'medium', text: 'Medium (50-150km)' },
-          { id: 'long', text: 'Long (150km+)' }
+          { id: 'Short (< 50km)', text: 'Short (< 50km)' },
+          { id: 'Medium (50-150km)', text: 'Medium (50-150km)' },
+          { id: 'Long (150km+)', text: 'Long (150km+)' }
         ]
       },
       {
+        key: 'fuelPreference',
         question: "Fuel preference?",
         options: [
-          { id: 'petrol', text: 'Petrol' },
-          { id: 'electric', text: 'Electric' },
-          { id: 'cng', text: 'CNG' }
+          { id: 'Petrol', text: 'Petrol' },
+          { id: 'Electric', text: 'Electric' },
+          { id: 'CNG', text: 'CNG' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $5,000)' },
-          { id: 'medium', text: 'Medium ($5,000–$12,000)' },
-          { id: 'premium', text: 'Premium ($12,000+)' }
+          { id: 'Low (< $5,000)', text: 'Low (< $5,000)' },
+          { id: 'Medium ($5,000–$12,000)', text: 'Medium ($5,000–$12,000)' },
+          { id: 'Premium ($12,000+)', text: 'Premium ($12,000+)' }
         ]
       },
       {
+        key: 'preference',
         question: "Seating/cargo preference?",
         options: [
-          { id: 'more_seating', text: 'More seating' },
-          { id: 'more_cargo', text: 'More cargo space' }
+          { id: 'More seating', text: 'More seating' },
+          { id: 'More cargo space', text: 'More cargo space' }
         ]
       }
     ],
-    lorries: [
+    Lorries: [
       {
+        key: 'usage',
         question: "What's the main usage?",
         options: [
-          { id: 'construction', text: 'Construction' },
-          { id: 'cargo', text: 'Cargo' },
-          { id: 'delivery', text: 'Delivery' }
+          { id: 'Construction', text: 'Construction' },
+          { id: 'Cargo', text: 'Cargo' },
+          { id: 'Delivery', text: 'Delivery' }
         ]
       },
       {
+        key: 'capacity',
         question: "What capacity do you need?",
         options: [
-          { id: 'light', text: 'Light' },
-          { id: 'medium', text: 'Medium' },
-          { id: 'heavy', text: 'Heavy' }
+          { id: 'Light', text: 'Light' },
+          { id: 'Medium', text: 'Medium' },
+          { id: 'Heavy', text: 'Heavy' }
         ]
       },
       {
+        key: 'distancePreference',
         question: "Distance preference?",
         options: [
-          { id: 'short_city', text: 'Short city routes' },
-          { id: 'long_haul', text: 'Long haul' }
+          { id: 'Short city routes', text: 'Short city routes' },
+          { id: 'Long haul', text: 'Long haul' }
         ]
       },
       {
+        key: 'fuelType',
         question: "Fuel type preference?",
         options: [
-          { id: 'diesel', text: 'Diesel' },
-          { id: 'electric', text: 'Electric' },
-          { id: 'hybrid', text: 'Hybrid' }
+          { id: 'Diesel', text: 'Diesel' },
+          { id: 'Electric', text: 'Electric' },
+          { id: 'Hybrid', text: 'Hybrid' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $25,000)' },
-          { id: 'medium', text: 'Medium ($25,000–$60,000)' },
-          { id: 'premium', text: 'Premium ($60,000+)' }
+          { id: 'Low (< $25,000)', text: 'Low (< $25,000)' },
+          { id: 'Medium ($25,000–$60,000)', text: 'Medium ($25,000–$60,000)' },
+          { id: 'Premium ($60,000+)', text: 'Premium ($60,000+)' }
         ]
       }
     ],
-    buses: [
+    Buses: [
       {
+        key: 'purpose',
         question: "What's the main purpose?",
         options: [
-          { id: 'passenger_transport', text: 'Passenger transport' },
-          { id: 'school', text: 'School transport' },
-          { id: 'tourist', text: 'Tourist transport' }
+          { id: 'Passenger transport', text: 'Passenger transport' },
+          { id: 'School transport', text: 'School transport' },
+          { id: 'Tourist transport', text: 'Tourist transport' }
         ]
       },
       {
+        key: 'seatingCapacity',
         question: "What seating capacity do you need?",
         options: [
-          { id: '20', text: '20 seats' },
-          { id: '30', text: '30 seats' },
-          { id: '50_plus', text: '50+ seats' }
+          { id: '20 seats', text: '20 seats' },
+          { id: '30 seats', text: '30 seats' },
+          { id: '50+ seats', text: '50+ seats' }
         ]
       },
       {
+        key: 'comfortFeatures',
         question: "Do you need comfort features (AC, recliner seats, Wi-Fi)?",
         options: [
-          { id: 'yes', text: 'Yes' },
-          { id: 'no', text: 'No' }
+          { id: 'Yes', text: 'Yes' },
+          { id: 'No', text: 'No' }
         ]
       },
       {
+        key: 'budgetRange',
         question: "What's your budget range?",
         options: [
-          { id: 'low', text: 'Low (< $40,000)' },
-          { id: 'medium', text: 'Medium ($40,000–$100,000)' },
-          { id: 'premium', text: 'Premium ($100,000+)' }
+          { id: 'Low (< $40,000)', text: 'Low (< $40,000)' },
+          { id: 'Medium ($40,000–$100,000)', text: 'Medium ($40,000–$100,000)' },
+          { id: 'Premium ($100,000+)', text: 'Premium ($100,000+)' }
         ]
       },
       {
+        key: 'primaryFocus',
         question: "Primary focus?",
         options: [
-          { id: 'city', text: 'City routes' },
-          { id: 'long_distance', text: 'Long-distance travel' }
+          { id: 'City routes', text: 'City routes' },
+          { id: 'Long-distance travel', text: 'Long-distance travel' }
         ]
       }
     ]
-  };
-
-  const recommendations = {
-    cars: {
-      fuel_efficiency: { models: ['Toyota Prius', 'Honda Insight'], reasoning: 'excellent fuel economy and eco-friendly features' },
-      stylish_design: { models: ['BMW 3 Series', 'Audi A4'], reasoning: 'sleek design and premium aesthetics' },
-      performance_speed: { models: ['Ford Mustang', 'Chevrolet Camaro'], reasoning: 'powerful engines and sporty performance' },
-      affordability: { models: ['Honda Civic', 'Toyota Corolla'], reasoning: 'great value, reliability, and low maintenance costs' }
-    },
-    suvs: {
-      offroad: { models: ['Jeep Wrangler', 'Toyota 4Runner'], reasoning: 'exceptional off-road capabilities and rugged build' },
-      family_space: { models: ['Honda Pilot', 'Toyota Highlander'], reasoning: 'spacious interior and family-friendly features' },
-      comfort_luxury: { models: ['BMW X5', 'Mercedes GLE'], reasoning: 'premium comfort and luxury amenities' },
-      fuel_economy: { models: ['Toyota RAV4 Hybrid', 'Honda CR-V'], reasoning: 'efficient fuel consumption with SUV versatility' }
-    },
-    trucks: {
-      work_transport: { models: ['Ford F-150', 'Chevrolet Silverado'], reasoning: 'reliable work capabilities and payload capacity' },
-      heavy_duty: { models: ['Ford F-350', 'Ram 3500'], reasoning: 'maximum towing capacity and heavy-duty performance' },
-      personal_use: { models: ['Honda Ridgeline', 'Toyota Tacoma'], reasoning: 'comfortable daily driving with truck utility' }
-    },
-    vans: {
-      family_trips: { models: ['Honda Odyssey', 'Toyota Sienna'], reasoning: 'family comfort and entertainment features' },
-      cargo_transport: { models: ['Ford Transit', 'Mercedes Sprinter'], reasoning: 'maximum cargo space and commercial reliability' },
-      business_shuttle: { models: ['Chevrolet Express', 'Nissan NV200'], reasoning: 'passenger comfort and business-grade durability' }
-    },
-    bikes: {
-      daily_commute: { models: ['Honda CB125F', 'Yamaha YBR125'], reasoning: 'fuel efficient and perfect for city commuting' },
-      long_rides: { models: ['Honda NC750X', 'BMW F750GS'], reasoning: 'comfort for long distances and touring capabilities' },
-      sports: { models: ['Yamaha R3', 'Kawasaki Ninja 300'], reasoning: 'sporty performance and track-ready features' },
-      adventure: { models: ['BMW GS310', 'KTM 390 Adventure'], reasoning: 'versatile for both on-road and off-road adventures' }
-    }
   };
 
   const selectVehicleType = (type) => {
@@ -389,16 +403,112 @@ export default function QuizPage() {
     setQuestions(questionSets[type] || []);
     setCurrentStep('questions');
     setQuestionIndex(0);
+    setAnswers({ vehicleType: type });
+    setError(null);
   };
 
   const handleAnswer = (answerId) => {
-    const newAnswers = { ...answers, [`q${questionIndex}`]: answerId };
+    const currentQuestion = questions[questionIndex];
+    const newAnswers = { ...answers, [currentQuestion.key]: answerId };
     setAnswers(newAnswers);
     
     if (questionIndex + 1 < questions.length) {
       setQuestionIndex(questionIndex + 1);
     } else {
+      submitQuiz(newAnswers);
+    }
+  };
+
+  const submitQuiz = async (finalAnswers) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      console.log('📤 Sending quiz data to n8n:', finalAnswers);
+      
+      const response = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(finalAnswers)
+      });
+
+      console.log('📡 Response status:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`Server error (${response.status}): Unable to get recommendations`);
+      }
+
+      const responseText = await response.text();
+      console.log('📥 Raw response length:', responseText.length);
+
+      if (!responseText || responseText.trim() === '') {
+        throw new Error('Server returned empty response');
+      }
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+        console.log('✅ Parsed response data:', data);
+      } catch (parseError) {
+        console.error('❌ JSON parse error:', parseError);
+        throw new Error('Server returned invalid JSON');
+      }
+
+      let recommendationsData;
+
+      if (Array.isArray(data) && data.length > 0) {
+        const firstItem = data[0];
+        
+        if (firstItem.success && firstItem.data) {
+          recommendationsData = firstItem.data;
+        } else if (firstItem.recommendations && firstItem.summary) {
+          recommendationsData = firstItem;
+        } else {
+          throw new Error('Invalid response structure in array');
+        }
+      } else if (data.success && data.data) {
+        recommendationsData = data.data;
+      } else if (data.recommendations && data.summary) {
+        recommendationsData = data;
+      } else {
+        console.error('Unexpected response format:', data);
+        throw new Error('Invalid response format from server');
+      }
+
+      if (!recommendationsData.recommendations || !Array.isArray(recommendationsData.recommendations)) {
+        throw new Error('No recommendations found in response');
+      }
+
+      if (!recommendationsData.summary) {
+        throw new Error('No summary found in response');
+      }
+
+      console.log('✅ Successfully extracted recommendations:', recommendationsData.recommendations.length, 'vehicles');
+      
+      setRecommendations(recommendationsData);
       setCurrentStep('recommendation');
+
+    } catch (err) {
+      console.error('❌ Error submitting quiz:', err);
+      
+      let errorMessage = 'Failed to get recommendations. ';
+      
+      if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+        errorMessage += `Cannot connect to server. Please ensure the service is running.`;
+      } else if (err.message.includes('empty response')) {
+        errorMessage += 'Server returned empty response.';
+      } else if (err.message.includes('JSON')) {
+        errorMessage += 'Server returned invalid data format.';
+      } else {
+        errorMessage += err.message;
+      }
+      
+      setError(errorMessage);
+      setCurrentStep('error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -407,6 +517,7 @@ export default function QuizPage() {
       setQuestionIndex(questionIndex - 1);
     } else {
       setCurrentStep('vehicleSelection');
+      setAnswers({});
     }
   };
 
@@ -416,28 +527,70 @@ export default function QuizPage() {
     setQuestionIndex(0);
     setAnswers({});
     setQuestions([]);
+    setRecommendations(null);
+    setError(null);
   };
 
-  const getRecommendation = () => {
-    const primaryPref = answers.q0;
-    const vehicleRecs = recommendations[vehicleType];
-    
-    if (vehicleRecs && vehicleRecs[primaryPref]) {
-      return vehicleRecs[primaryPref];
-    }
-
-    return {
-      models: ['Various suitable options available'],
-      reasoning: 'based on your preferences and requirements'
-    };
+  const exploreVehicles = (vehicleName) => {
+    // Navigate to vehicles page with search/filter
+    const searchQuery = encodeURIComponent(vehicleName);
+    window.location.href = `/carAdd?search=${searchQuery}`;
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className={styles.quizApp}>
+        <div className={styles.quizContainer}>
+          <div className={styles.loadingState}>
+            <div className={styles.logoSpinner}>
+              <svg viewBox="0 0 100 100" className={styles.logo}>
+                <circle cx="50" cy="50" r="40" stroke="#ECDFCC" strokeWidth="8" fill="none" />
+                <path d="M50 10 L50 30 M90 50 L70 50 M50 90 L50 70 M10 50 L30 50" stroke="#ECDFCC" strokeWidth="6" strokeLinecap="round" />
+              </svg>
+            </div>
+            <h2>Thinking...</h2>
+            <p>Our AI is analyzing your preferences</p>
+            <div className={styles.loadingDetails}>
+              <p>Analyzing {vehicleType} preferences</p>
+              <p>Comparing vehicle models</p>
+              <p>Calculating match scores</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (currentStep === 'error') {
+    return (
+      <div className={styles.quizApp}>
+        <div className={styles.quizContainer}>
+          <div className={styles.errorState}>
+            <h2>⚠️ Oops! Something went wrong</h2>
+            <p className={styles.errorMessage}>{error}</p>
+            <div className={styles.errorActions}>
+              <button className={styles.restartBtn} onClick={restart}>
+                Start Over
+              </button>
+              <button className={styles.retryBtn} onClick={() => submitQuiz(answers)}>
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Vehicle selection
   if (currentStep === 'vehicleSelection') {
     return (
       <div className={styles.quizApp}>
         <div className={styles.quizContainer}>
           <div className={styles.quizHeader}>
-            <h2>🎯 Find Your Perfect Vehicle</h2>
+            <h2>Find Your Perfect Vehicle</h2>
             <p>Let's start by selecting your preferred vehicle type</p>
           </div>
           <div className={styles.vehicleGrid}>
@@ -447,7 +600,6 @@ export default function QuizPage() {
                 className={styles.vehicleCard}
                 onClick={() => selectVehicleType(type.id)}
               >
-                <div className={styles.vehicleIcon}>{type.icon}</div>
                 <div className={styles.vehicleName}>{type.name}</div>
               </div>
             ))}
@@ -457,6 +609,7 @@ export default function QuizPage() {
     );
   }
 
+  // Questions
   if (currentStep === 'questions') {
     const currentQuestion = questions[questionIndex];
     const progress = ((questionIndex + 1) / questions.length) * 100;
@@ -482,50 +635,102 @@ export default function QuizPage() {
               </button>
             ))}
           </div>
-          {questionIndex > 0 && (
-            <button className={styles.backBtn} onClick={goBack}>
-              ← Back
-            </button>
-          )}
+          <button className={styles.backBtn} onClick={goBack}>
+            ← Back
+          </button>
         </div>
       </div>
     );
   }
 
-  if (currentStep === 'recommendation') {
-    const recommendation = getRecommendation();
-    const vehicleTypeDisplay = vehicleType.charAt(0).toUpperCase() + vehicleType.slice(1);
+  // Recommendations
+  if (currentStep === 'recommendation' && recommendations) {
+    const { recommendations: vehicleList, summary } = recommendations;
 
     return (
       <div className={styles.quizApp}>
         <div className={styles.quizContainer}>
           <div className={styles.recommendationHeader}>
-            <h2>🎉 Your Perfect Vehicle Match!</h2>
-            <div className={styles.recommendationCard}>
-              <h3>{vehicleTypeDisplay}</h3>
-              <div className={styles.recommendedModels}>
-                {recommendation.models.map((model, index) => (
-                  <span key={index} className={styles.modelTag}>{model}</span>
-                ))}
+            <h2>Your Perfect Vehicle Matches</h2>
+            <div className={styles.summaryStats}>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Top Match</span>
+                <span className={styles.statValue}>{summary.topMatch}</span>
               </div>
-              <p className={styles.reasoning}>
-                We recommend this because it offers {recommendation.reasoning}.
-              </p>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Average Price</span>
+                <span className={styles.statValue}>{summary.averagePrice}</span>
+              </div>
+              <div className={styles.statItem}>
+                <span className={styles.statLabel}>Total Options</span>
+                <span className={styles.statValue}>{summary.totalRecommendations}</span>
+              </div>
             </div>
           </div>
+
+          <div className={styles.recommendationsList}>
+            {vehicleList.map((vehicle) => (
+              <div key={vehicle.id} className={styles.recommendationCard}>
+                <div className={styles.cardHeader}>
+                  <span className={styles.rankBadge}>#{vehicle.rank}</span>
+                  <h3>{vehicle.vehicleModel}</h3>
+                  <span className={styles.matchScore}>{vehicle.matchScore}% Match</span>
+                </div>
+                
+                <div className={styles.priceTag}>{vehicle.estimatedPrice}</div>
+                
+                <div className={styles.featuresSection}>
+                  <h4>Key Features</h4>
+                  <ul>
+                    {vehicle.keyFeatures.map((feature, idx) => (
+                      <li key={idx}>{feature}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className={styles.reasoningSection}>
+                  <h4>Why This Vehicle</h4>
+                  <p>{vehicle.matchReasoning}</p>
+                </div>
+
+                {vehicle.fuelEfficiency !== 'N/A' && (
+                  <div className={styles.specsRow}>
+                    <div className={styles.specItem}>
+                      <span className={styles.specLabel}>Fuel Efficiency</span>
+                      <span className={styles.specValue}>{vehicle.fuelEfficiency}</span>
+                    </div>
+                  </div>
+                )}
+
+                <button 
+                  className={styles.exploreBtn}
+                  onClick={() => exploreVehicles(vehicle.vehicleModel)}
+                >
+                  Explore Similar Vehicles
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.summarySection}>
+            <h3>Overall Recommendation</h3>
+            <p>{summary.overallReasoning}</p>
+            
+            <div className={styles.tipsSection}>
+              <h4>Additional Tips</h4>
+              <p>{summary.additionalTips}</p>
+            </div>
+          </div>
+
           <div className={styles.actionButtons}>
             <button className={styles.restartBtn} onClick={restart}>
               Take Quiz Again
-            </button>
-            <button 
-              className={styles.contactBtn} 
-              onClick={() => alert("Feature coming soon! We'll connect you with local dealers.")}
-            >
-              Contact Dealer
             </button>
           </div>
         </div>
       </div>
     );
   }
+
+  return null;
 }
