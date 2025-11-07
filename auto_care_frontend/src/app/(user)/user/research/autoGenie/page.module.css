@@ -217,6 +217,18 @@
     opacity: 0.5;
   }
 }
+/* Logo styling for bot avatars */
+.botAvatar img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.messageAvatar img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
 
 /* Messages Container */
 .messagesContainer {

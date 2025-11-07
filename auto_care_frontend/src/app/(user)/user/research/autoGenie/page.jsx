@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Paperclip, Bot, User, Trash2, ArrowLeft } from 'lucide-react';
+import { Send, Mic, Paperclip, User, Trash2, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import styles from './page.module.css';
@@ -12,7 +12,7 @@ export default function ChatPage() {
     {
       id: 1,
       type: 'ai',
-      text: "Hello! I'm AutoBot, your Auto Care assistant. How can I help you with your vehicle today?",
+      text: "Hello! I'm auto Genie AI, your Auto Care assistant. How can I help you with your vehicle today?",
       timestamp: new Date()
     }
   ]);
@@ -159,10 +159,10 @@ export default function ChatPage() {
             </button>
             <div className={styles.botInfo}>
               <div className={styles.botAvatar}>
-                <Bot size={24} />
+                <img src="/chatbot.png" alt="AutoBot" />
               </div>
               <div className={styles.botDetails}>
-                <h2 className={styles.botName}>AutoBot</h2>
+                <h2 className={styles.botName}>Auto Genie AI</h2>
                 <span className={styles.botStatus}>
                   <span className={styles.statusDot}></span>
                   Online
@@ -190,7 +190,7 @@ export default function ChatPage() {
               >
                 <div className={styles.messageAvatar}>
                   {message.type === 'ai' ? (
-                    <Bot size={20} />
+                    <img src="/chatbot.png" alt="Bot" />
                   ) : (
                     <User size={20} />
                   )}
@@ -212,7 +212,7 @@ export default function ChatPage() {
             {isTyping && (
               <div className={`${styles.messageWrapper} ${styles.aiMessage}`}>
                 <div className={styles.messageAvatar}>
-                  <Bot size={20} />
+                  <img src="/chatbot.png" alt="Bot" />
                 </div>
                 <div className={styles.messageBubble}>
                   <div className={styles.typingIndicator}>

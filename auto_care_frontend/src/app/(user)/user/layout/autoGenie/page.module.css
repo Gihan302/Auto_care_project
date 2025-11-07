@@ -1,12 +1,11 @@
-/* Floating Button */
 .floatingButton {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  width: 64px;
-  height: 64px;
+  width: 75px;
+  height: 75px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ECDFCC 0%, #d4c4a8 100%);
+  background: linear-gradient(135deg, #d7c7af 0%, #d4c4a8 100%);
   border: none;
   color: #1E201E;
   cursor: pointer;
@@ -16,7 +15,47 @@
   box-shadow: 0 8px 24px rgba(236, 223, 204, 0.4);
   transition: all 0.3s ease;
   z-index: 1000;
-  animation: fadeIn 0.5s ease-out, float 3s ease-in-out infinite;
+  animation: fadeIn 0.5s ease-out, float 3s ease-in-out infinite, gradientShift 8s ease-in-out infinite, glow 2s ease-in-out infinite;
+  overflow: hidden;
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0% {
+    background: linear-gradient(135deg, #d7c7af 0%, #d4c4a8 100%);
+  }
+
+  25% {
+    background: linear-gradient(135deg, #e8d5b7 0%, #d7c7af 100%);
+  }
+
+  50% {
+    background: linear-gradient(135deg, #f0e5d8 0%, #e8d5b7 100%);
+  }
+
+  75% {
+    background: linear-gradient(135deg, #d4c4a8 0%, #c9b99a 100%);
+  }
+
+  100% {
+    background: linear-gradient(135deg, #d7c7af 0%, #d4c4a8 100%);
+  }
+}
+
+/* Glowing effect */
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 8px 24px rgba(236, 223, 204, 0.4),
+      0 0 20px rgba(236, 223, 204, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 8px 32px rgba(236, 223, 204, 0.6),
+      0 0 40px rgba(236, 223, 204, 0.4),
+      0 0 60px rgba(236, 223, 204, 0.2);
+  }
 }
 
 @keyframes fadeIn {
@@ -43,15 +82,104 @@
   }
 }
 
+/* Shimmer effect overlay */
+.floatingButton::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 70%);
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Particle effect (optional - creates subtle dots around button) */
+.floatingButton::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(236, 223, 204, 0.3);
+  animation: pulse-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
 .floatingButton:hover {
   transform: scale(1.1) translateY(-4px);
-  box-shadow: 0 12px 32px rgba(236, 223, 204, 0.5);
+  box-shadow: 0 12px 32px rgba(236, 223, 204, 0.5),
+    0 0 50px rgba(236, 223, 204, 0.3);
+  animation: fadeIn 0.5s ease-out, float 3s ease-in-out infinite, gradientShift 8s ease-in-out infinite, glow 2s ease-in-out infinite;
+}
+
+/* Subtle rotation on hover for AI feel */
+@keyframes rotate {
+  from {
+    transform: scale(1.1) translateY(-4px) rotate(0deg);
+  }
+
+  to {
+    transform: scale(1.1) translateY(-4px) rotate(360deg);
+  }
 }
 
 .floatingButton:active {
   transform: scale(0.95);
 }
 
+/* Logo styling - CONSOLIDATED */
+.floatingButton img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  pointer-events: none;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  animation: logoBreath 3s ease-in-out infinite;
+}
+
+/* Breathing effect for logo */
+@keyframes logoBreath {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Badge styling - CONSOLIDATED */
 .badge {
   position: absolute;
   top: 4px;
@@ -67,10 +195,11 @@
   align-items: center;
   justify-content: center;
   border: 2px solid #1E201E;
-  animation: pulse 2s ease-in-out infinite;
+  animation: badgePulse 2s ease-in-out infinite, bounce 1s ease-in-out infinite;
+  z-index: 3;
 }
 
-@keyframes pulse {
+@keyframes badgePulse {
 
   0%,
   100% {
@@ -79,6 +208,18 @@
 
   50% {
     transform: scale(1.1);
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
   }
 }
 
@@ -141,6 +282,13 @@
   box-shadow: 0 4px 12px rgba(236, 223, 204, 0.3);
 }
 
+/* Logo in Bot Avatar (Chat Header) */
+.botAvatarSmall img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .popupTitle {
   font-size: 1rem;
   font-weight: 600;
@@ -162,7 +310,19 @@
   border-radius: 50%;
   background: #4ade80;
   box-shadow: 0 0 6px #4ade80;
-  animation: pulse 2s ease-in-out infinite;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .headerActions {
@@ -253,6 +413,13 @@
 .aiMessage .messageAvatar {
   background: linear-gradient(135deg, #ECDFCC 0%, #d4c4a8 100%);
   color: #1E201E;
+}
+
+/* Logo in Message Avatar */
+.aiMessage .messageAvatar img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
 
 .userMessage .messageAvatar {
@@ -437,6 +604,11 @@
     height: 56px;
     bottom: 20px;
     right: 20px;
+  }
+
+  .floatingButton img {
+    width: 36px;
+    height: 36px;
   }
 
   .chatPopup {

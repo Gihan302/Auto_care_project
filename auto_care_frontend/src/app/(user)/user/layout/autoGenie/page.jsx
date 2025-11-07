@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Minimize2, Bot, User } from 'lucide-react';
+import { X, Send, Minimize2, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
@@ -13,7 +13,7 @@ export default function FloatingChat() {
     {
       id: 1,
       type: 'ai',
-      text: "Hi! I'm AutoBot. How can I help you today?",
+      text: "Hi! I'm Auto Genie AI. How can I help you today?",
       timestamp: new Date()
     }
   ]);
@@ -145,7 +145,7 @@ export default function FloatingChat() {
           onClick={() => setIsOpen(true)}
           aria-label="Open AutoBot chat"
         >
-          <MessageCircle size={28} />
+          <img src="/chatbot.png" alt="AutoBot Logo" />
           {messages.length > 1 && (
             <span className={styles.badge}>{messages.length - 1}</span>
           )}
@@ -159,10 +159,10 @@ export default function FloatingChat() {
           <div className={styles.popupHeader}>
             <div className={styles.headerLeft}>
               <div className={styles.botAvatarSmall}>
-                <Bot size={20} />
+                <img src="/chatbot.png" alt="AutoBot" />
               </div>
               <div>
-                <h3 className={styles.popupTitle}>AutoBot</h3>
+                <h3 className={styles.popupTitle}>Auto Genie AI</h3>
                 <span className={styles.popupStatus}>
                   <span className={styles.statusDot}></span>
                   Online
@@ -198,7 +198,7 @@ export default function FloatingChat() {
               >
                 <div className={styles.messageAvatar}>
                   {message.type === 'ai' ? (
-                    <Bot size={16} />
+                    <img src="/chatbot.png" alt="Bot" />
                   ) : (
                     <User size={16} />
                   )}
@@ -214,7 +214,7 @@ export default function FloatingChat() {
             {isTyping && (
               <div className={`${styles.messageWrapper} ${styles.aiMessage}`}>
                 <div className={styles.messageAvatar}>
-                  <Bot size={16} />
+                  <img src="/chatbot.png" alt="Bot" />
                 </div>
                 <div className={styles.messageBubble}>
                   <div className={styles.typingIndicator}>
@@ -226,13 +226,6 @@ export default function FloatingChat() {
               </div>
             )}
             <div ref={messagesEndRef} />
-          </div>
-
-          {/* Quick Actions */}
-          <div className={styles.quickActions}>
-            <button className={styles.quickButton} onClick={() => setInputValue('Find a car')}>Find a car</button>
-            <button className={styles.quickButton} onClick={() => setInputValue('Book service')}>Book service</button>
-            <button className={styles.quickButton} onClick={() => setInputValue('Contact us')}>Contact us</button>
           </div>
 
           {/* Input */}
