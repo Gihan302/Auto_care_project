@@ -1,75 +1,89 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import styles from "./createPlan.module.css";
-import apiClient from "@/utils/axios";
+import styles from "../../../(insurance)/Insurance/createPlan/createPlan.module.css";
+import api from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
-const CreatePlanPage = () => {
-  const [planName, setPlanName] = useState("");
+const CreateInsurancePlanPage = () => {
+  // State to hold the list of available ads
+  const [pendingAds, setPendingAds] = useState([]);
+
+  // State for the form fields
+  // Note: We use planAmt and instAmt to match the IPlanRequest on the backend
+  const [planAmt, setPlanAmt] = useState("");
+  const [noOfInstallments, setNoOfInstallments] = useState("");
+  const [interest, setInterest] = useState("");
+  const [instAmt, setInstAmt] = useState("");
   const [description, setDescription] = useState("");
-  const [coverage, setCoverage] = useState("");
-  const [price, setPrice] = useState("");
+  const [adId, setAdId] = useState(""); // This will be set by the dropdown
+  
+  // State for UI messages and loading
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [loading, setLoading] = useState(false); // For loading the dropdown
+  const [formLoading, setFormLoading] = useState(false); // For submitting the form
   const router = useRouter();
 
+  // Fetch pending ads when the page loads
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.roles) {
-      const userRoles = user.roles.map(role => role.name || role);
-      if (userRoles.includes('ROLE_ICOMPANY')) {
-        setIsAuthorized(true);
-      } else {
-        router.push('/signin');
+    const fetchPendingAds = async () => {
+      setLoading(true);
+      setMessage("");
+      try {
+        // Call the insurance company's endpoint
+        const response = await api.get("/icompany/getpendingad");
+        if (Array.isArray(response.data)) {
+          setPendingAds(response.data);
+        }
+      } catch (err) {
+        console.error("❌ Error fetching pending ads:", err);
+        setMessage("⚠️ Could not load available ads. " + (err.response?.data?.message || ""));
+      } finally {
+        setLoading(false);
       }
-    } else {
-      router.push('/signin');
-    }
-  }, [router]);
+    };
 
+    fetchPendingAds();
+  }, []); // The empty array [] means this runs once when the page loads
+
+  // ----------------------------
+  // Handle Create Insurance Plan
+  // ----------------------------
   const handleCreatePlan = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true);
     setMessage("");
 
-    try {
-      const response = await apiClient.post("/api/insurance-plans", {
-        planName,
-        description,
-        coverage,
-        price,
-      });
+    const payload = {
+      // Use the correct field names for IPlanRequest
+      planAmt: Number(planAmt),
+      noOfInstallments: Number(noOfInstallments),
+      interest: Number(interest),
+      instAmt: Number(instAmt),
+      description,
+      adId: Number(adId),
+    };
 
-      if (response.status === 201) {
-        setMessage("✅ Plan created successfully!");
-        // Clear form
-        setPlanName("");
-        setDescription("");
-        setCoverage("");
-        setPrice("");
-        // Redirect to manage plans page after a short delay
-        setTimeout(() => {
-          router.push("/Insurance/managePlans");
-        }, 2000);
+    console.log("📤 Sending Payload →", payload);
+
+    try {
+      // Call the insurance company's endpoint
+      const response = await api.post("/icompany/postiplan", payload);
+
+      if (response.status === 200) {
+        setMessage("✅ Insurance Plan created successfully!");
+        // Redirect to the insurance dashboard
+        setTimeout(() => router.push("/insurance/manage-plans"), 2000);
       } else {
         setMessage("⚠️ Failed to create plan.");
       }
     } catch (err) {
-      console.error("Error creating plan:", err);
-      setMessage(
-        err.response?.data?.message ||
-          "⚠️ An error occurred while creating the plan."
-      );
+      console.error("❌ Error creating insurance plan:", err);
+      setMessage(err.response?.data?.message || "⚠️ Server validation failed.");
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
-
-  if (!isAuthorized) {
-    return <div>Loading...</div>; // Or a proper loader component
-  }
 
   return (
     <div className={styles.createPlanContainer}>
@@ -78,67 +92,107 @@ const CreatePlanPage = () => {
         {message && <p className={styles.message}>{message}</p>}
 
         <form onSubmit={handleCreatePlan}>
+          {/* Advertisement Dropdown */}
           <div className={styles.formGroup}>
-            <label htmlFor="planName">Plan Name</label>
-            <input
-              id="planName"
-              type="text"
-              value={planName}
-              onChange={(e) => setPlanName(e.target.value)}
+            <label>Advertisement</label>
+            <select
+              value={adId}
+              onChange={(e) => setAdId(e.target.value)}
               className={styles.inputField}
+              required
+              disabled={loading} // Disable dropdown while loading ads
+            >
+              <option value="" disabled>
+                -- Select an Advertisement --
+              </option>
+              {pendingAds.length > 0 ? (
+                pendingAds.map((ad) => (
+                  <option key={ad.id} value={ad.id}>
+                    {ad.title} (ID: {ad.id})
+                  </option>
+                ))
+              ) : (
+                <option disabled>
+                  {loading ? "Loading ads..." : "No pending ads found"}
+                </option>
+              )}
+            </select>
+          </div>
+
+          {/* Plan Amount */}
+          <div className={styles.formGroup}>
+            <label>Plan Amount (LKR)</label>
+            <input
+              type="number"
+              value={planAmt}
+              onChange={(e) => setPlanAmt(e.target.value)}
+              className={styles.inputField}
+              placeholder="e.g., 50000"
               required
             />
           </div>
 
+          {/* Number of Installments */}
           <div className={styles.formGroup}>
-            <label htmlFor="description">Description</label>
+            <label>No. of Installments</label>
+            <input
+              type="number"
+              value={noOfInstallments}
+              onChange={(e) => setNoOfInstallments(e.target.value)}
+              className={styles.inputField}
+              placeholder="e.g., 12"
+              required
+            />
+          </div>
+
+          {/* Interest Rate */}
+          <div className={styles.formGroup}>
+            <label>Interest Rate (%)</label>
+            <input
+              type="number"
+              value={interest}
+              onChange={(e) => setInterest(e.target.value)}
+              className={styles.inputField}
+              placeholder="e.g., 5.0"
+              step="0.1"
+              required
+            />
+          </div>
+
+          {/* Installment Amount */}
+          <div className={styles.formGroup}>
+            <label>Installment Amount (LKR)</label>
+            <input
+              type="number"
+              value={instAmt}
+              onChange={(e) => setInstAmt(e.target.value)}
+              className={styles.inputField}
+              placeholder="Monthly payment amount"
+              required
+            />
+          </div>
+
+          {/* Description */}
+          <div className={styles.formGroup}>
+            <label>Description</label>
             <textarea
-              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className={styles.inputField}
               rows="3"
+              placeholder="A brief description of the insurance plan"
               required
             ></textarea>
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="coverage">Coverage Details</label>
-            <textarea
-              id="coverage"
-              value={coverage}
-              onChange={(e) => setCoverage(e.target.value)}
-              className={styles.inputField}
-              rows="5"
-              required
-            ></textarea>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="price">Price (per year)</label>
-            <input
-              id="price"
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className={styles.inputField}
-              required
-            />
-          </div>
-
-          <div className={styles.formActions}>
-            <button
-              type="submit"
-              className={`${styles.button} ${styles.createButton}`}
-              disabled={loading}
-            >
-              {loading ? "Creating..." : "Create Plan"}
-            </button>
-          </div>
+          {/* Submit Button */}
+          <button type="submit" className={styles.createButton} disabled={loading || formLoading}>
+            {formLoading ? "Creating..." : "Create Insurance Plan"}
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default CreatePlanPage;
+export default CreateInsurancePlanPage;

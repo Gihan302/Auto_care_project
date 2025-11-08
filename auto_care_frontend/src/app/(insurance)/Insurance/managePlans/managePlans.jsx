@@ -14,10 +14,16 @@ export default function ManagePlansPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const response = await api.get("/api/insurance-plans");
-        setPlans(response.data);
+    // --- FIX 1: Added the async function wrapper ---
+    const fetchPlans = async () => {
+      try {
+        // --- FIX 2: Call the correct endpoint from your ICompanyController.java ---
+        const response = await api.get("/icompany/myplans");
+        
+        const plansData = Array.isArray(response.data) ? response.data : [];
+        setPlans(plansData);
       } catch (err) {
-        setError("Failed to fetch plans.");
+        setError("Failed to fetch plans. Are you logged in?");
         console.error("Error fetching plans:", err);
       } finally {
         setLoading(false);
@@ -27,14 +33,18 @@ export default function ManagePlansPage() {
     fetchPlans();
   }, []);
 
-  const deletePlan = async (id) => {
-    try {
-      await api.delete(`/api/insurance-plans/${id}`);
-      setPlans((prev) => prev.filter((plan) => plan.id !== id));
-    } catch (err) {
-      console.error("Error deleting plan:", err);
-    }
-  };
+  // --- FIX 4: Commented out the delete function. ---
+  // This requires a new @DeleteMapping endpoint on your ICompanyController
+  // const deletePlan = async (id) => {
+  //   try {
+  //     // This endpoint does not exist yet
+  //     await api.delete(`/icompany/myplans/${id}`);
+  //     setPlans((prev) => prev.filter((plan) => plan.id !== id));
+  //   } catch (err) {
+  //     console.error("Error deleting plan:", err);
+  //     setError("Failed to delete plan.");
+  //   }
+  // };
 
   return (
     <div className={styles.container}>
@@ -43,7 +53,8 @@ export default function ManagePlansPage() {
         <h1>Manage Plans</h1>
         <button
           className={styles.addButton}
-          onClick={() => router.push("/Insurance/createPlan")}
+          // This path must match your file structure for the CreateInsurancePlanPage.jsx
+          onClick={() => router.push("/insurance/create-plan")}
         >
           <Plus className={styles.addIcon} /> Create New Plan
         </button>
@@ -53,65 +64,63 @@ export default function ManagePlansPage() {
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
+            {/* --- FIX 3: Updated headers to match your IPlan model --- */}
             <tr>
-              <th>Plan Name</th>
+              <th>Ad Title</th>
+              <th>Plan Amount (LKR)</th>
+              <th>Installments</th>
+              <th>Interest Rate (%)</th>
+              <th>Monthly Payment (LKR)</th>
               <th>Description</th>
-              <th>Coverage</th>
-              <th>Price</th>
-              <th>Status</th>
               <th className={styles.actionsHeader}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="6" className={styles.loading}>Loading...</td>
+                <td colSpan="7" className={styles.loading}>Loading...</td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan="6" className={styles.error}>{error}</td>
+                <td colSpan="7" className={styles.error}>{error}</td>
               </tr>
             ) : plans.length === 0 ? (
               <tr>
-                <td colSpan="6" className={styles.empty}>No plans found.</td>
+                <td colSpan="7" className={styles.empty}>No plans found.</td>
               </tr>
             ) : (
+              // --- FIX 3: Render correct data from your IPlan model ---
               plans.map((plan) => (
                 <tr key={plan.id}>
-                  <td>{plan.planName}</td>
+                  <td>{plan.advertisement?.title || 'N/A'}</td>
+                  <td>{plan.planAmt.toLocaleString()}</td>
+                  <td>{plan.noOfInstallments}</td>
+                  <td>{plan.interest}%</td>
+                  <td>{plan.instAmt.toLocaleString()}</td>
                   <td>{plan.description}</td>
-                  <td>{plan.coverage}</td>
-                  <td>{plan.price}</td>
-                  <td>
-                    <span
-                      className={`${styles.status} ${
-                        plan.status === "Active"
-                          ? styles.active
-                          : styles.inactive
-                      }`}
-                    >
-                      {plan.status}
-                    </span>
-                  </td>
                   <td className={styles.actions}>
                     <button
                       className={styles.viewBtn}
-                      onClick={() => router.push(`/Insurance/plans/${plan.id}`)}
+                      // This path needs to be created
+                      onClick={() => router.push(`/insurance/plans/${plan.id}`)}
                     >
                       <FileText size={16} />
                     </button>
                     <button
                       className={styles.editBtn}
-                      onClick={() => router.push(`/Insurance/plans/edit/${plan.id}`)}
+                      // This path needs to be created
+                      onClick={() => router.push(`/insurance/plans/edit/${plan.id}`)}
                     >
                       <Edit size={16} />
                     </button>
+                    {/* --- FIX 4: Commented out delete button ---
                     <button
                       className={styles.deleteBtn}
                       onClick={() => deletePlan(plan.id)}
                     >
                       <Trash2 size={16} />
                     </button>
+                    */}
                   </td>
                 </tr>
               ))
@@ -119,7 +128,7 @@ export default function ManagePlansPage() {
           </tbody>
         </table>
 
-        {plans.length === 0 && (
+        {plans.length === 0 && !loading && (
           <p className={styles.empty}>No plans found.</p>
         )}
       </div>
