@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, FileText } from "lucide-react";
 import styles from "./managePlans.module.css";
 import { useRouter } from "next/navigation";
-import apiClient from "@/utils/axiosConfig";
+import api from "@/utils/axios";
 
 export default function ManagePlansPage() {
   const router = useRouter();
@@ -14,9 +14,7 @@ export default function ManagePlansPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const response = await apiClient.get("/api/insurance-plans");
+    const response = await api.get("/api/insurance-plans");
         setPlans(response.data);
       } catch (err) {
         setError("Failed to fetch plans.");
@@ -31,7 +29,7 @@ export default function ManagePlansPage() {
 
   const deletePlan = async (id) => {
     try {
-      await apiClient.delete(`/api/insurance-plans/${id}`);
+      await api.delete(`/api/insurance-plans/${id}`);
       setPlans((prev) => prev.filter((plan) => plan.id !== id));
     } catch (err) {
       console.error("Error deleting plan:", err);

@@ -1,60 +1,86 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Re-added useEffect
 import styles from "../../../(insurance)/Insurance/createPlan/createPlan.module.css";
-import apiClient from "@/utils/axios";
+import api from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
 const CreateLeasingPlanPage = () => {
-  const [planName, setPlanName] = useState("");
-  const [vehicleType, setVehicleType] = useState("");
-  const [leaseTerm, setLeaseTerm] = useState("");
-  const [interestRate, setInterestRate] = useState("");
-  const [monthlyPayment, setMonthlyPayment] = useState("");
+  // --- ADDED: State to hold the list of available ads ---
+  const [pendingAds, setPendingAds] = useState([]);
+  // --- END ADDED ---
+
+  const [planAmount, setPlanAmount] = useState("");
+  const [noOfInstallments, setNoOfInstallments] = useState("");
+  const [interest, setInterest] = useState("");
+  const [instAmount, setInstAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [adId, setAdId] = useState(""); // This will be set by the dropdown
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false); // For the form submit
   const router = useRouter();
 
+  // --- ADDED: Fetch pending ads when the page loads ---
+  useEffect(() => {
+    const fetchPendingAds = async () => {
+      setLoading(true); // Show loading for the dropdown
+      setMessage("");
+      try {
+        // This is the same endpoint your dashboard uses
+        const response = await api.get("/lcompany/getpendingad");
+        if (Array.isArray(response.data)) {
+          setPendingAds(response.data);
+        }
+      } catch (err) {
+        console.error("❌ Error fetching pending ads:", err);
+        setMessage("⚠️ Could not load available ads. " + (err.response?.data?.message || ""));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPendingAds();
+  }, []); // The empty array [] means this runs once when the page loads
+  // --- END ADDED ---
+
+  // ----------------------------
+  // Handle Create Leasing Plan
+  // ----------------------------
   const handleCreatePlan = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setFormLoading(true); // Use separate loading state for form
     setMessage("");
 
+    const payload = {
+      planAmount: Number(planAmount),
+      noOfInstallments: Number(noOfInstallments),
+      interest: Number(interest),
+      instAmount: Number(instAmount),
+      description,
+      // Your backend requires the adId to be sent in the request body.
+      adId: Number(adId),
+    };
+
+    console.log("📤 Sending Payload →", payload);
+
     try {
-      const response = await apiClient.post("/api/leasing-plans", {
-        planName,
-        vehicleType,
-        leaseTerm,
-        interestRate,
-        monthlyPayment,
-        description,
-      });
+      // Use the LCompanyController endpoint
+      const response = await api.post("/lcompany/postlplan", payload);
 
       if (response.status === 200) {
-        setMessage("✅ Plan created successfully!");
-        // Clear form
-        setPlanName("");
-        setVehicleType("");
-        setLeaseTerm("");
-        setInterestRate("");
-        setMonthlyPayment("");
-        setDescription("");
-        // Redirect to manage plans page after a short delay
-        setTimeout(() => {
-          router.push("/leasing/manage-plans");
-        }, 2000);
+        setMessage("✅ Leasing Plan created successfully!");
+        // Redirect to the dashboard after 2 seconds
+        setTimeout(() => router.push("/leasing/manage-plans"), 2000);
       } else {
         setMessage("⚠️ Failed to create plan.");
       }
     } catch (err) {
-      console.error("Error creating plan:", err);
-      setMessage(
-        err.response?.data?.message ||
-          "⚠️ An error occurred while creating the plan."
-      );
+      console.error("❌ Error creating leasing plan:", err);
+      // Display validation errors from your backend
+      setMessage(err.response?.data?.message || "⚠️ Server validation failed.");
     } finally {
-      setLoading(false);
+      setFormLoading(false); // Stop form loading
     }
   };
 
@@ -65,87 +91,106 @@ const CreateLeasingPlanPage = () => {
         {message && <p className={styles.message}>{message}</p>}
 
         <form onSubmit={handleCreatePlan}>
+          {/* --- UPDATED: Changed from input to select (dropdown) --- */}
           <div className={styles.formGroup}>
-            <label htmlFor="planName">Plan Name</label>
-            <input
-              id="planName"
-              type="text"
-              value={planName}
-              onChange={(e) => setPlanName(e.target.value)}
+            <label>Advertisement</label>
+            <select
+              value={adId}
+              onChange={(e) => setAdId(e.target.value)}
               className={styles.inputField}
               required
-            />
+              disabled={loading} // Disable dropdown while loading ads
+            >
+              <option value="" disabled>
+                -- Select an Advertisement --
+              </option>
+              {pendingAds.length > 0 ? (
+                pendingAds.map((ad) => (
+                  <option key={ad.id} value={ad.id}>
+                    {/* Show the ad title and ID in the list */}
+                    {ad.title} (ID: {ad.id})
+                  </option>
+                ))
+              ) : (
+                <option disabled>
+                  {loading ? "Loading ads..." : "No pending ads found"}
+                </option>
+              )}
+            </select>
           </div>
+          {/* --- END UPDATED --- */}
 
           <div className={styles.formGroup}>
-            <label htmlFor="vehicleType">Vehicle Type</label>
+            <label>Plan Amount (LKR)</label>
+            {/* --- FIX: Removed duplicated fields --- */}
             <input
-              id="vehicleType"
-              type="text"
-              value={vehicleType}
-              onChange={(e) => setVehicleType(e.target.value)}
-              className={styles.inputField}
-              required
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="leaseTerm">Lease Term (months)</label>
-            <input
-              id="leaseTerm"
               type="number"
-              value={leaseTerm}
-              onChange={(e) => setLeaseTerm(e.target.value)}
+              value={planAmount}
+              onChange={(e) => setPlanAmount(e.target.value)}
               className={styles.inputField}
+              placeholder="e.g., 1000000"
               required
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="interestRate">Interest Rate (%)</label>
+            <label>No. of Installments</label>
+            {/* --- FIX: Removed duplicated fields --- */}
             <input
-              id="interestRate"
               type="number"
-              value={interestRate}
-              onChange={(e) => setInterestRate(e.target.value)}
+              value={noOfInstallments}
+              onChange={(e) => setNoOfInstallments(e.target.value)}
               className={styles.inputField}
+              placeholder="e.g., 60"
               required
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="monthlyPayment">Monthly Payment</label>
+            <label>Interest Rate (%)</label>
+            {/* --- FIX: Removed duplicated fields --- */}
             <input
-              id="monthlyPayment"
               type="number"
-              value={monthlyPayment}
-              onChange={(e) => setMonthlyPayment(e.target.value)}
+              value={interest}
+              onChange={(e) => setInterest(e.target.value)}
               className={styles.inputField}
+              placeholder="e.g., 8.5"
+              step="0.1" // Allows decimal numbers
               required
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="description">Description</label>
+            <label>Installment Amount (LKR)</label>
+            {/* --- FIX: Removed duplicated fields --- */}
+            <input
+              type="number"
+              value={instAmount}
+              onChange={(e) => setInstAmount(e.target.value)}
+              className={styles.inputField}
+              placeholder="Monthly payment amount"
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Description</label>
+            {/* --- FIX: Removed duplicated fields and fixed typo 'e.g.target.value' --- */}
             <textarea
-              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className={styles.inputField}
               rows="3"
+              placeholder="A brief description of the plan"
               required
             ></textarea>
           </div>
 
-          <div className={styles.formActions}>
-            <button
-              type="submit"
-              className={`${styles.button} ${styles.createButton}`}
-              disabled={loading}
-            >
-              {loading ? "Creating..." : "Create Plan"}
-            </button>
-          </div>
+          {/* --- FIX: All duplicated fields below this point have been removed --- */}
+
+          <button type="submit" className={styles.createButton} disabled={loading || formLoading}>
+            {formLoading ? "Creating..." : "Create Leasing Plan"}
+          </button>
         </form>
       </div>
     </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import "./AuthForm.css";
 
-import apiClient, { updateApiToken } from '@/utils/axios';
+import api from '@/utils/axios';
 
 const SignInForm = () => {
   const [email, setEmail] = useState("");
@@ -44,7 +44,7 @@ const SignInForm = () => {
     try {
       console.log('🔐 Attempting login with:', email);
       
-      const response = await apiClient.post("/api/auth/signin", {
+      const response = await api.post("/api/auth/signin", {
         username: email,
         password,
       });
@@ -65,10 +65,13 @@ const SignInForm = () => {
 
         // Store token in localStorage
         localStorage.setItem("token", token);
-        updateApiToken(token);
 
         // Fetch current user details
-        const currentUserResponse = await apiClient.get("/user/currentuser");
+        const currentUserResponse = await api.get("/user/currentuser", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const currentUserData = currentUserResponse.data;
 
         // Store current user data in localStorage
@@ -96,6 +99,7 @@ const SignInForm = () => {
     } catch (err) {
       console.error('💥 Login error:', err);
       if (err.response?.status === 401) {
+        console.error('Authentication failed: Invalid credentials.');
         setError("Invalid email or password. Please try again.");
       } else {
         setError(err.response?.data?.message || "An error occurred during sign in. Please try again.");

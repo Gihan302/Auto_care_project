@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { ChevronDown, Search, Menu, X, Bell, MessageCircle, User, Settings, LogOut } from 'lucide-react';
 import styles from '../layout.module.css';
 import Image from 'next/image';
@@ -15,6 +16,7 @@ const Header = () => {
   const [messageCount, setMessageCount] = useState(5);
   const dropdownRef = useRef(null);
   const userDropdownRef = useRef(null);
+  const router = useRouter(); // Initialize useRouter
 
   const vehicleCategories = [
     { name: 'Cars', href: '/user/carListing' },
@@ -103,12 +105,17 @@ const Header = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('roles');
     
+    // Dispatch a custom event to notify other components of the auth change
+    window.dispatchEvent(new Event('authChange'));
+
     // Update state
     setIsAuthenticated(false);
     setUserData(null);
     setActiveDropdown(null);
     
     // Redirect to home page
+    router.push('/');
+    // Fallback for redirection
     window.location.href = '/';
   };
 

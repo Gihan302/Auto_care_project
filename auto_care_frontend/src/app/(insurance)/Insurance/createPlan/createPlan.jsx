@@ -1,119 +1,116 @@
 "use client";
 
-import { useState } from "react";
-import styles from "./page.module.css";
+import { useState, useEffect } from "react";
+import styles from "./createPlan.module.css";
 import { useRouter } from "next/navigation";
+import api from "@/utils/axios";
 
-export default function CreateNewPlanPage() {
+export default function CreateInsurancePlanPage() {
   const router = useRouter();
+  const [planName, setPlanName] = useState("");
+  const [coverage, setCoverage] = useState("");
+  const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    type: "Health",
-    premium: "",
-    coverage: "",
-    status: "Active",
-  });
+  useEffect(() => {
+    const response = await api.post("/api/insurance-plans", {
+        planName,
+        coverage,
+        price,
+        description,
+      });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("New Plan Data:", formData);
-
-    // Here you could send data to backend API
-    alert("Plan created successfully!");
-    router.push("/manage-plans");
+      if (response.status === 200) {
+        setMessage("✅ Plan created successfully!");
+        setPlanName("");
+        setCoverage("");
+        setPrice("");
+        setDescription("");
+        setTimeout(() => {
+          router.push("/Insurance/managePlans");
+        }, 2000);
+      } else {
+        setMessage("⚠️ Failed to create plan.");
+      }
+    } catch (err) {
+      console.error("Error creating plan:", err);
+      setMessage(
+        err.response?.data?.message ||
+          "⚠️ An error occurred while creating the plan."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className={styles.container}>
-      <h1>Create New Plan</h1>
+    <div className={styles.createPlanContainer}>
+      <div className={styles.createPlanCard}>
+        <h2 className={styles.createPlanTitle}>Create New Insurance Plan</h2>
+        {message && <p className={styles.message}>{message}</p>}
 
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <div className={styles.formGroup}>
-          <label htmlFor="name">Plan Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Enter plan name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <form onSubmit={handleCreatePlan}>
+          <div className={styles.formGroup}>
+            <label htmlFor="planName">Plan Name</label>
+            <input
+              id="planName"
+              type="text"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+              className={styles.inputField}
+              required
+            />
+          </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="type">Plan Type</label>
-          <select
-            id="type"
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-          >
-            <option value="Health">Health</option>
-            <option value="Life">Life</option>
-            <option value="Auto">Auto</option>
-            <option value="Travel">Travel</option>
-          </select>
-        </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="price">Price</label>
+            <input
+              id="price"
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className={styles.inputField}
+              required
+            />
+          </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="premium">Premium</label>
-          <input
-            type="text"
-            id="premium"
-            name="premium"
-            placeholder="$1200/year"
-            value={formData.premium}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="coverage">Coverage</label>
+            <input
+              id="coverage"
+              type="text"
+              value={coverage}
+              onChange={(e) => setCoverage(e.target.value)}
+              className={styles.inputField}
+              required
+            />
+          </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="coverage">Coverage</label>
-          <input
-            type="text"
-            id="coverage"
-            name="coverage"
-            placeholder="$100,000"
-            value={formData.coverage}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="description">Description</label>
+            <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className={styles.inputField}
+              rows="3"
+              required
+            ></textarea>
+          </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="status">Status</label>
-          <select
-            id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
-
-        <div className={styles.buttonGroup}>
-          <button type="submit" className={styles.submitBtn}>
-            Create Plan
-          </button>
-          <button
-            type="button"
-            className={styles.cancelBtn}
-            onClick={() => router.push("/manage-plans")}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+          <div className={styles.formActions}>
+            <button
+              type="submit"
+              className={`${styles.button} ${styles.createButton}`}
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Create Plan"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

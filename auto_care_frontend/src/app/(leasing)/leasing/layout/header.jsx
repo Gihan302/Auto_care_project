@@ -18,6 +18,7 @@ export default function Header({ setIsMobileOpen }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [user, setUser] = useLocalStorage('user', null);
   const [clientLoaded, setClientLoaded] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setClientLoaded(true);
