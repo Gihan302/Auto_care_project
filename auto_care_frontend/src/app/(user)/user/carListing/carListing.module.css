@@ -19,7 +19,339 @@
   animation: fadeInUp 0.8s ease-out;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
+/* Banner Ads Section in Sidebar */
+.bannerAdsSection {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 2px solid rgba(30, 32, 30, 0.1);
+}
 
+.bannerAdsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 15px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.bannerAdsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bannerAdCard {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(30, 32, 30, 0.1);
+}
+
+.bannerAdCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.bannerAdCard:active {
+  transform: translateY(-1px);
+}
+
+.bannerAdImage {
+  width: 100%;
+  height: auto;
+  min-height: 120px;
+  max-height: 180px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.bannerAdCard:hover .bannerAdImage {
+  transform: scale(1.05);
+}
+
+.bannerAdOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  padding: 12px 15px;
+  transition: all 0.3s ease;
+}
+
+.bannerAdCard:hover .bannerAdOverlay {
+  background: linear-gradient(to top, rgba(30, 32, 30, 0.9), transparent);
+}
+
+.bannerAdTitle {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: block;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Click indicator */
+.bannerAdCard::after {
+  content: '↗';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-primary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bannerAdCard:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Responsive adjustments for banner ads */
+@media (max-width: 768px) {
+  .bannerAdsSection {
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .bannerAdsTitle {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  .bannerAdsContainer {
+    gap: 12px;
+  }
+
+  .bannerAdImage {
+    min-height: 100px;
+    max-height: 150px;
+  }
+
+  .bannerAdOverlay {
+    padding: 10px 12px;
+  }
+
+  .bannerAdTitle {
+    font-size: 0.85rem;
+  }
+
+  .bannerAdCard::after {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bannerAdsSection {
+    margin-top: 15px;
+    padding-top: 15px;
+  }
+
+  .bannerAdsTitle {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+
+  .bannerAdsContainer {
+    gap: 10px;
+  }
+
+  .bannerAdImage {
+    min-height: 90px;
+    max-height: 130px;
+  }
+
+  .bannerAdOverlay {
+    padding: 8px 10px;
+  }
+
+  .bannerAdTitle {
+    font-size: 0.8rem;
+  }
+}
+
+/* Loading state for banner ads */
+.bannerAdCard.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  min-height: 120px;
+}
+
+/* Multiple banner ads - smooth scrolling if many ads */
+@media (min-width: 769px) {
+  .bannerAdsContainer {
+    max-height: 600px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(30, 32, 30, 0.3) transparent;
+  }
+
+  .bannerAdsContainer::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .bannerAdsContainer::-webkit-scrollbar-track {
+    background: transparent;
+  }
+    /* Top Banner Section Styles */
+    .topBannerSection {
+      width: 100%;
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+  
+    .topBannerContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  
+    .topBannerCard {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: #fff;
+    }
+  
+    .topBannerCard:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    }
+  
+    .topBannerImage {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+  
+    .topBannerOverlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      padding: 1.5rem 1rem;
+      color: white;
+    }
+  
+    .topBannerTitle {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  
+    .topBannerDescription {
+      margin: 0.5rem 0 0;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+  
+    /* Sidebar Banner Ads Styles */
+    .bannerAdsSection {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+    }
+  
+    .bannerAdsTitle {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+  
+    .bannerAdsContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .bannerAdCard {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+  
+    .bannerAdCard:hover {
+      transform: scale(1.02);
+    }
+  
+    .bannerAdImage {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  
+    .bannerAdOverlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+      padding: 0.5rem;
+    }
+  
+    .bannerAdTitle {
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .topBannerSection {
+        padding: 0 0.5rem;
+      }
+  
+      .topBannerContainer {
+        grid-template-columns: 1fr;
+      }
+  
+      .topBannerImage {
+        height: 150px;
+      }
+    }
+
+  .bannerAdsContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(30, 32, 30, 0.3);
+    border-radius: 3px;
+  }
+
+  .bannerAdsContainer::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(30, 32, 30, 0.5);
+  }
+}
 /* Animations */
 @keyframes fadeInUp {
   from {

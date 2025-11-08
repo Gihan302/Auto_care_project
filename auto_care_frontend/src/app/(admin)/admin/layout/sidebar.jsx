@@ -17,12 +17,14 @@ import {
   X
 } from "lucide-react"
 import styles from './sidebar.module.css'
+import { RiAdvertisementFill } from 'react-icons/ri'
 
 const menuItems = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
   { title: "Manage Users", url: "/admin/manageUsers", icon: Users },
   { title: "Manage Vehicles", url: "/admin/manageVehicles", icon: Car },
   { title: "Manage Reviews", url: "/admin/manageReviews", icon: FileText },
+  { title: "Advertisements", url: "/admin/advertisements", icon: RiAdvertisementFill },
   { title: "Leasing Companies", url: "/admin/leasing", icon: Building2 },
   { title: "Insurance Companies", url: "/admin/insurance", icon: Shield },
   { title: "Reports & Analytics", url: "/admin/reports", icon: BarChart3 },
