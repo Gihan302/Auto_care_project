@@ -1,9 +1,14 @@
-import React from 'react'
+"use client";
 
-function page() {
-  return (
-    <div>page</div>
-  )
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+export default function LeasingRootPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace('/leasing/dashboard');
+  }, [router]);
+
+  return null;
 }
-
-export default page

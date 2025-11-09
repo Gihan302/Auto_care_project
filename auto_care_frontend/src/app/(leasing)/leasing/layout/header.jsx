@@ -1,6 +1,8 @@
-'use client'
+"use client";
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Moon,
   Sun,
@@ -8,28 +10,19 @@ import {
   ChevronDown,
   Menu
 } from "lucide-react"
-import styles from './header.module.css'
-import Link from 'next/link';
+import styles from '../../../(admin)/admin/layout/header.module.css' // Reusing admin header styles
 import useLocalStorage from '@/utils/useLocalStorage';
-
-import { useRouter } from 'next/navigation'
 
 export default function Header({ setIsMobileOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [user, setUser] = useLocalStorage('user', null)
+  const [user, setUser] = useLocalStorage('user', null);
   const [clientLoaded, setClientLoaded] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     setClientLoaded(true);
   }, []);
-
-  const getCompanyInitials = () => {
-    if (!user) return 'C';
-    const companyName = user.cName || '';
-    return companyName.charAt(0).toUpperCase();
-  };
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -41,9 +34,9 @@ export default function Header({ setIsMobileOpen }) {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
-    router.push('/signin')
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/signin");
     setIsDropdownOpen(false)
   }
 
@@ -57,8 +50,8 @@ export default function Header({ setIsMobileOpen }) {
           <Menu size={20} />
         </button>
         <div>
-          <h1 className={styles.headerTitle}>Insurance Company Portal</h1>
-          <p className={styles.headerSubtitle}>Welcome back, {clientLoaded && (user?.cName || 'Company')}</p>
+          <h1 className={styles.headerTitle}>Leasing Company Portal</h1>
+          <p className={styles.headerSubtitle}>Welcome, {clientLoaded && (user?.cName || 'Leasing Company')}</p>
         </div>
       </div>
             
@@ -75,8 +68,8 @@ export default function Header({ setIsMobileOpen }) {
             className={styles.dropdownTrigger}
             onClick={handleDropdownToggle}
           >
-            <div className={styles.avatar}>{clientLoaded && getCompanyInitials()}</div>
-            <span className={styles.adminName}>{clientLoaded && (user?.cName || 'Company')}</span>
+            <div className={styles.avatar}>{clientLoaded && (user?.cName?.charAt(0) || 'L')}</div>
+            <span className={styles.adminName}>{clientLoaded && (user?.cName || 'Leasing Co.')}</span>
             <ChevronDown 
               size={16} 
               className={`${styles.chevron} ${isDropdownOpen ? styles.chevronRotated : ''}`} 
@@ -91,7 +84,7 @@ export default function Header({ setIsMobileOpen }) {
               />
               
               <div className={styles.dropdownMenu}>
-                <Link href="/Insurance/profile" className={styles.dropdownItem}>
+                <Link href="/leasing/profile" className={styles.dropdownItem}>
                   Profile Settings
                 </Link>
                 <button 

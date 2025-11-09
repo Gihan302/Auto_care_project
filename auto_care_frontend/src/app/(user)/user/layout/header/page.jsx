@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { ChevronDown, Search, Menu, X, Bell, MessageCircle, User, Settings, LogOut } from 'lucide-react';
 import styles from '../layout.module.css';
 import Image from 'next/image';
@@ -15,6 +16,7 @@ const Header = () => {
   const [messageCount, setMessageCount] = useState(5);
   const dropdownRef = useRef(null);
   const userDropdownRef = useRef(null);
+  const router = useRouter(); // Initialize useRouter
 
   const vehicleCategories = [
     { name: 'Cars', href: '/user/carListing' },
@@ -50,6 +52,7 @@ const Header = () => {
         try {
           const parsedUser = JSON.parse(user);
           console.log('User data:', parsedUser);
+          console.log('User roles:', parsedUser.roles);
           setUserData(parsedUser);
         } catch (error) {
           console.error('Error parsing user data:', error);
@@ -103,12 +106,17 @@ const Header = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('roles');
     
+    // Dispatch a custom event to notify other components of the auth change
+    window.dispatchEvent(new Event('authChange'));
+
     // Update state
     setIsAuthenticated(false);
     setUserData(null);
     setActiveDropdown(null);
     
     // Redirect to home page
+    router.push('/');
+    // Fallback for redirection
     window.location.href = '/';
   };
 
@@ -123,7 +131,8 @@ const Header = () => {
   // Get user role display name
   const getUserRole = () => {
     if (!userData || !userData.roles || userData.roles.length === 0) return 'User';
-    const role = userData.roles[0].replace('ROLE_', '');
+    const roleName = userData.roles[0].name || userData.roles[0]; // Handle both object and string
+    const role = roleName.replace('ROLE_', '');
     return role.charAt(0) + role.slice(1).toLowerCase();
   };
 

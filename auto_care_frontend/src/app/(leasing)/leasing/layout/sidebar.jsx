@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from 'react'
 import Link from 'next/link'
@@ -9,25 +9,26 @@ import {
   ClipboardList,
   Bell,
   Menu,
-  X
+  X,
+  Users,
+  Building
 } from "lucide-react"
 import styles from './sidebar.module.css'
 
 const menuItems = [
-  { title: "Dashboard", url: "/Insurance/dashboard", icon: LayoutDashboard },
-  { title: "Create New Plan", url: "/Insurance/createPlan", icon: FilePlus2 },
-  { title: "Manage Plans", url: "/Insurance/managePlans", icon: ClipboardList },
-  { title: "Messages", url: "/Insurance/message", icon: MessagesSquareIcon },
-  { title: "Notifications", url: "/Insurance/notifications", icon: Bell },
-  { title: "Company Profile", url: "/Insurance/profile", icon: Building },
+  { title: "Dashboard", url: "/leasing/dashboard", icon: LayoutDashboard },
+  { title: "Create New Plan", url: "/leasing/create-plan", icon: FilePlus2 },
+  { title: "Manage Plans", url: "/leasing/manage-plans", icon: ClipboardList },
+  { title: "Notifications", url: "/leasing/notifications", icon: Bell },
+  { title: "Company Profile", url: "/leasing/profile", icon: Building },
 ]
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
   const pathname = usePathname()
-
+  
   const isActive = (path) => {
-    if (path === "/admin" && pathname === "/admin") return true
-    if (path !== "/admin" && pathname.startsWith(path)) return true
+    if (path === "/leasing" && pathname === "/leasing") return true
+    if (path !== "/leasing" && pathname.startsWith(path)) return true
     return false
   }
 
@@ -44,13 +45,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
           onClick={() => setIsMobileOpen(false)}
         />
       )}
-      
-      <aside className={`
-        ${styles.sidebar} 
-        ${isCollapsed ? styles.collapsed : ''} 
-        ${isMobileOpen ? styles.mobileOpen : ''}
-      `}>
-        
+            
+      <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''} ${isMobileOpen ? styles.mobileOpen : ''}`}>
         {/* Header */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
@@ -60,7 +56,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
             {!isCollapsed && (
               <div className={styles.logoText}>
                 <h1>Auto Care</h1>
-                <p>Insurance Company</p>
+                <p>Leasing Company</p>
               </div>
             )}
           </div>
@@ -132,6 +128,3 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
     </>
   )
 }
-
-
-
