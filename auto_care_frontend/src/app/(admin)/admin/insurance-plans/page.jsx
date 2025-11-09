@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styles from "../../../(insurance)/Insurance/managePlans/managePlans.module.css";
-import apiClient from "@/utils/axiosConfig";
+import { api } from "@/utils/axios";
 
 export default function AdminManagePlansPage() {
   const [plans, setPlans] = useState([]);
@@ -12,7 +12,7 @@ export default function AdminManagePlansPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const response = await apiClient.get("/admin/insurance-plans");
+        const response = await api.get("/admin/insurance-plans");
         setPlans(response.data);
       } catch (err) {
         setError("Failed to fetch plans.");

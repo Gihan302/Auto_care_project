@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './profile.module.css'; // Assuming you'll create this CSS module
 import { User, Mail, Phone, Edit, Save, XCircle } from 'lucide-react';
-import apiClient from '@/utils/axiosConfig';
+import api from '@/utils/axios';
 
 const UserProfilePage = () => {
   const [userData, setUserData] = useState(null);
@@ -76,7 +76,7 @@ const UserProfilePage = () => {
     }
 
     try {
-      const response = await apiClient.put(`/user/editprofile`, {
+      const response = await api.put(`/user/editprofile`, {
         fname: editedFname,
         lname: editedLname,
         username: editedEmail,

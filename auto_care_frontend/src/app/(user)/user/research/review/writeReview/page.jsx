@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Star, Camera, Plus, X, ChevronDown, Check } from 'lucide-react';
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
-import apiClient from '@/utils/axiosConfig';
+import api from '@/utils/axios';
 
 const WriteReviewPage = () => {
   const router = useRouter();
@@ -241,7 +241,7 @@ const WriteReviewPage = () => {
 
       console.log('Submitting review data:', reviewData);
 
-      const response = await apiClient.post('/api/reviews/submit', reviewData);
+      const response = await api.post('/api/reviews/submit', reviewData);
       
       console.log('Response:', response.data);
       alert('Review submitted successfully! It will be visible after admin approval.');

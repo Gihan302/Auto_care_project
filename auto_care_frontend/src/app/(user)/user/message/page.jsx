@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Phone, Video, MoreVertical, Search, Plus, Paperclip, Send, Bell, FileText, CreditCard, AlertTriangle, Moon, Sun, X } from 'lucide-react';
 import styles from './page.module.css';
-
-const API_BASE_URL = 'http://localhost:8080/user';
+import api from '@/utils/axios';
 
 export default function AutoCareMessaging() {
   const [darkMode, setDarkMode] = useState(false);
@@ -27,103 +26,6 @@ export default function AutoCareMessaging() {
   const fileInputRef = useRef(null);
   const messageInputRef = useRef(null);
 
-  // Get auth token - works with your existing login
-  const getAuthToken = () => {
-    if (typeof window === 'undefined') return null;
-    
-    // First, try direct token from localStorage
-    let token = localStorage.getItem('token');
-    
-    // If no direct token, get it from user object (your login stores it there)
-    if (!token) {
-      try {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-          const user = JSON.parse(userData);
-          token = user.accessToken || user.token;
-          
-          if (token) {
-            console.log('🔑 Token extracted from user object');
-            // Store it directly for faster access next time
-            localStorage.setItem('token', token);
-          }
-        }
-      } catch (error) {
-        console.error('Error parsing user data:', error);
-      }
-    }
-    
-    if (token) {
-      console.log('✅ Token found, length:', token.length);
-    } else {
-      console.log('❌ No token available');
-    }
-    
-    return token;
-  };
-
-  // Create API client helper
-  const apiCall = async (url, options = {}) => {
-    const token = getAuthToken();
-    
-    console.log('📡 API Call:', url);
-    console.log('🔐 Using token:', token ? 'Yes' : 'No');
-    
-    const headers = {
-      ...options.headers,
-    };
-
-    // Add Authorization header if token exists
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-      console.log('✅ Authorization header added');
-    } else {
-      console.log('⚠️ No token available for request');
-    }
-
-    // Handle FormData vs JSON
-    if (!(options.body instanceof FormData)) {
-      headers['Content-Type'] = 'application/json';
-    }
-
-    console.log('📤 Request headers:', headers);
-
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
-
-    console.log('📥 Response status:', response.status);
-
-    if (response.status === 401) {
-      console.error('🚫 401 Unauthorized - Token may be invalid or expired');
-      setAuthError(true);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      throw new Error('Unauthorized');
-    }
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ HTTP Error:', response.status, errorText);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-  };
-
-  // Check if user is authenticated
-  const checkAuth = () => {
-    if (typeof window === 'undefined') return false;
-    const token = getAuthToken();
-    if (!token) {
-      console.log('❌ No token found in localStorage');
-      return false;
-    }
-    console.log('✅ Token found');
-    return true;
-  };
-
   // Get user data
   const getUserData = () => {
     if (typeof window === 'undefined') return null;
@@ -143,13 +45,16 @@ export default function AutoCareMessaging() {
   const fetchConversations = async () => {
     try {
       console.log('📡 Fetching conversations...');
-      const data = await apiCall(`${API_BASE_URL}/conversations`);
-      console.log('✅ Conversations fetched:', data.length);
-      setConversations(data);
+      const response = await api.get(`/user/conversations`);
+      console.log('✅ Conversations fetched:', response.data.length);
+      setConversations(response.data);
       setLoading(false);
       setAuthError(false);
     } catch (error) {
       console.error('❌ Error fetching conversations:', error);
+      if (error.response?.status === 401) {
+        setAuthError(true);
+      }
       setLoading(false);
     }
   };
@@ -157,8 +62,8 @@ export default function AutoCareMessaging() {
   const fetchMessages = async (conversationId) => {
     try {
       console.log('📡 Fetching messages for conversation:', conversationId);
-      const data = await apiCall(`${API_BASE_URL}/conversations/${conversationId}/messages`);
-      setMessages(data);
+      const response = await api.get(`/user/conversations/${conversationId}/messages`);
+      setMessages(response.data);
       scrollToBottom();
     } catch (error) {
       console.error('❌ Error fetching messages:', error);
@@ -167,8 +72,8 @@ export default function AutoCareMessaging() {
 
   const fetchCompanyDetails = async (companyName) => {
     try {
-      const data = await apiCall(`${API_BASE_URL}/companies/${encodeURIComponent(companyName)}/details`);
-      setCompanyDetails(data);
+      const response = await api.get(`/user/companies/${encodeURIComponent(companyName)}/details`);
+      setCompanyDetails(response.data);
     } catch (error) {
       console.error('❌ Error fetching company details:', error);
     }
@@ -177,9 +82,9 @@ export default function AutoCareMessaging() {
   const fetchUnreadCount = async () => {
     try {
       console.log('📡 Fetching unread count...');
-      const data = await apiCall(`${API_BASE_URL}/messages/unread-count`);
-      console.log('✅ Unread count:', data.count);
-      setUnreadCount(data.count);
+      const response = await api.get(`/user/messages/unread-count`);
+      console.log('✅ Unread count:', response.data.count);
+      setUnreadCount(response.data.count);
     } catch (error) {
       console.error('❌ Error fetching unread count:', error);
       // Don't show error for unread count - it's not critical
@@ -188,8 +93,8 @@ export default function AutoCareMessaging() {
 
   const fetchAvailableCompanies = async () => {
     try {
-      const data = await apiCall(`${API_BASE_URL}/companies/all`);
-      setAvailableCompanies(data);
+      const response = await api.get(`/user/companies/all`);
+      setAvailableCompanies(response.data);
     } catch (error) {
       console.error('❌ Error fetching available companies:', error);
     }
@@ -239,17 +144,15 @@ export default function AutoCareMessaging() {
         formData.append('messageText', message || 'Sent an attachment');
         formData.append('file', selectedFile);
 
-        await apiCall(`${API_BASE_URL}/conversations/${selectedChat}/messages/attachment`, {
-          method: 'POST',
-          body: formData
+        await api.post(`/user/conversations/${selectedChat}/messages/attachment`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         });
         
         setSelectedFile(null);
       } else {
-        await apiCall(`${API_BASE_URL}/conversations/${selectedChat}/messages`, {
-          method: 'POST',
-          body: JSON.stringify({ messageText: message })
-        });
+        await api.post(`/user/conversations/${selectedChat}/messages`, { messageText: message });
       }
 
       setMessage('');
@@ -265,12 +168,9 @@ export default function AutoCareMessaging() {
 
   const handleCreateConversation = async (companyName, companyType) => {
     try {
-      const data = await apiCall(`${API_BASE_URL}/conversations`, {
-        method: 'POST',
-        body: JSON.stringify({ companyName, companyType })
-      });
+      const response = await api.post(`/user/conversations`, { companyName, companyType });
       
-      const conversationId = data.conversationId;
+      const conversationId = response.data.conversationId;
       setShowNewChatModal(false);
       
       await fetchConversations();
@@ -341,8 +241,8 @@ export default function AutoCareMessaging() {
   useEffect(() => {
     console.log('🚀 Messaging component mounted');
     
-    if (checkAuth()) {
-      const user = getUserData();
+    const user = getUserData();
+    if (user && user.accessToken) {
       console.log('👤 User:', user?.email || 'Unknown');
       
       fetchConversations();
@@ -360,7 +260,8 @@ export default function AutoCareMessaging() {
   }, []);
 
   useEffect(() => {
-    if (!checkAuth()) return;
+    const user = getUserData();
+    if (!user || !user.accessToken) return;
 
     const interval = setInterval(() => {
       if (selectedChat) {

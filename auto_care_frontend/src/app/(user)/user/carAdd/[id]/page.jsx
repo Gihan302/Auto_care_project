@@ -5,30 +5,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import styles from './carAdd.module.css';
 import { Phone, Mail, MapPin, Fuel, Settings, Calendar, Gauge, ChevronLeft, ChevronRight, ArrowLeft, FileText, Shield, X } from 'lucide-react';
-
-// Import axios config - adjust path based on your project structure
-const getApiClient = () => {
-  if (typeof window === 'undefined') return null;
-  
-  const token = localStorage.getItem('token');
-  if (!token) return null;
-
-  // Using fetch API instead of axios for simplicity
-  return {
-    post: async (url, data) => {
-      const response = await fetch(`http://localhost:8080${url}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(data)
-      });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
-    }
-  };
-};
+import api from '@/utils/axios';
 
 const VehicleDetailPage = () => {
   const params = useParams();
@@ -40,8 +17,6 @@ const VehicleDetailPage = () => {
   const [error, setError] = useState(null);
   const [showLeasingModal, setShowLeasingModal] = useState(false);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
-
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
   // Mock data for leasing and insurance plans (will be replaced with backend data)
   const leasingPlans = [
@@ -111,34 +86,17 @@ const VehicleDetailPage = () => {
       try {
         console.log('📡 Fetching vehicle details for ID:', params.id);
         
-        const response = await fetch(`${API_BASE_URL}/advertisement/getAdById/${params.id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        });
+        const response = await api.get(`/advertisement/getAdById/${params.id}`);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        console.log('✅ Fetched vehicle details:', response.data);
+        setVehicleData(response.data);
 
-        const data = await response.json();
-        console.log('✅ Fetched vehicle details:', data);
-        setVehicleData(data);
+        const similarResponse = await api.get(`/advertisement/getconfrimad`);
 
-        const similarResponse = await fetch(`${API_BASE_URL}/advertisement/getconfrimad`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        });
-
-        if (similarResponse.ok) {
-          const allVehicles = await similarResponse.json();
+        if (similarResponse.status === 200) {
+          const allVehicles = similarResponse.data;
           const similar = allVehicles
-            .filter(v => v.v_type === data.v_type && v.id !== data.id)
+            .filter(v => v.v_type === response.data.v_type && v.id !== response.data.id)
             .slice(0, 4);
           setSimilarVehicles(similar);
           console.log('✅ Fetched', similar.length, 'similar vehicles');
@@ -152,13 +110,13 @@ const VehicleDetailPage = () => {
     };
 
     fetchVehicleDetails();
-  }, [params.id, API_BASE_URL]);
+  }, [params.id]);
 
   // Function to create draft message and navigate to messaging
   const handleApplyNow = async (companyName, companyType, plan) => {
-    const apiClient = getApiClient();
+    const token = localStorage.getItem('token');
     
-    if (!apiClient) {
+    if (!token) {
       alert('Please log in to apply for this plan.');
       router.push('/signin');
       return;
@@ -168,14 +126,14 @@ const VehicleDetailPage = () => {
       console.log('🚀 Creating conversation with', companyName);
       
       // Create or get existing conversation
-      const response = await apiClient.post('/user/conversations', {
+      const response = await api.post('/user/conversations', {
         companyName,
         companyType,
         vehicleId: params.id,
         inquiryType: companyType === 'leasing' ? 'leasing_inquiry' : 'insurance_inquiry'
       });
 
-      const conversationId = response.conversationId;
+      const conversationId = response.data.conversationId;
       console.log('✅ Conversation created/found:', conversationId);
 
       // Generate draft message based on vehicle and plan details
@@ -193,7 +151,7 @@ const VehicleDetailPage = () => {
       router.push('/user/message');
     } catch (error) {
       console.error('❌ Error creating conversation:', error);
-      if (error.message.includes('401')) {
+      if (error.response?.status === 401) {
         alert('Session expired. Please log in again.');
         router.push('/signin');
       } else {
