@@ -11,22 +11,30 @@ const CarListing = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     location: '',
-    manufacturer: '',
     transmission: '',
     priceMin: '',
     priceMax: ''
   });
   const [isLoading, setIsLoading] = useState(true);
   const [vehicles, setVehicles] = useState([]);
+  const [bannerAds, setBannerAds] = useState([]);
   const [error, setError] = useState(null);
 
   const vehicleTypes = ['All', 'Car', 'Van', 'SUV', 'Truck', 'Motor Bike', 'Threewheel'];
 
+  // All districts in Sri Lanka
+  const sriLankanDistricts = [
+    'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo',
+    'Galle', 'Gampaha', 'Hambantota', 'Jaffna', 'Kalutara',
+    'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala', 'Mannar',
+    'Matale', 'Matara', 'Monaragala', 'Mullaitivu', 'Nuwara Eliya',
+    'Polonnaruwa', 'Puttalam', 'Ratnapura', 'Trincomalee', 'Vavuniya'
+  ];
+
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-  // FIXED: Combined and cleaned up useEffect
+  // Fetch vehicles and banner ads
   useEffect(() => {
-    // Check if mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -34,7 +42,6 @@ const CarListing = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
-    // Fetch vehicle data from backend API
     const fetchVehicles = async () => {
       setIsLoading(true);
       setError(null);
@@ -42,14 +49,13 @@ const CarListing = () => {
       try {
         console.log('📡 Fetching approved advertisements from:', `${API_BASE_URL}/advertisement/getconfrimad`);
         
-        // FIXED: No token needed for public endpoint
         const response = await fetch(`${API_BASE_URL}/advertisement/getconfrimad`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
-          signal: AbortSignal.timeout(10000) // 10 second timeout
+          signal: AbortSignal.timeout(10000)
         });
 
         console.log('✅ Response status:', response.status);
@@ -76,10 +82,43 @@ const CarListing = () => {
       }
     };
 
-    fetchVehicles();
+    const fetchBannerAds = async () => {
+      try {
+        console.log('📢 Fetching active banner ads from:', `${API_BASE_URL}/api/banner-ads/active`);
+        const response = await fetch(`${API_BASE_URL}/api/banner-ads/active`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+        });
 
-    // Optional: Set up polling every 30 seconds to check for new approved ads
-    const interval = setInterval(fetchVehicles, 30000);
+        console.log('📥 Banner ads response status:', response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (Array.isArray(data) && data.length > 0) {
+            setBannerAds(data);
+          } else {
+            console.warn('⚠️ No banner ads returned or invalid format');
+            setBannerAds([]);
+          }
+        } else {
+          console.error('❌ Failed to fetch banner ads, status:', response.status);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching banner ads:', error);
+      }
+    };
+
+    fetchVehicles();
+    fetchBannerAds();
+
+    const interval = setInterval(() => {
+      fetchVehicles();
+      fetchBannerAds();
+    }, 30000);
     
     return () => {
       clearInterval(interval);
@@ -87,16 +126,51 @@ const CarListing = () => {
     };
   }, [API_BASE_URL]);
 
-  // Filtering logic updated to use vehicles from backend
+  // Track banner ad impression
+  const trackImpression = async (adId) => {
+    try {
+      console.log('👁️ Tracking impression for ad:', adId);
+      await fetch(`${API_BASE_URL}/api/banner-ads/${adId}/impression`, {
+        method: 'POST'
+      });
+      console.log('✅ Impression tracked for ad:', adId);
+    } catch (error) {
+      console.error('❌ Error tracking impression:', error);
+    }
+  };
+
+  // Track banner ad click
+  const handleBannerClick = async (ad) => {
+    try {
+      console.log('👆 Tracking click for ad:', ad.id);
+      await fetch(`${API_BASE_URL}/api/banner-ads/${ad.id}/click`, {
+        method: 'POST'
+      });
+      console.log('✅ Click tracked for ad:', ad.id);
+      window.open(ad.targetUrl, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      console.error('❌ Error tracking click:', error);
+      window.open(ad.targetUrl, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  // Track impressions when banner ads load
+  useEffect(() => {
+    if (bannerAds.length > 0) {
+      console.log('👁️ Tracking impressions for', bannerAds.length, 'banner ads');
+      bannerAds.forEach(ad => {
+        trackImpression(ad.id);
+      });
+    }
+  }, [bannerAds]);
+
   const filteredVehicles = useMemo(() => {
     let filtered = vehicles;
 
-    // FIXED: Filter by vehicle type
     if (selectedVehicleType !== 'All') {
       filtered = filtered.filter(v => v.v_type === selectedVehicleType);
     }
 
-    // Search filter
     if (searchTerm) {
       const lowerTerm = searchTerm.toLowerCase();
       filtered = filtered.filter(v =>
@@ -106,7 +180,6 @@ const CarListing = () => {
       );
     }
 
-    // Apply all other filters
     Object.entries(filters).forEach(([key, value]) => {
       if (value) {
         if (key === 'priceMin') {
@@ -121,8 +194,6 @@ const CarListing = () => {
             const price = parseFloat(String(v.price).replace(/[^0-9.]/g, ''));
             return price <= maxPrice;
           });
-        } else if (key === 'vehicleType') {
-          // Already filtered by selectedVehicleType
         } else {
           filtered = filtered.filter(v =>
             v[key] && v[key].toString().toLowerCase().includes(value.toLowerCase())
@@ -217,9 +288,7 @@ const CarListing = () => {
     <div className={styles.errorDisplay}>
       <div className={styles.errorIcon}>⚠️</div>
       <div className={styles.errorMessage}>
-        <h3>Failed to load vehicles</h3>le for your needs
-
-Showing 8 of 8 approved vehicles
+        <h3>Failed to load vehicles</h3>
         <p>Error: {error}</p>
         <p>Please check if the backend server is running on {API_BASE_URL}</p>
         <button 
@@ -241,6 +310,36 @@ Showing 8 of 8 approved vehicles
           {vehicles.length > 0 && `Showing ${filteredVehicles.length} of ${vehicles.length} approved vehicles`}
         </p>
       </div>
+
+      {/* Featured Banner Ads Section - Above Main Content */}
+      {bannerAds.length > 0 && (
+        <div className={styles.topBannerSection}>
+          <div className={styles.topBannerContainer}>
+            {bannerAds.map((ad) => (
+              <div 
+                key={ad.id} 
+                className={styles.topBannerCard}
+                onClick={() => handleBannerClick(ad)}
+                style={{ cursor: 'pointer' }}
+              >
+                <img 
+                  src={ad.imageUrl} 
+                  alt={ad.title || 'Advertisement'} 
+                  className={styles.topBannerImage}
+                />
+                {ad.title && (
+                  <div className={styles.topBannerOverlay}>
+                    <h3 className={styles.topBannerTitle}>{ad.title}</h3>
+                    {ad.description && (
+                      <p className={styles.topBannerDescription}>{ad.description}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className={styles.mainContent}>
         {isMobile && (
@@ -280,36 +379,18 @@ Showing 8 of 8 approved vehicles
           />
 
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Location</label>
+            <label className={styles.filterLabel}>District</label>
             <select
               className={styles.filterSelect}
               value={filters.location}
               onChange={(e) => handleFilterChange('location', e.target.value)}
             >
-              <option value="">All Locations</option>
-              <option value="Colombo">Colombo</option>
-              <option value="Gampaha">Gampaha</option>
-              <option value="Kandy">Kandy</option>
-              <option value="Negombo">Negombo</option>
-              <option value="Kurunegala">Kurunegala</option>
-            </select>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Manufacturer</label>
-            <select
-              className={styles.filterSelect}
-              value={filters.manufacturer}
-              onChange={(e) => handleFilterChange('manufacturer', e.target.value)}
-            >
-              <option value="">Any Manufacturer</option>
-              <option value="Toyota">Toyota</option>
-              <option value="Honda">Honda</option>
-              <option value="Nissan">Nissan</option>
-              <option value="Mitsubishi">Mitsubishi</option>
-              <option value="BMW">BMW</option>
-              <option value="Mercedes">Mercedes</option>
-              <option value="Ford">Ford</option>
+              <option value="">All Districts</option>
+              {sriLankanDistricts.map(district => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -346,6 +427,36 @@ Showing 8 of 8 approved vehicles
               />
             </div>
           </div>
+
+          {/* Sidebar Banner Ads Section */}
+          {bannerAds.length > 0 && (
+            <div className={styles.bannerAdsSection}>
+              <h3 className={styles.bannerAdsTitle}>
+                Featured Ads ({bannerAds.length})
+              </h3>
+              <div className={styles.bannerAdsContainer}>
+                {bannerAds.map((ad) => (
+                  <div 
+                    key={ad.id} 
+                    className={styles.bannerAdCard}
+                    onClick={() => handleBannerClick(ad)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <img 
+                      src={ad.imageUrl} 
+                      alt={ad.title || 'Advertisement'} 
+                      className={styles.bannerAdImage}
+                    />
+                    {ad.title && (
+                      <div className={styles.bannerAdOverlay}>
+                        <span className={styles.bannerAdTitle}>{ad.title}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className={styles.carListings}>

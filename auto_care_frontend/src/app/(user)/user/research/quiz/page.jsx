@@ -531,11 +531,14 @@ export default function VehicleQuiz() {
     setError(null);
   };
 
-  const exploreVehicles = (vehicleName) => {
-    // Navigate to vehicles page with search/filter
-    const searchQuery = encodeURIComponent(vehicleName);
-    window.location.href = `/carAdd?search=${searchQuery}`;
-  };
+  const exploreVehicles = (vehicleModel) => {
+  // Parse the AI recommendation to extract search terms
+  // Example: "Toyota Camry 2020" or "Honda Civic"
+  const searchQuery = encodeURIComponent(vehicleModel);
+  
+  // Navigate to your vehicle listing page with search
+  window.location.href = `/carAdd?search=${searchQuery}`;
+};
 
   // Loading state
   if (loading) {
