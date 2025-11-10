@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from "next/image";
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
@@ -63,9 +64,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
         {/* Header */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
-            <div className={styles.logo}>
-              <Car className={styles.logoIcon} />
-            </div>
+            <div className={styles.logoIconWrapper}>
+            <Image
+              src="/logo.png"
+              alt="Auto Care Logo"
+              width={75}
+              height={34}
+              priority
+            />
+          </div>
+
             {!isCollapsed && (
               <div className={styles.logoText}>
                 <h1>Auto Care</h1>

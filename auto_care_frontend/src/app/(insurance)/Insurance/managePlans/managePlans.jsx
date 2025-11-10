@@ -1,43 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, FileText } from "lucide-react";
-import styles from "./page.module.css";
+import styles from "./managePlans.module.css";
 import { useRouter } from "next/navigation";
+import api from "@/utils/axios";
 
 export default function ManagePlansPage() {
   const router = useRouter();
 
-  const [plans, setPlans] = useState([
-    {
-      id: 1,
-      name: "Basic Health Plan",
-      type: "Health",
-      premium: "$1,200/year",
-      coverage: "$100,000",
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Premium Life Plan",
-      type: "Life",
-      premium: "$3,500/year",
-      coverage: "$500,000",
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Auto Protect",
-      type: "Auto",
-      premium: "$900/year",
-      coverage: "$50,000",
-      status: "Inactive",
-    },
-  ]);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const deletePlan = (id) => {
-    setPlans((prev) => prev.filter((plan) => plan.id !== id));
-  };
+  useEffect(() => {
+    // --- FIX 1: Added the async function wrapper ---
+    const fetchPlans = async () => {
+      try {
+        // --- FIX 2: Call the correct endpoint from your ICompanyController.java ---
+        const response = await api.get("/icompany/myplans");
+        
+        const plansData = Array.isArray(response.data) ? response.data : [];
+        setPlans(plansData);
+      } catch (err) {
+        setError("Failed to fetch plans. Are you logged in?");
+        console.error("Error fetching plans:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+  // --- FIX 4: Commented out the delete function. ---
+  // This requires a new @DeleteMapping endpoint on your ICompanyController
+  // const deletePlan = async (id) => {
+  //   try {
+  //     // This endpoint does not exist yet
+  //     await api.delete(`/icompany/myplans/${id}`);
+  //     setPlans((prev) => prev.filter((plan) => plan.id !== id));
+  //   } catch (err) {
+  //     console.error("Error deleting plan:", err);
+  //     setError("Failed to delete plan.");
+  //   }
+  // };
 
   return (
     <div className={styles.container}>
@@ -46,7 +53,8 @@ export default function ManagePlansPage() {
         <h1>Manage Plans</h1>
         <button
           className={styles.addButton}
-          onClick={() => router.push("/Insurance/newPlan")}
+          // This path must match your file structure for the CreateInsurancePlanPage.jsx
+          onClick={() => router.push("/insurance/create-plan")}
         >
           <Plus className={styles.addIcon} /> Create New Plan
         </button>
@@ -56,59 +64,71 @@ export default function ManagePlansPage() {
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
+            {/* --- FIX 3: Updated headers to match your IPlan model --- */}
             <tr>
-              <th>Plan Name</th>
-              <th>Type</th>
-              <th>Premium</th>
-              <th>Coverage</th>
-              <th>Status</th>
+              <th>Ad Title</th>
+              <th>Plan Amount (LKR)</th>
+              <th>Installments</th>
+              <th>Interest Rate (%)</th>
+              <th>Monthly Payment (LKR)</th>
+              <th>Description</th>
               <th className={styles.actionsHeader}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {plans.map((plan) => (
-              <tr key={plan.id}>
-                <td>{plan.name}</td>
-                <td>{plan.type}</td>
-                <td>{plan.premium}</td>
-                <td>{plan.coverage}</td>
-                <td>
-                  <span
-                    className={`${styles.status} ${
-                      plan.status === "Active"
-                        ? styles.active
-                        : styles.inactive
-                    }`}
-                  >
-                    {plan.status}
-                  </span>
-                </td>
-                <td className={styles.actions}>
-                  <button
-                    className={styles.viewBtn}
-                    onClick={() => router.push(`/plans/${plan.id}`)}
-                  >
-                    <FileText size={16} />
-                  </button>
-                  <button
-                    className={styles.editBtn}
-                    onClick={() => router.push(`/plans/edit/${plan.id}`)}
-                  >
-                    <Edit size={16} />
-                  </button>
-                  <button
-                    className={styles.deleteBtn}
-                    onClick={() => deletePlan(plan.id)}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </td>
+            {loading ? (
+              <tr>
+                <td colSpan="7" className={styles.loading}>Loading...</td>
               </tr>
-            ))}
+            ) : error ? (
+              <tr>
+                <td colSpan="7" className={styles.error}>{error}</td>
+              </tr>
+            ) : plans.length === 0 ? (
+              <tr>
+                <td colSpan="7" className={styles.empty}>No plans found.</td>
+              </tr>
+            ) : (
+              // --- FIX 3: Render correct data from your IPlan model ---
+              plans.map((plan) => (
+                <tr key={plan.id}>
+                  <td>{plan.advertisement?.title || 'N/A'}</td>
+                  <td>{plan.planAmt.toLocaleString()}</td>
+                  <td>{plan.noOfInstallments}</td>
+                  <td>{plan.interest}%</td>
+                  <td>{plan.instAmt.toLocaleString()}</td>
+                  <td>{plan.description}</td>
+                  <td className={styles.actions}>
+                    <button
+                      className={styles.viewBtn}
+                      // This path needs to be created
+                      onClick={() => router.push(`/insurance/plans/${plan.id}`)}
+                    >
+                      <FileText size={16} />
+                    </button>
+                    <button
+                      className={styles.editBtn}
+                      // This path needs to be created
+                      onClick={() => router.push(`/insurance/plans/edit/${plan.id}`)}
+                    >
+                      <Edit size={16} />
+                    </button>
+                    {/* --- FIX 4: Commented out delete button ---
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={() => deletePlan(plan.id)}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                    */}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
 
-        {plans.length === 0 && (
+        {plans.length === 0 && !loading && (
           <p className={styles.empty}>No plans found.</p>
         )}
       </div>
