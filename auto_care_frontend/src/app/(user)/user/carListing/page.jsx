@@ -47,9 +47,9 @@ const CarListing = () => {
       setError(null);
       
       try {
-        console.log('📡 Fetching approved advertisements from:', `${API_BASE_URL}/advertisement/getconfrimad`);
+        console.log('📡 Fetching approved advertisements from:', `${API_BASE_URL}/api/advertisement/getconfrimad`);
         
-        const response = await fetch(`${API_BASE_URL}/advertisement/getconfrimad`, {
+        const response = await fetch(`${API_BASE_URL}/api/advertisement/getconfrimad`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

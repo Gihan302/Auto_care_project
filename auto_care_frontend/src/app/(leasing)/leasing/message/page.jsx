@@ -1,39 +1,118 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Phone, Video, MoreVertical, Search, Plus, Paperclip, Send, Bell, FileText, CreditCard, AlertTriangle, Moon, Sun, X } from 'lucide-react';
+import { Phone, Video, MoreVertical, Search, Paperclip, Send, Bell, FileText, X, Moon, Sun, User } from 'lucide-react';
 import styles from './page.module.css';
-import api from '@/utils/axios';
 
-export default function AutoCareMessaging() {
+const API_BASE_URL = 'http://localhost:8080/api/company/messages';
+
+export default function CompanyMessaging() {
   const [darkMode, setDarkMode] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const [message, setMessage] = useState('');
   const [conversations, setConversations] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [companyDetails, setCompanyDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [showNewChatModal, setShowNewChatModal] = useState(false);
-  const [availableCompanies, setAvailableCompanies] = useState({ insuranceCompanies: [], leasingCompanies: [] });
   const [selectedFile, setSelectedFile] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [authError, setAuthError] = useState(false);
-  const [showDraftNotification, setShowDraftNotification] = useState(false);
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const messageInputRef = useRef(null);
 
-  // Get user data
-  const getUserData = () => {
+  // Get auth token for company
+  const getAuthToken = () => {
+    if (typeof window === 'undefined') return null;
+    
+    let token = localStorage.getItem('lcompanyToken');
+    
+    if (!token) {
+      try {
+        const companyData = localStorage.getItem('lcompany');
+        if (companyData) {
+          const company = JSON.parse(companyData);
+          token = company.accessToken || company.token;
+          
+          if (token) {
+            localStorage.setItem('lcompanyToken', token);
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing company data:', error);
+      }
+    }
+    
+    return token;
+  };
+
+  // API call helper
+  const apiCall = async (url, options = {}) => {
+    const token = getAuthToken();
+    
+    console.log('📡 API Call:', url);
+    
+    const headers = {
+      ...options.headers,
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    } else {
+      console.log('⚠️ No token available for request');
+    }
+
+    if (!(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    const response = await fetch(url, {
+      ...options,
+      headers,
+    });
+
+    console.log('📥 Response status:', response.status);
+
+    if (response.status === 401) {
+      console.error('🚫 401 Unauthorized');
+      setAuthError(true);
+      localStorage.removeItem('lcompanyToken');
+      localStorage.removeItem('lcompany');
+      throw new Error('Unauthorized');
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ HTTP Error:', response.status, errorText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  };
+
+  // Check authentication
+  const checkAuth = () => {
+    if (typeof window === 'undefined') return false;
+    const token = getAuthToken();
+    if (!token) {
+      console.log('❌ No company token found');
+      return false;
+    }
+    console.log('✅ Company token found');
+    return true;
+  };
+
+  // Get company data
+  const getCompanyData = () => {
     if (typeof window === 'undefined') return null;
     try {
-      const userData = localStorage.getItem('user');
-      return userData ? JSON.parse(userData) : null;
+      const companyData = localStorage.getItem('lcompany');
+      return companyData ? JSON.parse(companyData) : null;
     } catch (error) {
-      console.error('Error parsing user data:', error);
+      console.error('Error parsing company data:', error);
       return null;
     }
   };
@@ -45,16 +124,13 @@ export default function AutoCareMessaging() {
   const fetchConversations = async () => {
     try {
       console.log('📡 Fetching conversations...');
-      const response = await api.get(`/user/conversations`);
-      console.log('✅ Conversations fetched:', response.data.length);
-      setConversations(response.data);
+      const data = await apiCall(`${API_BASE_URL}/conversations`);
+      console.log('✅ Conversations fetched:', data.length);
+      setConversations(data);
       setLoading(false);
       setAuthError(false);
     } catch (error) {
       console.error('❌ Error fetching conversations:', error);
-      if (error.response?.status === 401) {
-        setAuthError(true);
-      }
       setLoading(false);
     }
   };
@@ -62,73 +138,31 @@ export default function AutoCareMessaging() {
   const fetchMessages = async (conversationId) => {
     try {
       console.log('📡 Fetching messages for conversation:', conversationId);
-      const response = await api.get(`/user/conversations/${conversationId}/messages`);
-      setMessages(response.data);
+      const data = await apiCall(`${API_BASE_URL}/conversations/${conversationId}/messages`);
+      setMessages(data);
       scrollToBottom();
     } catch (error) {
       console.error('❌ Error fetching messages:', error);
     }
   };
 
-  const fetchCompanyDetails = async (companyName) => {
+  const fetchUserDetails = async (conversationId) => {
     try {
-      const response = await api.get(`/user/companies/${encodeURIComponent(companyName)}/details`);
-      setCompanyDetails(response.data);
+      const data = await apiCall(`/api/messages/conversations/${conversationId}/user-details`);
+      setUserDetails(data);
     } catch (error) {
-      console.error('❌ Error fetching company details:', error);
+      console.error('❌ Error fetching user details:', error);
     }
   };
 
   const fetchUnreadCount = async () => {
     try {
       console.log('📡 Fetching unread count...');
-      const response = await api.get(`/user/messages/unread-count`);
-      console.log('✅ Unread count:', response.data.count);
-      setUnreadCount(response.data.count);
+      const data = await apiCall(`${API_BASE_URL}/unread-count`);
+      console.log('✅ Unread count:', data.count);
+      setUnreadCount(data.count);
     } catch (error) {
       console.error('❌ Error fetching unread count:', error);
-      // Don't show error for unread count - it's not critical
-    }
-  };
-
-  const fetchAvailableCompanies = async () => {
-    try {
-      const response = await api.get(`/user/companies/all`);
-      setAvailableCompanies(response.data);
-    } catch (error) {
-      console.error('❌ Error fetching available companies:', error);
-    }
-  };
-
-  // Load draft message from sessionStorage
-  const loadDraftMessage = () => {
-    if (typeof window === 'undefined') return;
-    
-    try {
-      const draftData = sessionStorage.getItem('draftMessage');
-      if (draftData) {
-        const draft = JSON.parse(draftData);
-        console.log('📝 Draft message found:', draft);
-        
-        setMessage(draft.message);
-        
-        if (draft.conversationId) {
-          setSelectedChat(draft.conversationId);
-          fetchMessages(draft.conversationId);
-          fetchCompanyDetails(draft.companyName);
-        }
-        
-        setShowDraftNotification(true);
-        setTimeout(() => setShowDraftNotification(false), 5000);
-        
-        setTimeout(() => {
-          messageInputRef.current?.focus();
-        }, 500);
-        
-        sessionStorage.removeItem('draftMessage');
-      }
-    } catch (error) {
-      console.error('Error loading draft message:', error);
     }
   };
 
@@ -144,15 +178,17 @@ export default function AutoCareMessaging() {
         formData.append('messageText', message || 'Sent an attachment');
         formData.append('file', selectedFile);
 
-        await api.post(`/user/conversations/${selectedChat}/messages/attachment`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+        await apiCall(`${API_BASE_URL}/conversations/${selectedChat}/messages/attachment`, {
+          method: 'POST',
+          body: formData
         });
         
         setSelectedFile(null);
       } else {
-        await api.post(`/user/conversations/${selectedChat}/messages`, { messageText: message });
+        await apiCall(`${API_BASE_URL}/conversations/${selectedChat}/messages`, {
+          method: 'POST',
+          body: JSON.stringify({ messageText: message })
+        });
       }
 
       setMessage('');
@@ -166,25 +202,10 @@ export default function AutoCareMessaging() {
     }
   };
 
-  const handleCreateConversation = async (companyName, companyType) => {
-    try {
-      const response = await api.post(`/user/conversations`, { companyName, companyType });
-      
-      const conversationId = response.data.conversationId;
-      setShowNewChatModal(false);
-      
-      await fetchConversations();
-      handleSelectChat(conversationId, companyName);
-    } catch (error) {
-      console.error('❌ Error creating conversation:', error);
-      alert('Failed to create conversation. Please try again.');
-    }
-  };
-
-  const handleSelectChat = async (conversationId, companyName) => {
+  const handleSelectChat = async (conversationId) => {
     setSelectedChat(conversationId);
     await fetchMessages(conversationId);
-    await fetchCompanyDetails(companyName);
+    await fetchUserDetails(conversationId);
     await fetchUnreadCount();
   };
 
@@ -223,15 +244,18 @@ export default function AutoCareMessaging() {
   };
 
   const getAvatarLetter = (name) => {
-    return name ? name.charAt(0).toUpperCase() : '?';
+    return name ? name.charAt(0).toUpperCase() : 'U';
   };
 
-  const getUserAvatar = () => {
-    const user = getUserData();
-    if (user && user.email) {
-      return user.email.charAt(0).toUpperCase();
+  const getCompanyAvatar = () => {
+    const company = getCompanyData();
+    if (company && company.companyName) {
+      return company.companyName.charAt(0).toUpperCase();
     }
-    return 'U';
+    if (company && company.email) {
+      return company.email.charAt(0).toUpperCase();
+    }
+    return 'C';
   };
 
   const filteredConversations = conversations.filter(conv =>
@@ -239,19 +263,14 @@ export default function AutoCareMessaging() {
   );
 
   useEffect(() => {
-    console.log('🚀 Messaging component mounted');
+    console.log('🚀 Company Messaging component mounted');
     
-    const user = getUserData();
-    if (user && user.accessToken) {
-      console.log('👤 User:', user?.email || 'Unknown');
+    if (checkAuth()) {
+      const company = getCompanyData();
+      console.log('🏢 Company:', company?.companyName || company?.email || 'Unknown');
       
       fetchConversations();
       fetchUnreadCount();
-      fetchAvailableCompanies();
-      
-      setTimeout(() => {
-        loadDraftMessage();
-      }, 1000);
     } else {
       console.log('🔒 Not authenticated');
       setAuthError(true);
@@ -260,8 +279,7 @@ export default function AutoCareMessaging() {
   }, []);
 
   useEffect(() => {
-    const user = getUserData();
-    if (!user || !user.accessToken) return;
+    if (!checkAuth()) return;
 
     const interval = setInterval(() => {
       if (selectedChat) {
@@ -292,12 +310,12 @@ export default function AutoCareMessaging() {
           gap: '20px'
         }}>
           <h2>Authentication Required</h2>
-          <p>Please log in to access the messaging system.</p>
+          <p>Please log in to access the company messaging system.</p>
           <button 
-            onClick={() => window.location.href = '/signin'}
+            onClick={() => window.location.href = '/company/signin'}
             style={{
               padding: '12px 24px',
-              background: '#0066cc',
+              background: '#4f46e5',
               color: 'white',
               border: 'none',
               borderRadius: '8px',
@@ -305,7 +323,7 @@ export default function AutoCareMessaging() {
               fontSize: '16px'
             }}
           >
-            Go to Sign In
+            Go to Company Sign In
           </button>
         </div>
       </div>
@@ -317,8 +335,8 @@ export default function AutoCareMessaging() {
       <div className={styles.container}>
         <header className={styles.header}>
           <div className={styles.headerLeft}>
-            <div className={styles.logo}>🚗</div>
-            <h1 className={styles.title}>Auto Care Connect</h1>
+            <div className={styles.logo}>🏢</div>
+            <h1 className={styles.title}>Leasing Dashboard - Messages</h1>
           </div>
           <div className={styles.headerRight}>
             <button className={styles.iconButton}>
@@ -331,37 +349,14 @@ export default function AutoCareMessaging() {
             >
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <div className={styles.avatar}>{getUserAvatar()}</div>
+            <div className={styles.avatar}>{getCompanyAvatar()}</div>
           </div>
         </header>
-
-        {showDraftNotification && (
-          <div style={{
-            position: 'fixed',
-            top: '80px',
-            right: '20px',
-            background: '#4CAF50',
-            color: 'white',
-            padding: '15px 20px',
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            zIndex: 1000
-          }}>
-            <FileText size={20} style={{ display: 'inline', marginRight: '10px' }} />
-            <span>Draft message loaded from vehicle inquiry</span>
-          </div>
-        )}
 
         <div className={styles.mainContent}>
           <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
-              <h2 className={styles.sidebarTitle}>Messages</h2>
-              <button 
-                className={styles.addButton}
-                onClick={() => setShowNewChatModal(true)}
-              >
-                <Plus size={18} />
-              </button>
+              <h2 className={styles.sidebarTitle}>User Messages</h2>
             </div>
             
             <div className={styles.searchBox}>
@@ -380,14 +375,14 @@ export default function AutoCareMessaging() {
                 <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>
               ) : filteredConversations.length === 0 ? (
                 <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
-                  {searchQuery ? 'No conversations found' : 'No conversations yet. Click + to start chatting!'}
+                  {searchQuery ? 'No conversations found' : 'No user messages yet'}
                 </div>
               ) : (
                 filteredConversations.map((conv) => (
                   <div
                     key={conv.id}
                     className={`${styles.conversationItem} ${selectedChat === conv.id ? styles.conversationItemActive : ''}`}
-                    onClick={() => handleSelectChat(conv.id, conv.companyName)}
+                    onClick={() => handleSelectChat(conv.id)}
                   >
                     <div className={styles.convAvatar}>{getAvatarLetter(conv.companyName)}</div>
                     <div className={styles.convContent}>
@@ -421,7 +416,7 @@ export default function AutoCareMessaging() {
                     </div>
                     <div>
                       <h2 className={styles.companyName}>{selectedConversation.companyName}</h2>
-                      <span className={styles.onlineStatus}>● {selectedConversation.status}</span>
+                      <span className={styles.onlineStatus}>● User Conversation</span>
                     </div>
                   </div>
                   <div className={styles.chatHeaderRight}>
@@ -446,21 +441,21 @@ export default function AutoCareMessaging() {
                     messages.map((msg) => (
                       <div
                         key={msg.id}
-                        className={`${styles.messageWrapper} ${msg.senderType === 'user' ? styles.messageWrapperUser : ''}`}
+                        className={`${styles.messageWrapper} ${msg.senderType === 'company' ? styles.messageWrapperUser : ''}`}
                       >
-                        {msg.senderType === 'company' && (
+                        {msg.senderType === 'user' && (
                           <div className={styles.messageAvatar}>
                             {getAvatarLetter(selectedConversation.companyName)}
                           </div>
                         )}
-                        <div className={`${styles.messageBubble} ${msg.senderType === 'user' ? styles.messageBubbleUser : styles.messageBubbleCompany}`}>
+                        <div className={`${styles.messageBubble} ${msg.senderType === 'company' ? styles.messageBubbleUser : styles.messageBubbleCompany}`}>
                           <p className={styles.messageText}>{msg.messageText}</p>
                           {msg.attachmentUrl && (
                             <div className={styles.attachment}>
                               <FileText size={16} />
                               <span>{msg.attachmentName}</span>
                               <a 
-                                href={`${msg.attachmentUrl}`} 
+                                href={`http://localhost:8080${msg.attachmentUrl}`} 
                                 download
                                 className={styles.downloadBtn}
                               >
@@ -470,8 +465,8 @@ export default function AutoCareMessaging() {
                           )}
                           <span className={styles.messageTime}>{formatMessageTime(msg.createdAt)}</span>
                         </div>
-                        {msg.senderType === 'user' && (
-                          <div className={styles.messageAvatarUser}>{getUserAvatar()}</div>
+                        {msg.senderType === 'company' && (
+                          <div className={styles.messageAvatarUser}>{getCompanyAvatar()}</div>
                         )}
                       </div>
                     ))
@@ -507,7 +502,7 @@ export default function AutoCareMessaging() {
                   <input
                     ref={messageInputRef}
                     type="text"
-                    placeholder="Type your message..."
+                    placeholder="Type your reply..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && !sendingMessage && handleSendMessage()}
@@ -533,23 +528,23 @@ export default function AutoCareMessaging() {
                 color: '#666',
                 fontSize: '18px'
               }}>
-                Select a conversation to start messaging
+                Select a conversation to view and reply to messages
               </div>
             )}
           </main>
 
           <aside className={styles.rightPanel}>
-            {companyDetails ? (
+            {userDetails ? (
               <>
                 <div className={styles.companyCard}>
                   <div className={styles.companyCardHeader}>
                     <div className={styles.companyLogoLarge}>
-                      {getAvatarLetter(companyDetails.companyName)}
+                      <User size={40} />
                     </div>
                   </div>
-                  <h2 className={styles.companyCardName}>{companyDetails.companyName}</h2>
+                  <h2 className={styles.companyCardName}>User Details</h2>
                   <p className={styles.companyCardType}>
-                    {companyDetails.companyType === 'insurance' ? 'Insurance Provider' : 'Leasing Company'}
+                    {userDetails.email}
                   </p>
                   
                   <div className={styles.actionButtons}>
@@ -558,124 +553,34 @@ export default function AutoCareMessaging() {
                       Call
                     </button>
                     <button className={styles.visitButton}>
-                      🌐 Visit
+                      📧 Email
                     </button>
                   </div>
                 </div>
-
-                {companyDetails.insurancePlans?.length > 0 && (
-                  <div className={styles.section}>
-                    <h3 className={styles.sectionTitle}>Active Insurance Plans</h3>
-                    {companyDetails.insurancePlans.map((plan, index) => (
-                      <div key={index} className={styles.planCard}>
-                        <div className={styles.planHeader}>
-                          <span className={styles.planName}>{plan.planType}</span>
-                          <span className={styles.planStatus}>{plan.planStatus}</span>
-                        </div>
-                        <p className={styles.planDetail}>
-                          Expires: {new Date(plan.expiresAt).toLocaleDateString()}
-                        </p>
-                        <p className={styles.planPrice}>${plan.monthlyPrice}/month</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {companyDetails.leasingPlans?.length > 0 && (
-                  <div className={styles.section}>
-                    <h3 className={styles.sectionTitle}>Active Leases</h3>
-                    {companyDetails.leasingPlans.map((plan, index) => (
-                      <div key={index} className={styles.planCard}>
-                        <div className={styles.planHeader}>
-                          <span className={styles.planName}>{plan.vehicleInfo}</span>
-                          <span className={styles.planStatus}>{plan.leaseStatus}</span>
-                        </div>
-                        <p className={styles.planDetail}>
-                          Ends: {new Date(plan.leaseEndDate).toLocaleDateString()}
-                        </p>
-                        <p className={styles.planPrice}>${plan.monthlyPayment}/month</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 <div className={styles.section}>
                   <h3 className={styles.sectionTitle}>Quick Actions</h3>
                   <button className={styles.quickActionButton}>
                     <FileText size={18} />
-                    View Policy Documents
+                    View User History
                   </button>
                   <button className={styles.quickActionButton}>
-                    <CreditCard size={18} />
-                    Payment History
+                    <FileText size={18} />
+                    Send Documents
                   </button>
                   <button className={styles.quickActionButton}>
-                    <AlertTriangle size={18} />
-                    File a Claim
+                    <FileText size={18} />
+                    Create Support Ticket
                   </button>
                 </div>
               </>
             ) : (
               <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
-                Select a conversation to view details
+                Select a conversation to view user details
               </div>
             )}
           </aside>
         </div>
-
-        {showNewChatModal && (
-          <div className={styles.modalOverlay} onClick={() => setShowNewChatModal(false)}>
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-              <div className={styles.modalHeader}>
-                <h2>Start New Conversation</h2>
-                <button onClick={() => setShowNewChatModal(false)}>
-                  <X size={24} />
-                </button>
-              </div>
-              
-              <div className={styles.modalContent}>
-                {availableCompanies.insuranceCompanies?.length > 0 && (
-                  <div className={styles.companySection}>
-                    <h3>Insurance Companies</h3>
-                    {Array.from(availableCompanies.insuranceCompanies).map((company, index) => (
-                      <button
-                        key={index}
-                        className={styles.companyButton}
-                        onClick={() => handleCreateConversation(company, 'insurance')}
-                      >
-                        <div className={styles.companyAvatar}>{getAvatarLetter(company)}</div>
-                        <span>{company}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-                
-                {availableCompanies.leasingCompanies?.length > 0 && (
-                  <div className={styles.companySection}>
-                    <h3>Leasing Companies</h3>
-                    {Array.from(availableCompanies.leasingCompanies).map((company, index) => (
-                      <button
-                        key={index}
-                        className={styles.companyButton}
-                        onClick={() => handleCreateConversation(company, 'leasing')}
-                      >
-                        <div className={styles.companyAvatar}>{getAvatarLetter(company)}</div>
-                        <span>{company}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {availableCompanies.insuranceCompanies?.length === 0 && 
-                 availableCompanies.leasingCompanies?.length === 0 && (
-                  <p style={{ textAlign: 'center', color: '#666', padding: '20px' }}>
-                    No companies available. Please purchase a plan or lease first.
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

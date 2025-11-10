@@ -44,7 +44,7 @@ const SignInForm = () => {
     try {
       console.log('🔐 Attempting login with:', email);
       
-      const response = await api.post("/api/auth/signin", {
+      const response = await api.post("/auth/signin", {
         username: email,
         password,
       });
@@ -99,7 +99,7 @@ const SignInForm = () => {
     } catch (err) {
       console.error('💥 Login error:', err);
       if (err.response?.status === 401) {
-        console.error('Authentication failed: Invalid credentials.');
+        console.error('Authentication failed: Invalid credentials.', err.response);
         setError("Invalid email or password. Please try again.");
       } else {
         setError(err.response?.data?.message || "An error occurred during sign in. Please try again.");

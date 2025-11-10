@@ -39,7 +39,7 @@ export const WhyAutoCare = () => {
           <div className="feature-card"> {/* Fixed class name */}
             <div className="card-inner"> {/* Added required wrapper */}
               <div className="feature-icon"> {/* Fixed class name */}
-                <img src="/icons/car-keys.svg" alt="Car with keys" />
+                <img src="/icons/steering-wheel.svg" alt="Car with keys" />
               </div>
               <h3 className="feature-title">Boost Your Car's Resale Value!</h3>
               <p className="feature-description">
