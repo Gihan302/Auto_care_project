@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import axios from "axios"
+import { api } from "@/utils/axios"
 import { Search, Plus, Eye, Edit, Trash2, Building } from "lucide-react"
 import styles from './page.module.css'
 
@@ -23,7 +23,7 @@ const LeasingCompaniesPage = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/admin/getalllcompany");
+        const response = await api.get("/admin/getalllcompany");
         const formattedCompanies = response.data.map(company => ({
           id: company.id,
           name: company.username,

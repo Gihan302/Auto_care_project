@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './compare.module.css';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { api } from '@/utils/axios';
 
 const VehicleSelector = ({ id, selectedVehicle, onVehicleChange, onRemove, canRemove, index, availableVehicles, manufacturers }) => {
   const [selectedMake, setSelectedMake] = useState('');
@@ -241,36 +240,30 @@ export default function VehicleComparisonPage() {
     setError(null);
     
     try {
-      console.log('📡 Fetching available vehicles from:', `${API_BASE_URL}/advertisement/compare/available`);
+      console.log('📡 Fetching available vehicles from:', `/advertisement/compare/available`);
       
-      const response = await fetch(`${API_BASE_URL}/advertisement/compare/available`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      });
+      const response = await api.get(`/advertisement/compare/available`);
       
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (response.status === 200) {
+        const data = response.data;
+        console.log('✅ Fetched', data.length, 'vehicles for comparison');
+        
+        setAvailableVehicles(data);
+        
+        // Extract unique manufacturers
+        const uniqueManufacturers = [...new Set(data.map(v => v.manufacturer))].filter(Boolean).sort();
+        setManufacturers(uniqueManufacturers);
+        
+        console.log('✅ Found', uniqueManufacturers.length, 'manufacturers');
+      } else {
+        const errorText = response.data?.message || `Failed to fetch vehicles: ${response.status}`;
         console.error('❌ Response error:', response.status, errorText);
-        throw new Error(`Failed to fetch vehicles: ${response.status}`);
+        throw new Error(errorText);
       }
-
-      const data = await response.json();
-      console.log('✅ Fetched', data.length, 'vehicles for comparison');
-      
-      setAvailableVehicles(data);
-      
-      // Extract unique manufacturers
-      const uniqueManufacturers = [...new Set(data.map(v => v.manufacturer))].filter(Boolean).sort();
-      setManufacturers(uniqueManufacturers);
-      
-      console.log('✅ Found', uniqueManufacturers.length, 'manufacturers');
       
     } catch (error) {
       console.error('❌ Error fetching vehicles:', error);
-      setError(`Failed to load vehicles: ${error.message}. Please ensure backend is running on ${API_BASE_URL}`);
+      setError(`Failed to load vehicles: ${error.message}. Please ensure backend is running`);
     } finally {
       setLoading(false);
     }
@@ -309,27 +302,22 @@ export default function VehicleComparisonPage() {
       
       // Build query string
       const queryString = ids.map(id => `ids=${id}`).join('&');
-      const url = `${API_BASE_URL}/advertisement/compare?${queryString}`;
+      const url = `/advertisement/compare?${queryString}`;
       
       console.log('📡 Fetching comparison from:', url);
       
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      });
+      const response = await api.get(url);
       
-      if (!response.ok) {
+      if (response.status === 200) {
+        const data = response.data;
+        console.log('✅ Comparison data received:', data.length, 'vehicles');
+        
+        setComparisonData(data);
+        setShowComparison(true);
+      } else {
         throw new Error(`Failed to compare vehicles: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log('✅ Comparison data received:', data.length, 'vehicles');
-      
-      setComparisonData(data);
-      setShowComparison(true);
     } catch (error) {
       console.error('❌ Error comparing vehicles:', error);
       alert(`Failed to compare vehicles: ${error.message}`);

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import axios from "axios"
+import { api } from "@/utils/axios"
 import { Search, Plus, Eye, Edit, Trash2, UserCheck, UserX, Filter, Users, UserPlus, Shield } from "lucide-react"
 import styles from './page.module.css'
 
@@ -29,7 +29,7 @@ const manageUsers = () => {
     const fetchUsers = async () => {
       try {
         // IMPORTANT: Replace with your actual backend URL
-        const response = await axios.get("http://localhost:8080/admin/getallusers");
+        const response = await api.get("/admin/getallusers");
         const formattedUsers = response.data.map(user => ({
           id: user.id,
           name: user.username, // Assuming 'username' from backend

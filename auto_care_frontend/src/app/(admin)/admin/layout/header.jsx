@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation';
 import {
   Moon,
   Sun,
@@ -13,6 +14,7 @@ import styles from './header.module.css'
 export default function Header({ setIsMobileOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const router = useRouter();
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -24,7 +26,9 @@ export default function Header({ setIsMobileOpen }) {
   }
 
   const handleLogout = () => {
-    console.log('Logging out...')
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/signin");
     setIsDropdownOpen(false)
   }
 

@@ -13,6 +13,9 @@ const SignUpForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userType, setUserType] = useState("Normal User");
+  const [cName, setCName] = useState("");
+  const [regNum, setRegNum] = useState("");
+  const [address, setAddress] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -36,19 +39,17 @@ const SignUpForm = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (userType !== 'Normal User') {
-      if (!telephone) {
-        setError("Telephone is required");
-        return;
-      }
-      if (!validateTelephone(telephone)) {
-        setError("Please enter a valid 10-digit number.");
-        return;
-      }
-      if (!nicNumber) {
-        setError("NIC Number is required");
-        return;
-      }
+    if (!telephone) {
+      setError("Telephone is required");
+      return;
+    }
+    if (!validateTelephone(telephone)) {
+      setError("Please enter a valid 10-digit number.");
+      return;
+    }
+    if (!nicNumber) {
+      setError("NIC Number is required");
+      return;
     }
 
     if (!email) {
@@ -75,6 +76,22 @@ const SignUpForm = () => {
       setError("Passwords do not match");
       return;
     }
+
+    if (userType === "Leasing Company" || userType === "Insurance Company") {
+      if (!cName) {
+        setError("Company Name is required");
+        return;
+      }
+      if (!regNum) {
+        setError("Registration Number is required");
+        return;
+      }
+      if (!address) {
+        setError("Location is required");
+        return;
+      }
+    }
+
     setLoading(true);
     setError(null);
     const roleMap = {
@@ -99,6 +116,9 @@ const SignUpForm = () => {
           nic: nicNumber,
           username: email,
           password,
+          cName: userType === "Leasing Company" || userType === "Insurance Company" ? cName : undefined,
+          regNum: userType === "Leasing Company" || userType === "Insurance Company" ? regNum : undefined,
+          address: userType === "Leasing Company" || userType === "Insurance Company" ? address : undefined,
           role: [role],
         }),
       });
@@ -153,6 +173,7 @@ const SignUpForm = () => {
               setTelephone(e.target.value);
               setError(null);
             }}
+            required
           />
           <input
             type="text"
@@ -163,6 +184,7 @@ const SignUpForm = () => {
               setNICNumber(e.target.value);
               setError(null);
             }}
+            required
           />
           <input
             type="email"
@@ -195,16 +217,50 @@ const SignUpForm = () => {
             }}
           />
 
+          {userType === "Leasing Company" || userType === "Insurance Company" ? (
+            <>
+              <input
+                type="text"
+                placeholder="Company Name"
+                className="auth-input"
+                value={cName}
+                onChange={(e) => {
+                  setCName(e.target.value);
+                  setError(null);
+                }}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Registration Number"
+                className="auth-input"
+                value={regNum}
+                onChange={(e) => {
+                  setRegNum(e.target.value);
+                  setError(null);
+                }}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Location"
+                className="auth-input"
+                value={address}
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                  setError(null);
+                }}
+                required
+              />
+            </>
+          ) : null}
+
           <select
             className="auth-input"
             value={userType}
             onChange={(e) => {
               setUserType(e.target.value);
               setError(null);
-              if (e.target.value === 'Normal User') {
-                setTelephone('');
-                setNICNumber('');
-              }
             }}
           >
             <option value="Normal User">Normal User</option>
