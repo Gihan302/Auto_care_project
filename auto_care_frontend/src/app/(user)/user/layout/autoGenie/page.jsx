@@ -75,20 +75,20 @@ export default function FloatingChat() {
     setIsTyping(true);
 
     try {
+      // Call N8N webhook with form-data format and conversation history
+      const formData = new FormData();
+      formData.append('query', messageText);
+      
+      // Optional: Send conversation history for context
       const conversationHistory = messages.map(m => ({
         role: m.type === 'user' ? 'user' : 'assistant',
         content: m.text
       }));
+      formData.append('history', JSON.stringify(conversationHistory));
 
-      const response = await fetch('http://localhost:8080/api/autogenie/chat', {
+      const response = await fetch('http://localhost:5678/webhook/test', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          query: messageText,
-          history: JSON.stringify(conversationHistory)
-        })
+        body: formData
       });
 
       if (!response.ok) {
@@ -107,7 +107,7 @@ export default function FloatingChat() {
       setMessages(prev => [...prev, aiMessage]);
       setIsTyping(false);
     } catch (error) {
-      console.error('Error calling chat API:', error);
+      console.error('Error calling N8N webhook:', error);
       
       // Show error message to user
       const errorMessage = {

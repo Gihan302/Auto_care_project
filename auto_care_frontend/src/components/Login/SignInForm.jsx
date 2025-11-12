@@ -98,8 +98,14 @@ const SignInForm = () => {
       }
     } catch (err) {
       console.error('💥 Login error:', err);
-      if (err.response?.status === 401) {
-        console.error('Authentication failed: Invalid credentials.');
+      
+      // Handle 403 status (Forbidden - for pending/rejected accounts)
+      if (err.response?.status === 403) {
+        const message = err.response?.data?.message || "Access denied";
+        console.error('❌ Account status issue:', message);
+        setError(message);
+      } else if (err.response?.status === 401) {
+        console.error('❌ Authentication failed: Invalid credentials.');
         setError("Invalid email or password. Please try again.");
       } else {
         setError(err.response?.data?.message || "An error occurred during sign in. Please try again.");

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Define your backend's base URL
+// ✅ FIX: Point to your actual backend URL
 const API_BASE_URL = 'http://localhost:8080';
 
 const api = axios.create({
@@ -10,13 +10,10 @@ const api = axios.create({
   },
 });
 
-// --- THIS IS THE CRITICAL FIX ---
 // Add a request interceptor to attach the token to every request
 api.interceptors.request.use(
   (config) => {
     let token = null;
-
-    // --- NEW ROBUST TOKEN LOGIC ---
 
     // 1. Try to get the full user object
     const userString = localStorage.getItem('user');
@@ -28,26 +25,24 @@ api.interceptors.request.use(
           token = userData.token;
         }
       } catch (e) {
-        // We don't log an error, because the user object might not be JSON
+        // Silent fail - user object might not be JSON
       }
     }
 
-    // 2. If that fails, try to get a token directly (based on your paste)
+    // 2. If that fails, try to get a token directly
     if (!token) {
-      token = localStorage.getItem('token'); // Check for a key 'token'
+      token = localStorage.getItem('token');
     }
     
     // 3. If that fails, try 'userToken'
     if (!token) {
-      token = localStorage.getItem('userToken'); // Check for 'userToken'
+      token = localStorage.getItem('userToken');
     }
 
-    // 4. If we found a token in any of those places, use it
+    // 4. If we found a token, attach it
     if (token) {
-      // --- ADDED DEBUGGING ---
       console.log("✅ Axios Interceptor: Token found. Attaching to request.");
-      // --- END DEBUGGING ---
-
+      
       // Ensure the "Bearer " prefix is there, but not duplicated
       if (token.startsWith('Bearer ')) {
         config.headers['Authorization'] = token;
@@ -55,14 +50,29 @@ api.interceptors.request.use(
         config.headers['Authorization'] = `Bearer ${token}`;
       }
     } else {
-      // --- ADDED DEBUGGING ---
-      console.log("❌ Axios Interceptor: No token found in localStorage. Request will be unauthorized.");
-      // --- END DEBUGGING ---
+      console.log("❌ Axios Interceptor: No token found in localStorage.");
     }
 
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      console.error('❌ 401 Unauthorized - Token might be invalid or expired');
+      // Optionally redirect to login
+      // window.location.href = '/signin';
+    } else if (error.response?.status === 403) {
+      console.error('❌ 403 Forbidden - Access denied');
+    } else if (error.response?.status === 404) {
+      console.error('❌ 404 Not Found - Endpoint does not exist:', error.config?.url);
+    }
     return Promise.reject(error);
   }
 );

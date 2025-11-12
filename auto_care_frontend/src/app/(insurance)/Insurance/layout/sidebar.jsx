@@ -10,7 +10,8 @@ import {
   Bell,
   Menu,
   X,
-
+  MessagesSquare,
+  Building
 } from "lucide-react"
 import styles from './sidebar.module.css'
 
@@ -18,11 +19,6 @@ const menuItems = [
   { title: "Dashboard", url: "/Insurance/dashboard", icon: LayoutDashboard },
   { title: "Create New Plan", url: "/Insurance/createPlan", icon: FilePlus2 },
   { title: "Manage Plans", url: "/Insurance/managePlans", icon: ClipboardList },
-
-  { title: "Messages", url: "/Insurance/message", icon: Bell },
-  { title: "Notifications", url: "/Insurance/notifications", icon: Bell },
-  { title: "Company Profile", url: "/Insurance/profile", icon: Building2 },
-
   { title: "Messages", url: "/Insurance/message", icon: MessagesSquare },
   { title: "Notifications", url: "/Insurance/notifications", icon: Bell },
   { title: "Company Profile", url: "/Insurance/profile", icon: Building },
@@ -138,6 +134,5 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
     </>
   )
 }
-
 
 

@@ -26,7 +26,7 @@ export default function AutoCareMessaging() {
   const fileInputRef = useRef(null);
   const messageInputRef = useRef(null);
 
-  // Get user data
+  // ✅ FIXED: Get user data with better token detection
   const getUserData = () => {
     if (typeof window === 'undefined') return null;
     try {
@@ -36,6 +36,19 @@ export default function AutoCareMessaging() {
       console.error('Error parsing user data:', error);
       return null;
     }
+  };
+
+  // ✅ FIXED: Check if user is authenticated
+  const isAuthenticated = () => {
+    const user = getUserData();
+    
+    // Check multiple possible token locations
+    if (user && user.token) return true;
+    if (user && user.accessToken) return true;
+    if (localStorage.getItem('token')) return true;
+    if (localStorage.getItem('userToken')) return true;
+    
+    return false;
   };
 
   const scrollToBottom = () => {
@@ -238,12 +251,14 @@ export default function AutoCareMessaging() {
     conv.companyName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // ✅ FIXED: Initial mount and authentication check
   useEffect(() => {
     console.log('🚀 Messaging component mounted');
     
-    const user = getUserData();
-    if (user && user.accessToken) {
-      console.log('👤 User:', user?.email || 'Unknown');
+    // Check authentication
+    if (isAuthenticated()) {
+      const user = getUserData();
+      console.log('👤 User authenticated:', user?.email || 'Unknown');
       
       fetchConversations();
       fetchUnreadCount();
@@ -259,9 +274,9 @@ export default function AutoCareMessaging() {
     }
   }, []);
 
+  // ✅ FIXED: Polling interval with authentication check
   useEffect(() => {
-    const user = getUserData();
-    if (!user || !user.accessToken) return;
+    if (!isAuthenticated()) return;
 
     const interval = setInterval(() => {
       if (selectedChat) {
@@ -460,7 +475,7 @@ export default function AutoCareMessaging() {
                               <FileText size={16} />
                               <span>{msg.attachmentName}</span>
                               <a 
-                                href={`http://localhost:8080${msg.attachmentUrl}`} 
+                                href={`${msg.attachmentUrl}`} 
                                 download
                                 className={styles.downloadBtn}
                               >
