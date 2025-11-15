@@ -3,7 +3,9 @@ import LeasingPlans from '../components/homepage/LeasingPlans';
 export default function LeasingPlansPage() {
   return (
     <div>
-      <LeasingPlans showAll={true} />
+      <main style={{ minHeight: '60vh', padding: '20px 0' }}>
+        <LeasingPlans showAll={true} />
+      </main>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { VehicleTypeSelector } from './(user)/user/components/homepage/vehicleTy
 import FeaturedTools from './(user)/user/components/homepage/featuredTools';
 import BuyingPowerCal from './(user)/user/components/homepage/buyingPowerCal';
 import SignUpForm from '../components/Login/SignUpForm';  
-import LeasingPlans from './(user)/user/components/homepage/LeasingPlans.jsx';
+import LeasingPlans from './(user)/user/components/homepage/LeasingPlans.tsx';
 
 export default function HomePage() {
   return (
@@ -15,7 +15,7 @@ export default function HomePage() {
       <WhyAutoCare />
       <BuyingPowerCal />
       <FeaturedTools />
-      <LeasingPlans showAll={false} />
+      <LeasingPlans showAll={true} />
     </>
   );
 }
