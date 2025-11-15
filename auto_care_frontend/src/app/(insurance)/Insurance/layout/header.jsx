@@ -50,6 +50,9 @@ export default function Header({ setIsMobileOpen }) {
   return (
     <header className={styles.header}>
       <div className={styles.headerLeft}>
+        <Link href="/">
+          <img src="/logo.png" alt="AutoCare Logo" className={styles.logo} />
+        </Link>
         <button 
           className={styles.mobileMenuButton}
           onClick={() => setIsMobileOpen(true)}

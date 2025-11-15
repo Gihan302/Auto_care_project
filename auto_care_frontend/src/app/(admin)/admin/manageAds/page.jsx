@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react"
-import axios from "axios"
+import { api } from "@/utils/axios"
 import { Search, CheckCircle, XCircle, Eye, ShieldCheck, Trash2, AlertCircle } from "lucide-react"
 import styles from './page.module.css'
 
@@ -19,36 +19,7 @@ const ManageAdsPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Get token from localStorage
-  const getAuthToken = () => {
-    const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-    console.log('🔑 Token found:', token ? 'Yes' : 'No')
-    if (!token) {
-      console.error('❌ No authentication token found!')
-    }
-    return token
-  }
-
-  // Axios instance with auth header
-  const getAxiosInstance = () => {
-    const token = getAuthToken()
-    return axios.create({
-      baseURL: 'http://localhost:8080',
-      headers: {
-        'Authorization': token ? `Bearer ${token}` : '',
-        'Content-Type': 'application/json'
-      }
-    })
-  }
-
   useEffect(() => {
-    // Check token on mount
-    const token = getAuthToken()
-    if (!token) {
-      setError('No authentication token found. Please login first.')
-      setLoading(false)
-      return
-    }
     fetchAds()
   }, [filter])
 
@@ -65,8 +36,7 @@ const ManageAdsPage = () => {
       }
 
       console.log('📡 Fetching from:', endpoint)
-      const axiosInstance = getAxiosInstance()
-      const response = await axiosInstance.get(endpoint)
+      const response = await api.get(endpoint)
       
       console.log('✅ Response received:', response.data.length, 'ads')
       
@@ -120,8 +90,7 @@ const ManageAdsPage = () => {
     }
 
     try {
-      const axiosInstance = getAxiosInstance()
-      await axiosInstance.put(`/admin/advertisements/${adId}/approve`)
+      await api.put(`/admin/advertisements/${adId}/approve`)
       
       alert('Advertisement approved successfully!')
       fetchAds()
@@ -137,8 +106,7 @@ const ManageAdsPage = () => {
     }
 
     try {
-      const axiosInstance = getAxiosInstance()
-      await axiosInstance.delete(`/admin/advertisements/${adId}/reject`)
+      await api.delete(`/admin/advertisements/${adId}/reject`)
       
       alert('Advertisement rejected and deleted successfully!')
       fetchAds()

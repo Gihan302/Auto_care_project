@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, ThumbsUp, MessageCircle, Search, ChevronDown, Award, Calendar, TrendingUp } from 'lucide-react';
 import styles from './page.module.css';
-import apiClient from '@/utils/axiosConfig';
+import api from '@/utils/axios';
 
 const CarReviewsPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -33,7 +33,7 @@ const CarReviewsPage = () => {
       if (filterRating !== 'all') params.append('rating', filterRating);
       params.append('sort', sortBy);
 
-      const response = await apiClient.get(`/api/reviews?${params.toString()}`);
+      const response = await api.get(`/api/reviews?${params.toString()}`);
       
       // Transform the response to match frontend expectations
       const transformedReviews = response.data.map(review => ({
@@ -60,7 +60,7 @@ const CarReviewsPage = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await apiClient.get('/api/reviews/stats');
+      const response = await api.get('/api/reviews/stats');
       setStats({
         totalReviews: response.data.totalReviews || 0,
         averageRating: response.data.averageRating || 0,
@@ -80,7 +80,7 @@ const CarReviewsPage = () => {
 
   const handleHelpful = async (reviewId) => {
     try {
-      await apiClient.post(`/api/reviews/${reviewId}/helpful`);
+      await api.post(`/api/reviews/${reviewId}/helpful`);
       // Refresh reviews to update count
       fetchReviews();
     } catch (error) {

@@ -106,74 +106,7 @@ export default function SellCarPage() {
           <p className={styles.formSubtitle}>Enter your details for an instant estimate</p>
           
           <form onSubmit={handleSubmit} className={styles.valueForm}>
-            <div className={styles.formGroup}>
-              <select 
-                name="vehicleType"
-                value={formData.vehicleType}
-                onChange={handleInputChange}
-                className={styles.formInput}
-                required
-              >
-                <option value="">Select Vehicle Type</option>
-                <option value="cars">Cars</option>
-                <option value="vans">Vans</option>
-                <option value="suvs">SUVs</option>
-                <option value="trucks">Trucks</option>
-                <option value="bikes">Bikes</option>
-                <option value="threewheelers">Threewheelers</option>
-                <option value="lorries">Lorries</option>
-                <option value="busses">Busses</option>
-              </select>
-            </div>
-
-            <div className={styles.formGroup}>
-              <input
-                type="text"
-                name="vehicleRegistration"
-                value={formData.vehicleRegistration}
-                onChange={handleInputChange}
-                placeholder="Enter Vehicle Registration Number"
-                className={styles.formInput}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <select 
-                name="location"
-                value={formData.location}
-                onChange={handleInputChange}
-                className={styles.formInput}
-                required
-              >
-                <option value="">Enter Location / District</option>
-                <option value="colombo">Colombo</option>
-                <option value="gampaha">Gampaha</option>
-                <option value="kalutara">Kalutara</option>
-                <option value="kandy">Kandy</option>
-                <option value="matale">Matale</option>
-                <option value="nuwara-eliya">Nuwara Eliya</option>
-                <option value="galle">Galle</option>
-                <option value="matara">Matara</option>
-                <option value="hambantota">Hambantota</option>
-                <option value="jaffna">Jaffna</option>
-                <option value="kilinochchi">Kilinochchi</option>
-                <option value="mannar">Mannar</option>
-                <option value="vavuniya">Vavuniya</option>
-                <option value="mullaitivu">Mullaitivu</option>
-                <option value="batticaloa">Batticaloa</option>
-                <option value="ampara">Ampara</option>
-                <option value="trincomalee">Trincomalee</option>
-                <option value="kurunegala">Kurunegala</option>
-                <option value="puttalam">Puttalam</option>
-                <option value="anuradhapura">Anuradhapura</option>
-                <option value="polonnaruwa">Polonnaruwa</option>
-                <option value="badulla">Badulla</option>
-                <option value="moneragala">Moneragala</option>
-                <option value="ratnapura">Ratnapura</option>
-                <option value="kegalle">Kegalle</option>
-              </select>
-            </div>
+            
 
             <button type="submit" className={styles.submitBtn}>
               Sell My Vehicle

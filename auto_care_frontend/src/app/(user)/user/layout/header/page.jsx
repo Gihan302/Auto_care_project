@@ -136,6 +136,24 @@ const Header = () => {
     return role.charAt(0) + role.slice(1).toLowerCase();
   };
 
+  // Get dashboard path based on user role
+  const getDashboardPath = () => {
+    if (!userData || !userData.roles || userData.roles.length === 0) return '/';
+    const roleName = userData.roles[0].name || userData.roles[0];
+    switch (roleName) {
+      case 'ROLE_ADMIN':
+        return '/admin/admin/dashboard';
+      case 'ROLE_LCOMPANY':
+        return '/leasing/dashboard';
+      case 'ROLE_ICOMPANY':
+        return '/Insurance/dashboard';
+      case 'ROLE_USER':
+        return '/user/profile'; // Assuming user profile is their dashboard
+      default:
+        return '/';
+    }
+  };
+
   return (
     <header className={styles.headerWrapper}>
       <div className={styles.headerContainer}>
@@ -249,6 +267,10 @@ const Header = () => {
 
                   {/* Menu Items */}
                   <div className={styles.dropdownContent}>
+                    <Link href={getDashboardPath()} className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
+                      <User size={16} />
+                      Go to Dashboard
+                    </Link>
                     <Link href="/user/profile" className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
                       <User size={16} />
                       My Profile
@@ -345,6 +367,9 @@ const Header = () => {
             /* Authenticated Mobile Menu */
             <>
               <div className={styles.mobileMenuDivider}></div>
+              <Link href={getDashboardPath()} className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                Go to Dashboard
+              </Link>
               <Link href="/user/profile" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
                 My Profile
               </Link>

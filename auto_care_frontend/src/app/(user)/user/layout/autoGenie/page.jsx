@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, Minimize2, User } from 'lucide-react';
-//import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import { useRouter } from 'next/navigation';
 import styles from './page.module.css';
 

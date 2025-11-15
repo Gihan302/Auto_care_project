@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import styles from './page.module.css';
+import api from '@/utils/axios';
 
 export default function PostCarAd() {
   const [formData, setFormData] = useState({
@@ -28,22 +29,6 @@ export default function PostCarAd() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [token, setToken] = useState(null);
-
-  // Check for authentication token on component mount
-  useEffect(() => {
-    const storedToken = localStorage.getItem('authToken') || 
-                        localStorage.getItem('token') || 
-                        localStorage.getItem('accessToken');
-    console.log('🔍 Checking for auth token:', storedToken ? 'Found' : 'Not found');
-    
-    if (!storedToken) {
-      setError('No authentication token found. Please log in first.');
-    } else {
-      setToken(storedToken);
-      console.log('✅ Token loaded successfully');
-    }
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -132,12 +117,6 @@ export default function PostCarAd() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Check authentication first
-    if (!token) {
-      setError('Please log in to post an advertisement.');
-      return;
-    }
-
     setLoading(true);
     setError('');
     setSuccess(false);
@@ -204,44 +183,17 @@ export default function PostCarAd() {
         images: `[${backendPayload.images.length} base64 images]` // Don't log full base64
       });
       
-      const response = await fetch('http://localhost:8080/advertisement/postadd', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(backendPayload)
-      });
+      const response = await api.post('/advertisement/postadd', backendPayload);
 
       console.log('📡 Response status:', response.status);
 
-      let result;
-      try {
-        const textResponse = await response.text();
-        console.log('📄 Raw response:', textResponse);
-        result = textResponse ? JSON.parse(textResponse) : {};
-      } catch (parseError) {
-        console.error('❌ Failed to parse response as JSON:', parseError);
-        result = { message: 'Invalid response from server' };
-      }
-
-      if (response.status === 401) {
-        setError('Authentication failed. Please log in again.');
-        // Clear the stored token
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('token');
-        localStorage.removeItem('accessToken');
-        setToken(null);
-      } else if (response.status === 403) {
-        setError('Access denied. Please check your permissions.');
-      } else if (response.ok) {
+      if (response.status === 200) {
         setSuccess(true);
-        console.log('✅ Advertisement posted successfully:', result);
+        console.log('✅ Advertisement posted successfully:', response.data);
         
         // Show uploaded image URLs if available
-        if (result && typeof result === 'object') {
-          const imageUrls = [result.image1, result.image2, result.image3, result.image4, result.image5]
+        if (response.data && typeof response.data === 'object') {
+          const imageUrls = [response.data.image1, response.data.image2, response.data.image3, response.data.image4, response.data.image5]
             .filter(url => url !== null && url !== undefined);
           
           if (imageUrls.length > 0) {
@@ -270,13 +222,17 @@ export default function PostCarAd() {
           images: []
         });
       } else {
-        const errorMessage = result?.message || `Server error (${response.status})`;
+        const errorMessage = response.data?.message || `Server error (${response.status})`;
         setError(errorMessage);
         console.error('❌ Server error:', errorMessage);
       }
     } catch (err) {
       console.error('💥 Network error:', err);
-      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+      if (err.response?.status === 401) {
+        setError('Authentication failed. Please log in again.');
+      } else if (err.response?.status === 403) {
+        setError('Access denied. Please check your permissions.');
+      } else if (err.name === 'TypeError' && err.message.includes('fetch')) {
         setError('Network error: Cannot connect to server. Please check if the server is running.');
       } else {
         setError(`Error: ${err.message}`);
@@ -301,12 +257,6 @@ export default function PostCarAd() {
         {success && (
           <div className={styles.successMessage}>
             🎉 Advertisement posted successfully! Images uploaded to Cloudinary.
-          </div>
-        )}
-
-        {!token && (
-          <div className={styles.warningMessage}>
-            ⚠️ Please log in to post an advertisement.
           </div>
         )}
 
@@ -609,16 +559,10 @@ export default function PostCarAd() {
           <button 
             type="submit" 
             className={styles.submitBtn}
-            disabled={loading || !token}
+            disabled={loading}
           >
             {loading ? '🚀 Posting Ad & Uploading to Cloudinary...' : 'Post Your Ad'}
           </button>
-
-          {!token && (
-            <p className={styles.loginPrompt}>
-              Please log in to post your advertisement
-            </p>
-          )}
         </form>
       </div>
     </div>
