@@ -68,6 +68,23 @@
   background-color: #0056b3;
 }
 
+.messageButton {
+  background-color: #28a745;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.messageButton:hover {
+  background-color: #218838;
+}
+
 .error {
   color: #d9534f;
   text-align: center;

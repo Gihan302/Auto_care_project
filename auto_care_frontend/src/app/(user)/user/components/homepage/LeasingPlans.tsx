@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import api from "@/utils/axios";
 import styles from "./LeasingPlans.module.css";
 
@@ -29,6 +30,18 @@ export default function LeasingPlans({ showAll = false }) {
   const [plans, setPlans] = useState<LeasingPlan[]>([]); // Use the interface
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const getUserData = () => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const userData = localStorage.getItem('user');
+      return userData ? JSON.parse(userData) : null;
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -51,6 +64,26 @@ export default function LeasingPlans({ showAll = false }) {
 
     fetchPlans();
   }, []);
+
+  const handleMessageCompany = async (companyName) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (!token) {
+      router.push('/signup');
+      return;
+    }
+
+    try {
+      const response = await api.post('/messages/conversations', {
+        companyName: companyName,
+        companyType: 'leasing'
+      });
+      const conversationId = response.data.conversationId;
+      router.push(`/user/message?conversationId=${conversationId}`);
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+      setError('Failed to start conversation.');
+    }
+  };
 
   const plansToShow = showAll ? plans : plans.slice(0, 4);
 
@@ -87,6 +120,12 @@ export default function LeasingPlans({ showAll = false }) {
             <p className={styles.monthlyPayment}>
               Monthly: ${parseFloat(plan.monthlyPayment).toFixed(2)}
             </p>
+            <button
+              className={styles.messageButton}
+              onClick={() => handleMessageCompany(plan.user.cName || plan.user.username)}
+            >
+              Message Company
+            </button>
           </div>
         ))}
       </div>
