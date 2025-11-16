@@ -94,17 +94,23 @@ const SignUpForm = () => {
 
     setLoading(true);
     setError(null);
-    const roleMap = {
-      "Agent": "agent",
-      "Leasing Company": "lcompany",
-      "Insurance Company": "icompany",
-      "Normal User": "user",
-    };
+    
+    let url = "http://localhost:8080/api/auth/signup";
+    let role = "user";
 
-    const role = roleMap[userType];
+    if (userType === "Leasing Company") {
+      url = "http://localhost:8080/api/v1/leasing-companies";
+      role = "lcompany";
+    } else if (userType === "Insurance Company") {
+      url = "http://localhost:8080/api/v1/insurance-companies";
+      role = "icompany";
+    } else if (userType === "Agent") {
+      role = "agent";
+    }
+
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/signup", {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

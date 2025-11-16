@@ -16,6 +16,7 @@ const CreateLeasingPlanPage = () => {
   const [instAmount, setInstAmount] = useState("");
   const [description, setDescription] = useState("");
   const [adId, setAdId] = useState(""); // This will be set by the dropdown
+  const [vehicleType, setVehicleType] = useState(""); // New state for vehicle type
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [formLoading, setFormLoading] = useState(false); // For the form submit
@@ -96,7 +97,12 @@ const CreateLeasingPlanPage = () => {
             <label>Advertisement</label>
             <select
               value={adId}
-              onChange={(e) => setAdId(e.target.value)}
+              onChange={(e) => {
+                const selectedAdId = e.target.value;
+                setAdId(selectedAdId);
+                const selectedAd = pendingAds.find(ad => ad.id === Number(selectedAdId));
+                setVehicleType(selectedAd ? selectedAd.v_type || "" : "");
+              }}
               className={styles.inputField}
               required
               disabled={loading} // Disable dropdown while loading ads
@@ -117,6 +123,18 @@ const CreateLeasingPlanPage = () => {
                 </option>
               )}
             </select>
+          </div>
+
+          {/* Vehicle Type (Read-only) */}
+          <div className={styles.formGroup}>
+            <label>Vehicle Type</label>
+            <input
+              type="text"
+              value={vehicleType}
+              className={styles.inputField}
+              readOnly
+              disabled // Also disable to make it clear it's not editable
+            />
           </div>
           {/* --- END UPDATED --- */}
 

@@ -16,8 +16,8 @@ export default function ManageLeasingPlansPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        console.log("📌 Fetching plans from /leasing-plans");
-        const response = await api.get("/leasing-plans"); // ✅ Correct URL
+        console.log("📌 Fetching plans from /lcompany/myplans");
+        const response = await api.get("/lcompany/myplans");
         setPlans(response.data);
       } catch (err) {
         setError("Failed to fetch plans.");
@@ -32,7 +32,7 @@ export default function ManageLeasingPlansPage() {
 
   const deletePlan = async (id) => {
     try {
-      await api.delete(`/leasing-plans/${id}`); // ✅ Correct delete endpoint
+      await api.delete(`/lcompany/myplans/${id}`);
       setPlans((prev) => prev.filter((plan) => plan.id !== id));
     } catch (err) {
       console.error("❌ Error deleting plan:", err);

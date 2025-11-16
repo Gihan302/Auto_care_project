@@ -54,7 +54,7 @@ export default function ManagePlansPage() {
         <button
           className={styles.addButton}
           // This path must match your file structure for the CreateInsurancePlanPage.jsx
-          onClick={() => router.push("/insurance/create-plan")}
+          onClick={() => router.push("/Insurance/createPlan")}
         >
           <Plus className={styles.addIcon} /> Create New Plan
         </button>
@@ -102,14 +102,14 @@ export default function ManagePlansPage() {
                     <button
                       className={styles.viewBtn}
                       // This path needs to be created
-                      onClick={() => router.push(`/insurance/plans/${plan.id}`)}
+                      onClick={() => router.push(`/Insurance/plans/${plan.id}`)}
                     >
                       <FileText size={16} />
                     </button>
                     <button
                       className={styles.editBtn}
                       // This path needs to be created
-                      onClick={() => router.push(`/insurance/plans/edit/${plan.id}`)}
+                      onClick={() => router.push(`/Insurance/plans/edit/${plan.id}`)}
                     >
                       <Edit size={16} />
                     </button>

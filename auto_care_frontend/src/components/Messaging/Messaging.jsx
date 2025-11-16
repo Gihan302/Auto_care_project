@@ -535,6 +535,14 @@ const config = {
     sidebarTitle: 'User Messages',
     canStartNewChat: true, // Backend supports this, so enabling
     detailsType: 'user',
+  },
+  insurance: {
+    apiBase: '/company/messages',
+    authStorageKey: 'company',
+    title: 'Insurance Dashboard - Messages',
+    sidebarTitle: 'User Messages',
+    canStartNewChat: true,
+    detailsType: 'user',
   }
 };
 
@@ -659,7 +667,7 @@ export default function Messaging({ role }) {
     if (role !== 'user') return;
     try {
       // FIX: Use correct /api/messages path
-      const response = await api.post(`/messages/conversations`, { companyName, companyType });
+      const response = await api.post(`/user/conversations`, { companyName, companyType });
       const conversationId = response.data.conversationId;
       setShowNewChatModal(false);
       await fetchConversations();
