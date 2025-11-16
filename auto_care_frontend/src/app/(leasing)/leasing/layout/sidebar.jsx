@@ -20,6 +20,7 @@ const menuItems = [
   { title: "Create New Plan", url: "/leasing/create-plan", icon: FilePlus2 },
   { title: "Manage Plans", url: "/leasing/manage-plans", icon: ClipboardList },
   { title: "Notifications", url: "/leasing/notifications", icon: Bell },
+  { title: "Messages", url: "/leasing/message", icon: Building },
   { title: "Company Profile", url: "/leasing/profile", icon: Building },
 ]
 
