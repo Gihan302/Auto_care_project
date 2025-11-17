@@ -59,7 +59,7 @@ export const WhyAutoCare = () => {
           <div className="feature-card">
             <div className="card-inner">
               <div className="feature-icon">
-                <img src="/icons/handshake.svg" alt="Handshake" />
+                <img src="/icons/handleshake.png" alt="Handshake" />
               </div>
               <h3 className="feature-title">Loan or Lease with Confidence!</h3>
               <p className="feature-description">
