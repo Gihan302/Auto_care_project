@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Phone, Video, MoreVertical, Search, Paperclip, Send, Bell, FileText, X, Moon, Sun, User } from 'lucide-react';
+import { Phone, Video, MoreVertical, Search, Paperclip, Send, Bell, FileText, X, Moon, Sun, User, Building2 } from 'lucide-react';
 import styles from './page.module.css';
 
 const API_BASE_URL = 'http://localhost:8080/api/company';
@@ -19,6 +19,10 @@ export default function CompanyMessaging() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [authError, setAuthError] = useState(false);
+  const [companies, setCompanies] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState('');
+  const [companyType, setCompanyType] = useState('');
+  const [stats, setStats] = useState(null);
   
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -28,6 +32,7 @@ export default function CompanyMessaging() {
   const getAuthToken = () => {
     if (typeof window === 'undefined') return null;
     
+    // Try multiple storage keys
     let token = localStorage.getItem('companyToken');
     
     if (!token) {
@@ -46,6 +51,11 @@ export default function CompanyMessaging() {
       }
     }
     
+    // Try userToken as fallback
+    if (!token) {
+      token = localStorage.getItem('userToken') || localStorage.getItem('token');
+    }
+    
     return token;
   };
 
@@ -60,37 +70,50 @@ export default function CompanyMessaging() {
     };
 
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      // Ensure Bearer prefix
+      const authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+      headers['Authorization'] = authHeader;
+      console.log('✅ Token attached to request');
     } else {
-      console.log('⚠️ No token available for request');
+      console.warn('⚠️ No token available for request');
     }
 
     if (!(options.body instanceof FormData)) {
       headers['Content-Type'] = 'application/json';
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    });
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      });
 
-    console.log('📥 Response status:', response.status);
+      console.log('📥 Response status:', response.status);
 
-    if (response.status === 401) {
-      console.error('🚫 401 Unauthorized');
-      setAuthError(true);
-      localStorage.removeItem('companyToken');
-      localStorage.removeItem('company');
-      throw new Error('Unauthorized');
+      if (response.status === 401) {
+        console.error('🚫 401 Unauthorized');
+        setAuthError(true);
+        localStorage.removeItem('companyToken');
+        localStorage.removeItem('company');
+        throw new Error('Unauthorized');
+      }
+
+      if (response.status === 403) {
+        console.error('🚫 403 Forbidden - No permission');
+        throw new Error('Access denied');
+      }
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ HTTP Error:', response.status, errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('❌ API Error:', error);
+      throw error;
     }
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ HTTP Error:', response.status, errorText);
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
   };
 
   // Check authentication
@@ -121,20 +144,50 @@ export default function CompanyMessaging() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const fetchConversations = async () => {
+  // Fetch company list (dropdown)
+  const fetchCompanies = async () => {
     try {
-      console.log('📡 Fetching conversations...');
-      const data = await apiCall(`${API_BASE_URL}/conversations`);
+      console.log('📡 Fetching company list...');
+      const data = await apiCall(`${API_BASE_URL}/companies`);
+      console.log('✅ Companies fetched:', data);
+      setCompanies(data.companies || []);
+      setCompanyType(data.companyType || '');
+      
+      // Auto-select first company if available
+      if (data.companies && data.companies.length > 0) {
+        setSelectedCompany(data.companies[0]);
+      }
+      
+      setAuthError(false);
+    } catch (error) {
+      console.error('❌ Error fetching companies:', error);
+      if (error.message === 'Unauthorized') {
+        setAuthError(true);
+      }
+    }
+  };
+
+  // Fetch conversations for selected company
+  const fetchConversations = async (companyName) => {
+    if (!companyName) {
+      console.log('⚠️ No company selected');
+      return;
+    }
+
+    try {
+      console.log('📡 Fetching conversations for:', companyName);
+      setLoading(true);
+      const data = await apiCall(`${API_BASE_URL}/conversations?companyName=${encodeURIComponent(companyName)}`);
       console.log('✅ Conversations fetched:', data.length);
       setConversations(data);
       setLoading(false);
-      setAuthError(false);
     } catch (error) {
       console.error('❌ Error fetching conversations:', error);
       setLoading(false);
     }
   };
 
+  // Fetch messages
   const fetchMessages = async (conversationId) => {
     try {
       console.log('📡 Fetching messages for conversation:', conversationId);
@@ -146,6 +199,7 @@ export default function CompanyMessaging() {
     }
   };
 
+  // Fetch user details
   const fetchUserDetails = async (conversationId) => {
     try {
       const data = await apiCall(`${API_BASE_URL}/conversations/${conversationId}/user-details`);
@@ -155,10 +209,13 @@ export default function CompanyMessaging() {
     }
   };
 
-  const fetchUnreadCount = async () => {
+  // Fetch unread count
+  const fetchUnreadCount = async (companyName) => {
+    if (!companyName) return;
+    
     try {
-      console.log('📡 Fetching unread count...');
-      const data = await apiCall(`${API_BASE_URL}/messages/unread-count`);
+      console.log('📡 Fetching unread count for:', companyName);
+      const data = await apiCall(`${API_BASE_URL}/messages/unread-count?companyName=${encodeURIComponent(companyName)}`);
       console.log('✅ Unread count:', data.count);
       setUnreadCount(data.count);
     } catch (error) {
@@ -166,6 +223,33 @@ export default function CompanyMessaging() {
     }
   };
 
+  // Fetch stats
+  const fetchStats = async (companyName) => {
+    if (!companyName) return;
+    
+    try {
+      console.log('📡 Fetching stats for:', companyName);
+      const data = await apiCall(`${API_BASE_URL}/stats?companyName=${encodeURIComponent(companyName)}`);
+      console.log('✅ Stats fetched:', data);
+      setStats(data);
+    } catch (error) {
+      console.error('❌ Error fetching stats:', error);
+    }
+  };
+
+  // Handle company selection
+  const handleCompanySelect = (companyName) => {
+    console.log('🏢 Company selected:', companyName);
+    setSelectedCompany(companyName);
+    setSelectedChat(null);
+    setMessages([]);
+    setUserDetails(null);
+    fetchConversations(companyName);
+    fetchUnreadCount(companyName);
+    fetchStats(companyName);
+  };
+
+  // Handle send message
   const handleSendMessage = async () => {
     if (!message.trim() && !selectedFile) return;
     if (!selectedChat) return;
@@ -193,7 +277,8 @@ export default function CompanyMessaging() {
 
       setMessage('');
       await fetchMessages(selectedChat);
-      await fetchConversations();
+      await fetchConversations(selectedCompany);
+      await fetchUnreadCount(selectedCompany);
     } catch (error) {
       console.error('❌ Error sending message:', error);
       alert('Failed to send message. Please try again.');
@@ -202,13 +287,15 @@ export default function CompanyMessaging() {
     }
   };
 
+  // Handle select chat
   const handleSelectChat = async (conversationId) => {
     setSelectedChat(conversationId);
     await fetchMessages(conversationId);
     await fetchUserDetails(conversationId);
-    await fetchUnreadCount();
+    await fetchUnreadCount(selectedCompany);
   };
 
+  // Handle file select
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -220,6 +307,7 @@ export default function CompanyMessaging() {
     }
   };
 
+  // Format time helpers
   const formatTime = (timestamp) => {
     if (!timestamp) return '';
     const date = new Date(timestamp);
@@ -262,6 +350,7 @@ export default function CompanyMessaging() {
     conv.companyName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Initial load
   useEffect(() => {
     console.log('🚀 Company Messaging component mounted');
     
@@ -269,8 +358,7 @@ export default function CompanyMessaging() {
       const company = getCompanyData();
       console.log('🏢 Company:', company?.companyName || company?.email || 'Unknown');
       
-      fetchConversations();
-      fetchUnreadCount();
+      fetchCompanies();
     } else {
       console.log('🔒 Not authenticated');
       setAuthError(true);
@@ -278,20 +366,22 @@ export default function CompanyMessaging() {
     }
   }, []);
 
+  // Auto-refresh when company selected
   useEffect(() => {
-    if (!checkAuth()) return;
+    if (!checkAuth() || !selectedCompany) return;
 
     const interval = setInterval(() => {
       if (selectedChat) {
         fetchMessages(selectedChat);
       }
-      fetchConversations();
-      fetchUnreadCount();
-    }, 10000);
+      fetchConversations(selectedCompany);
+      fetchUnreadCount(selectedCompany);
+    }, 10000); // Poll every 10 seconds
 
     return () => clearInterval(interval);
-  }, [selectedChat]);
+  }, [selectedChat, selectedCompany]);
 
+  // Scroll to bottom on new messages
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -339,6 +429,29 @@ export default function CompanyMessaging() {
             <h1 className={styles.title}>Company Portal - Messages</h1>
           </div>
           <div className={styles.headerRight}>
+            {/* Company Selector Dropdown */}
+            {companies.length > 0 && (
+              <select 
+                value={selectedCompany}
+                onChange={(e) => handleCompanySelect(e.target.value)}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: '1px solid #ddd',
+                  marginRight: '16px',
+                  background: 'white',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="">Select Company</option>
+                {companies.map((company) => (
+                  <option key={company} value={company}>
+                    {company}
+                  </option>
+                ))}
+              </select>
+            )}
+            
             <button className={styles.iconButton}>
               <Bell size={20} />
               {unreadCount > 0 && <span className={styles.badge}>{unreadCount}</span>}
@@ -356,7 +469,16 @@ export default function CompanyMessaging() {
         <div className={styles.mainContent}>
           <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
-              <h2 className={styles.sidebarTitle}>User Messages</h2>
+              <h2 className={styles.sidebarTitle}>
+                {selectedCompany ? `${selectedCompany} - Conversations` : 'User Messages'}
+              </h2>
+              {stats && (
+                <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                  Total: {stats.totalConversations} | 
+                  Active: {stats.activeConversations} | 
+                  Unread: {stats.unreadConversations}
+                </div>
+              )}
             </div>
             
             <div className={styles.searchBox}>
@@ -371,7 +493,11 @@ export default function CompanyMessaging() {
             </div>
 
             <div className={styles.conversationList}>
-              {loading ? (
+              {!selectedCompany ? (
+                <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+                  Please select a company from the dropdown above
+                </div>
+              ) : loading ? (
                 <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>
               ) : filteredConversations.length === 0 ? (
                 <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
@@ -395,7 +521,7 @@ export default function CompanyMessaging() {
                           ? conv.lastMessage.substring(0, 50) + '...' 
                           : conv.lastMessage || 'No messages yet'}
                       </p>
-                      <span className={styles.statusBadge}>{conv.companyType}</span>
+                      <span className={styles.statusBadge}>{conv.status}</span>
                       {conv.unreadCount > 0 && (
                         <span className={styles.unreadBadge}>{conv.unreadCount}</span>
                       )}
@@ -416,7 +542,7 @@ export default function CompanyMessaging() {
                     </div>
                     <div>
                       <h2 className={styles.companyName}>{selectedConversation.companyName}</h2>
-                      <span className={styles.onlineStatus}>● User Conversation</span>
+                      <span className={styles.onlineStatus}>● Customer Conversation</span>
                     </div>
                   </div>
                   <div className={styles.chatHeaderRight}>
@@ -526,9 +652,13 @@ export default function CompanyMessaging() {
                 justifyContent: 'center', 
                 height: '100%',
                 color: '#666',
-                fontSize: '18px'
+                fontSize: '18px',
+                flexDirection: 'column',
+                gap: '16px'
               }}>
-                Select a conversation to view and reply to messages
+                <Building2 size={48} />
+                <p>Select a conversation to view and reply to messages</p>
+                {!selectedCompany && <p style={{ fontSize: '14px' }}>First, select a company from the dropdown above</p>}
               </div>
             )}
           </main>
@@ -542,8 +672,11 @@ export default function CompanyMessaging() {
                       <User size={40} />
                     </div>
                   </div>
-                  <h2 className={styles.companyCardName}>User Details</h2>
+                  <h2 className={styles.companyCardName}>Customer Details</h2>
                   <p className={styles.companyCardType}>
+                    {userDetails.username}
+                  </p>
+                  <p style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>
                     {userDetails.email}
                   </p>
                   
@@ -562,7 +695,7 @@ export default function CompanyMessaging() {
                   <h3 className={styles.sectionTitle}>Quick Actions</h3>
                   <button className={styles.quickActionButton}>
                     <FileText size={18} />
-                    View User History
+                    View Customer History
                   </button>
                   <button className={styles.quickActionButton}>
                     <FileText size={18} />
@@ -576,7 +709,9 @@ export default function CompanyMessaging() {
               </>
             ) : (
               <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
-                Select a conversation to view user details
+                {selectedCompany 
+                  ? 'Select a conversation to view customer details'
+                  : 'Select a company to get started'}
               </div>
             )}
           </aside>
