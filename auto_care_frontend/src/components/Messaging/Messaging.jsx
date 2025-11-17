@@ -660,7 +660,33 @@ export default function Messaging({ role }) {
   };
 
   const handleSendMessage = async () => {
-    // ... (This function is fine)
+    if (!message.trim() && !selectedFile) return;
+    if (!selectedChat) return;
+
+    setSendingMessage(true);
+    const endpoint = `${roleConfig.apiBase}/conversations/${selectedChat}/messages`;
+
+    try {
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('messageText', message || 'Sent an attachment');
+        formData.append('file', selectedFile);
+        await api.post(`${endpoint}/attachment`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        setSelectedFile(null);
+      } else {
+        await api.post(endpoint, { messageText: message });
+      }
+      setMessage('');
+      await fetchMessages(selectedChat);
+      await fetchConversations();
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+    } finally {
+      setSendingMessage(false);
+    }
   };
 
   const handleCreateConversation = async (companyName, companyType) => {
