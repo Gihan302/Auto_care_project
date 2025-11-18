@@ -14,29 +14,35 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     let token = null;
+    console.log("--- Axios Interceptor ---");
 
     // 1. Try to get the full user object
     const userString = localStorage.getItem('user');
+    console.log("1. userString:", userString);
     if (userString) {
       try {
         const userData = JSON.parse(userString);
+        console.log("1a. userData:", userData);
         // Look for the token inside the stored user object
         if (userData && userData.token) {
           token = userData.token;
+          console.log("1b. Token from userData:", token);
         }
       } catch (e) {
-        // Silent fail - user object might not be JSON
+        console.error("Error parsing userString:", e);
       }
     }
 
     // 2. If that fails, try to get a token directly
     if (!token) {
       token = localStorage.getItem('token');
+      console.log("2. Token from localStorage.getItem('token'):", token);
     }
     
     // 3. If that fails, try 'userToken'
     if (!token) {
       token = localStorage.getItem('userToken');
+      console.log("3. Token from localStorage.getItem('userToken'):", token);
     }
 
     // 4. If we found a token, attach it
@@ -52,6 +58,7 @@ api.interceptors.request.use(
     } else {
       console.log("❌ Axios Interceptor: No token found in localStorage.");
     }
+    console.log("-------------------------");
 
     return config;
   },
