@@ -22,7 +22,7 @@ const menuItems = [
   { title: "Manage Plans", url: "/leasing/manage-plans", icon: ClipboardList },
   { title: "Messages", url: "/leasing/message", icon: MessagesSquare },
   { title: "Notifications", url: "/leasing/notifications", icon: Bell },
-  { title: "Messages", url: "/leasing/message", icon: Building },
+  // { title: "Messages", url: "/leasing/message", icon: Building }, <--- DELETED THIS DUPLICATE
   { title: "Company Profile", url: "/leasing/profile", icon: Building },
 ]
 

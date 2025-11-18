@@ -90,7 +90,7 @@ const SignInForm = () => {
           router.push('/Insurance/dashboard');
         } else if (userRoles.includes("ROLE_LCOMPANY")) {
           console.log('🎯 Leasing company detected, redirecting to leasing dashboard');
-          router.push('/leasing/manage-plans');
+          router.push('/leasing/dashboard');
         } else {
           console.log('🎯 Regular user, redirecting to home page');
           router.push('/');
