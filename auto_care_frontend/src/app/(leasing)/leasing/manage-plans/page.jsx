@@ -16,8 +16,8 @@ export default function ManageLeasingPlansPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        console.log("📌 Fetching plans from /lcompany/myplans");
-        const response = await api.get("/lcompany/myplans");
+        console.log("📌 Fetching plans from /leasing-plans");
+        const response = await api.get("/leasing-plans");
         setPlans(response.data);
       } catch (err) {
         setError("Failed to fetch plans.");
@@ -32,7 +32,7 @@ export default function ManageLeasingPlansPage() {
 
   const deletePlan = async (id) => {
     try {
-      await api.delete(`/lcompany/myplans/${id}`);
+      await api.delete(`/leasing-plans/${id}`);
       setPlans((prev) => prev.filter((plan) => plan.id !== id));
     } catch (err) {
       console.error("❌ Error deleting plan:", err);
@@ -55,9 +55,10 @@ export default function ManageLeasingPlansPage() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Plan Amount</th>
-              <th>Installments</th>
-              <th>Interest</th>
+              <th>Plan Name</th>
+              <th>Vehicle Type</th>
+              <th>Lease Term</th>
+              <th>Interest Rate</th>
               <th>Monthly Payment</th>
               <th>Description</th>
               <th>Actions</th>
@@ -65,18 +66,19 @@ export default function ManageLeasingPlansPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="6" className={styles.loading}>Loading...</td></tr>
+              <tr><td colSpan="7" className={styles.loading}>Loading...</td></tr>
             ) : error ? (
-              <tr><td colSpan="6" className={styles.error}>{error}</td></tr>
+              <tr><td colSpan="7" className={styles.error}>{error}</td></tr>
             ) : plans.length === 0 ? (
-              <tr><td colSpan="6" className={styles.empty}>No plans found.</td></tr>
+              <tr><td colSpan="7" className={styles.empty}>No plans found.</td></tr>
             ) : (
               plans.map((plan) => (
                 <tr key={plan.id}>
-                  <td>{plan.planAmount}</td>
-                  <td>{plan.noOfInstallments}</td>
-                  <td>{plan.interest}%</td>
-                  <td>{plan.instAmount}</td>
+                  <td>{plan.planName}</td>
+                  <td>{plan.vehicleType}</td>
+                  <td>{plan.leaseTerm}</td>
+                  <td>{plan.interestRate}%</td>
+                  <td>{plan.monthlyPayment}</td>
                   <td>{plan.description}</td>
                   <td className={styles.actions}>
                     <button

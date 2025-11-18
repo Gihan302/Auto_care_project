@@ -30,7 +30,11 @@ const EditLeasingPlanPage = () => {
         setDescription(plan.description || "");
       } catch (err) {
         console.error("Error fetching plan:", err);
-        setMessage("⚠️ Failed to fetch plan details.");
+        if (err.response && err.response.status === 404) {
+          setMessage("⚠️ Leasing plan not found. It might have been deleted.");
+        } else {
+          setMessage("⚠️ Failed to fetch plan details.");
+        }
       }
     };
 
