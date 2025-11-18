@@ -1,0 +1,15 @@
+.hero {
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+}
+
+.subheading {
+  font-size: 1.25rem;
+  color: #ff9248;
+  margin-top: 1rem;
+}
+
+:global(header) {
+  padding: 0 !important;
+}

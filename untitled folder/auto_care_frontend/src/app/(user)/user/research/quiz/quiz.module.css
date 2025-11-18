@@ -1,0 +1,545 @@
+.quizApp {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #222725;
+}
+
+.quizContainer {
+  background: #222725;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  max-width: 900px;
+  width: 100%;
+  padding: 40px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.quizHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.quizHeader h2 {
+  color: #ECDFCC;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.quizHeader h3 {
+  color: #ECDFCC;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.quizHeader p {
+  color: #ECDFCC;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #1E201E;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #ECDFCC;
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.vehicleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.vehicleCard {
+  background: #1E201E;
+  padding: 30px 20px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.vehicleCard:hover {
+  transform: translateY(-5px);
+  border-color: #ECDFCC;
+  box-shadow: 0 8px 20px rgba(236, 223, 204, 0.2);
+}
+
+.vehicleName {
+  color: #ECDFCC;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.optionBtn {
+  background: #1E201E;
+  border: 2px solid #1E201E;
+  padding: 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #ECDFCC;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.optionBtn:hover {
+  border-color: #ECDFCC;
+  background: #ECDFCC;
+  color: #1E201E;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 223, 204, 0.3);
+}
+
+.backBtn {
+  background: #1E201E;
+  border: 2px solid #1E201E;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #ECDFCC;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.backBtn:hover {
+  border-color: #ECDFCC;
+  transform: translateX(-2px);
+}
+
+.loadingState,
+.errorState {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loadingState h2,
+.errorState h2 {
+  color: #ECDFCC;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.loadingState p {
+  color: #ECDFCC;
+  font-size: 1.1rem;
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+
+.loadingDetails p {
+  color: #ECDFCC;
+  opacity: 0.6;
+  font-size: 0.95rem;
+  margin: 8px 0;
+}
+
+.logoSpinner {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 30px;
+  animation: rotate 2s linear infinite;
+}
+
+.logoSpinner img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+}
+
+.errorMessage {
+  color: #ECDFCC;
+  background: #1E201E;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border: 2px solid #ECDFCC;
+  opacity: 0.9;
+}
+
+.errorActions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.retryBtn {
+  background: #1E201E;
+  color: #ECDFCC;
+  border: 2px solid #ECDFCC;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retryBtn:hover {
+  background: #ECDFCC;
+  color: #1E201E;
+}
+
+.recommendationHeader {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid #1E201E;
+}
+
+.recommendationHeader h2 {
+  color: #ECDFCC;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+.summaryStats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.statLabel {
+  color: #ECDFCC;
+  font-size: 0.9rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.statValue {
+  color: #ECDFCC;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.recommendationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.recommendationCard {
+  background: #1E201E;
+  border-radius: 12px;
+  padding: 30px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.recommendationCard:hover {
+  border-color: #ECDFCC;
+  box-shadow: 0 8px 20px rgba(236, 223, 204, 0.15);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.rankBadge {
+  background: #ECDFCC;
+  color: #1E201E;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.cardHeader h3 {
+  color: #ECDFCC;
+  font-size: 1.5rem;
+  flex: 1;
+  min-width: 200px;
+  font-weight: 600;
+}
+
+.matchScore {
+  background: #ECDFCC;
+  color: #1E201E;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.priceTag {
+  background: #ECDFCC;
+  color: #1E201E;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 25px;
+}
+
+.featuresSection {
+  margin-bottom: 25px;
+}
+
+.featuresSection h4,
+.reasoningSection h4 {
+  color: #ECDFCC;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.featuresSection ul {
+  list-style: none;
+  padding: 0;
+}
+
+.featuresSection li {
+  color: #ECDFCC;
+  padding: 8px 0;
+  padding-left: 25px;
+  position: relative;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.featuresSection li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #ECDFCC;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.reasoningSection {
+  margin-bottom: 20px;
+}
+
+.reasoningSection p {
+  color: #ECDFCC;
+  line-height: 1.7;
+  font-size: 1rem;
+  opacity: 0.85;
+}
+
+.specsRow {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  border-top: 1px solid #222725;
+  margin-bottom: 20px;
+}
+
+.specItem {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.specLabel {
+  color: #ECDFCC;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.7;
+}
+
+.specValue {
+  color: #ECDFCC;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.exploreBtn {
+  background: #ECDFCC;
+  color: #1E201E;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.exploreBtn:hover {
+  background: #d4c4b0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 223, 204, 0.3);
+}
+
+.summarySection {
+  background: #1E201E;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.summarySection h3 {
+  color: #ECDFCC;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.summarySection p {
+  color: #ECDFCC;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  opacity: 0.85;
+}
+
+.tipsSection h4 {
+  color: #ECDFCC;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.tipsSection p {
+  color: #ECDFCC;
+  opacity: 0.85;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.restartBtn {
+  background: #ECDFCC;
+  color: #1E201E;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(236, 223, 204, 0.2);
+}
+
+.restartBtn:hover {
+  background: #d4c4b0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(236, 223, 204, 0.3);
+}
+
+@media (max-width: 768px) {
+  .quizContainer {
+    padding: 25px;
+  }
+
+  .quizHeader h2 {
+    font-size: 1.5rem;
+  }
+
+  .vehicleGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+  }
+
+  .vehicleCard {
+    padding: 20px 15px;
+  }
+
+  .vehicleName {
+    font-size: 1rem;
+  }
+
+  .optionsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cardHeader h3 {
+    font-size: 1.2rem;
+  }
+
+  .recommendationCard {
+    padding: 20px;
+  }
+
+  .summaryStats {
+    gap: 20px;
+  }
+
+  .statItem {
+    min-width: 120px;
+  }
+}

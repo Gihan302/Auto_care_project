@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import styles from "../../../../(insurance)/Insurance/createPlan/createPlan.module.css";
-import apiClient from "@/utils/axiosConfig";
+import apiClient from "@/utils/axios";
 import { useRouter, useParams } from "next/navigation";
 
 const EditLeasingPlanPage = () => {
@@ -20,17 +20,21 @@ const EditLeasingPlanPage = () => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const response = await apiClient.get(`/api/leasing-plans/${id}`);
+        const response = await apiClient.get(`/leasing-plans/${id}`);
         const plan = response.data;
-        setPlanName(plan.planName);
-        setVehicleType(plan.vehicleType);
-        setLeaseTerm(plan.leaseTerm);
-        setInterestRate(plan.interestRate);
-        setMonthlyPayment(plan.monthlyPayment);
-        setDescription(plan.description);
+        setPlanName(plan.planName || "");
+        setVehicleType(plan.vehicleType || "");
+        setLeaseTerm(plan.leaseTerm || "");
+        setInterestRate(plan.interestRate || "");
+        setMonthlyPayment(plan.monthlyPayment || "");
+        setDescription(plan.description || "");
       } catch (err) {
         console.error("Error fetching plan:", err);
-        setMessage("⚠️ Failed to fetch plan details.");
+        if (err.response && err.response.status === 404) {
+          setMessage("⚠️ Leasing plan not found. It might have been deleted.");
+        } else {
+          setMessage("⚠️ Failed to fetch plan details.");
+        }
       }
     };
 
@@ -45,7 +49,7 @@ const EditLeasingPlanPage = () => {
     setMessage("");
 
     try {
-      const response = await apiClient.put(`/api/leasing-plans/${id}`, {
+      const response = await apiClient.put(`/leasing-plans/${id}`, {
         planName,
         vehicleType,
         leaseTerm,
