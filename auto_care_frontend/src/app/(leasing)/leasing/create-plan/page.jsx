@@ -195,13 +195,13 @@ const CreateLeasingPlanPage = () => {
 
           {/* NEW: Down Payment Field */}
           <div className={styles.formGroup}>
-            <label>Down Payment (LKR)</label>
+            <label>Down Payment (%)</label>
             <input
               type="number"
               value={downPayment}
               onChange={(e) => setDownPayment(e.target.value)}
               className={styles.inputField}
-              placeholder="e.g., 100000"
+              placeholder="e.g., 10"
               required
             />
           </div>
