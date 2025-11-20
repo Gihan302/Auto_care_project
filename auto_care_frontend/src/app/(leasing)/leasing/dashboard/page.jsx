@@ -42,21 +42,22 @@ const LeasingDashboardPage = () => {
               <th>Vehicle Type</th>
               <th>Lease Term</th>
               <th>Interest Rate</th>
+              <th>Down Payment</th>
               <th>Monthly Payment</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="5" className={styles.loading}>Loading plans...</td>
+                <td colSpan="6" className={styles.loading}>Loading plans...</td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan="5" className={styles.error}>{error}</td>
+                <td colSpan="6" className={styles.error}>{error}</td>
               </tr>
             ) : plans.length === 0 ? (
               <tr>
-                <td colSpan="5" className={styles.empty}>No leasing plans found.</td>
+                <td colSpan="6" className={styles.empty}>No leasing plans found.</td>
               </tr>
             ) : (
               plans.map((plan) => (
@@ -65,6 +66,7 @@ const LeasingDashboardPage = () => {
                   <td>{plan.vehicleType}</td>
                   <td>{plan.leaseTerm}</td>
                   <td>{plan.interestRate}%</td>
+                  <td>{plan.downPayment}%</td>
                   <td>{plan.monthlyPayment}</td>
                 </tr>
               ))
