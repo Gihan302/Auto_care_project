@@ -14,6 +14,7 @@ const CreateLeasingPlanPage = () => {
   const [noOfInstallments, setNoOfInstallments] = useState("");
   const [interest, setInterest] = useState("");
   const [instAmount, setInstAmount] = useState("");
+  const [downPayment, setDownPayment] = useState(""); // New state for Down Payment
   const [description, setDescription] = useState("");
   const [adId, setAdId] = useState(""); // This will be set by the dropdown
   const [vehicleType, setVehicleType] = useState(""); // New state for vehicle type
@@ -58,6 +59,7 @@ const CreateLeasingPlanPage = () => {
       noOfInstallments: Number(noOfInstallments),
       interest: Number(interest),
       instAmount: Number(instAmount),
+      downPayment: Number(downPayment), // Add down payment to the payload
       description,
       // Your backend requires the adId to be sent in the request body.
       adId: Number(adId),
@@ -187,6 +189,19 @@ const CreateLeasingPlanPage = () => {
               onChange={(e) => setInstAmount(e.target.value)}
               className={styles.inputField}
               placeholder="Monthly payment amount"
+              required
+            />
+          </div>
+
+          {/* NEW: Down Payment Field */}
+          <div className={styles.formGroup}>
+            <label>Down Payment (LKR)</label>
+            <input
+              type="number"
+              value={downPayment}
+              onChange={(e) => setDownPayment(e.target.value)}
+              className={styles.inputField}
+              placeholder="e.g., 100000"
               required
             />
           </div>
