@@ -37,6 +37,14 @@ const config = {
     sidebarTitle: 'User Messages',
     canStartNewChat: true,
     detailsType: 'user',
+  },
+  agent: {
+    apiBase: '/agent/messages',
+    authStorageKey: 'agent',
+    title: 'Agent Dashboard - Messages',
+    sidebarTitle: 'Buyer Messages',
+    canStartNewChat: false, // Agents reply to inquiries, don't start them
+    detailsType: 'user',
   }
 };
 
