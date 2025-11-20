@@ -484,7 +484,7 @@ function CompanyDetailsPanel({ details }) {
     <div className={styles.companyCard}>
       <div className={styles.companyCardHeader}><div className={styles.companyLogoLarge}>{getAvatarLetter(details.companyName)}</div></div>
       <h2 className={styles.companyCardName}>{details.companyName}</h2>
-      <p className={styles.companyCardType}>{details.companyType === 'insurance' ? 'Insurance Provider' : 'Leasing Company'}</p>
+      <p className={styles.companyCardType}>{details.companyType === 'insurance' ? 'Insurance Provider' : details.companyType === 'agent' ? 'Agent' : 'Leasing Company'}</p>
       <div className={styles.actionButtons}>
         <button className={styles.callButton}><Phone size={16} /> Call</button>
         <button className={styles.visitButton}>🌐 Visit</button>
