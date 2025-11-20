@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/axios';
 
 export default function SellCarPage() {
   const [formData, setFormData] = useState({
@@ -10,8 +11,9 @@ export default function SellCarPage() {
     vehicleRegistration: '',
     location: ''
   });
-
   const [expandedFAQ, setExpandedFAQ] = useState(null);
+  const [agents, setAgents] = useState([]);
+  const [showAgentModal, setShowAgentModal] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,13 +26,21 @@ export default function SellCarPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-
     router.push('/user/sellCar/postAdd');
   };
 
   const router = useRouter();
 
-
+  const handleFindAgent = async () => {
+    try {
+      const response = await api.get('/user/approved-agents');
+      setAgents(response.data);
+      setShowAgentModal(true);
+    } catch (error) {
+      console.error('Error fetching agents:', error);
+      alert('Could not fetch agents. Please try again later.');
+    }
+  };
 
   const toggleFAQ = (index) => {
     setExpandedFAQ(expandedFAQ === index ? null : index);
@@ -99,6 +109,21 @@ export default function SellCarPage() {
         </div>
       </section>
 
+      {/* Find Your Agent Section */}
+      <section className={styles.findAgentSection}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Find Your Agent</h2>
+          <p className={styles.sectionSubtitle}>Our dedicated agents are here to help you every step of the way.</p>
+          <div className={styles.agentContent}>
+            <p className={styles.agentDescription}>Connect with a professional agent who can assist you with paperwork, pricing, and finding the best buyer for your car. Get personalized support and make your selling experience even smoother.</p>
+            <button className={styles.findAgentButton} onClick={handleFindAgent}>Connect with an Agent</button>
+          </div>
+        </div>
+      </section>
+
+      {/* Agent List Modal */}
+      {showAgentModal && <AgentListModal agents={agents} onClose={() => setShowAgentModal(false)} />}
+
       {/* Car Value Form Section */}
       <section className={styles.valueSection}>
         <div className={styles.container}>
@@ -107,7 +132,6 @@ export default function SellCarPage() {
           
           <form onSubmit={handleSubmit} className={styles.valueForm}>
             
-
             <button type="submit" className={styles.submitBtn}>
               Sell My Vehicle
             </button>
@@ -178,6 +202,36 @@ export default function SellCarPage() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function AgentListModal({ agents, onClose }) {
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modal}>
+        <div className={styles.modalHeader}>
+          <h2>Our Approved Agents</h2>
+          <button onClick={onClose}>&times;</button>
+        </div>
+        <div className={styles.modalBody}>
+          {agents.length > 0 ? (
+            <ul className={styles.agentList}>
+              {agents.map(agent => (
+                <li key={agent.id} className={styles.agentListItem}>
+                  <div className={styles.agentAvatar}>{agent.fname.charAt(0)}</div>
+                  <div className={styles.agentInfo}>
+                    <p className={styles.agentName}>{agent.fname} {agent.lname}</p>
+                    <p className={styles.agentContact}>{agent.username}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No agents available at the moment.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
