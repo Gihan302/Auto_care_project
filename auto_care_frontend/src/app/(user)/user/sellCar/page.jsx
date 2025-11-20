@@ -207,6 +207,22 @@ export default function SellCarPage() {
 }
 
 function AgentListModal({ agents, onClose }) {
+  const router = useRouter();
+
+  const handleAgentClick = async (agent) => {
+    try {
+      const response = await api.post('/user/conversations', {
+        agentId: agent.id,
+        // The backend should handle creating or finding the conversation
+      });
+      const conversationId = response.data.conversationId;
+      router.push(`/user/message?conversationId=${conversationId}`);
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+      alert('Could not start a conversation with this agent. Please try again.');
+    }
+  };
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
@@ -218,7 +234,7 @@ function AgentListModal({ agents, onClose }) {
           {agents.length > 0 ? (
             <ul className={styles.agentList}>
               {agents.map(agent => (
-                <li key={agent.id} className={styles.agentListItem}>
+                <li key={agent.id} className={styles.agentListItem} onClick={() => handleAgentClick(agent)}>
                   <div className={styles.agentAvatar}>{agent.fname.charAt(0)}</div>
                   <div className={styles.agentInfo}>
                     <p className={styles.agentName}>{agent.fname} {agent.lname}</p>

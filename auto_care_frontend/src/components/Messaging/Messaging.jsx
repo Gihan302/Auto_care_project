@@ -177,7 +177,9 @@ export default function Messaging({ role }) {
   const fetchDetails = async (conversationId, pName) => {
     try {
       let response;
-      if (roleConfig.detailsType === 'company') {
+      if (role === 'agent') {
+        response = await api.get(`/agent/messages/conversations/${conversationId}/user-details`);
+      } else if (roleConfig.detailsType === 'company') {
         // User fetching Company Details
         response = await api.get(`/messages/companies/${encodeURIComponent(pName)}/details`);
       } else {
@@ -492,12 +494,16 @@ function CompanyDetailsPanel({ details }) {
 }
 
 function UserDetailsPanel({ details }) {
+  const agentName = `${details.fname} ${details.lname}`;
   return (
     <div className={styles.companyCard}>
-      <div className={styles.companyCardHeader}><div className={styles.companyLogoLarge}><User size={40} /></div></div>
-      <h2 className={styles.companyCardName}>{details.username || 'User Details'}</h2>
-      <p className={styles.companyCardType}>{details.email}</p>
-      <p style={{fontSize: '14px', color: '#666', marginTop: '5px'}}>{details.contact}</p>
+      <div className={styles.companyCardHeader}>
+        <div className={styles.companyLogoLarge}>{getAvatarLetter(details.fname)}</div>
+      </div>
+      <h2 className={styles.companyCardName}>{agentName || 'Agent Details'}</h2>
+      <p className={styles.companyCardType}>{details.username}</p>
+      <p style={{fontSize: '14px', color: '#666', marginTop: '5px'}}>{details.email}</p>
+      <p style={{fontSize: '14px', color: '#666', marginTop: '5px'}}>{details.tnumber}</p>
       <div className={styles.actionButtons}>
         <button className={styles.callButton}><Phone size={16} /> Call</button>
         <button className={styles.visitButton}>📧 Email</button>
