@@ -96,16 +96,16 @@ const SignUpForm = () => {
     setError(null);
     
     let url = "http://localhost:8080/api/auth/signup";
-    let role = "user";
+    let roles = ["user"];
 
     if (userType === "Leasing Company") {
       url = "http://localhost:8080/api/v1/leasing-companies";
-      role = "lcompany";
+      roles = ["lcompany"];
     } else if (userType === "Insurance Company") {
       url = "http://localhost:8080/api/v1/insurance-companies";
-      role = "icompany";
+      roles = ["icompany"];
     } else if (userType === "Agent") {
-      role = "agent";
+      roles = ["agent", "user"];
     }
 
 
@@ -125,7 +125,7 @@ const SignUpForm = () => {
           cName: userType === "Leasing Company" || userType === "Insurance Company" ? cName : undefined,
           regNum: userType === "Leasing Company" || userType === "Insurance Company" ? regNum : undefined,
           address: userType === "Leasing Company" || userType === "Insurance Company" ? address : undefined,
-          role: [role],
+          role: roles,
         }),
       });
 

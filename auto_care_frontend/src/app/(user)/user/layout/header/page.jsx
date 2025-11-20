@@ -147,6 +147,8 @@ const Header = () => {
         return '/leasing/dashboard';
       case 'ROLE_ICOMPANY':
         return '/Insurance/dashboard';
+      case 'ROLE_AGENT':
+        return '/agent/dashboard';
       case 'ROLE_USER':
         return '/user/profile'; // Assuming user profile is their dashboard
       default:

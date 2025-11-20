@@ -1,0 +1,49 @@
+.container {
+  padding: 2rem;
+  background: #f0f0f0;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 1rem;
+}
+
+.messageList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.messageItem {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.sender {
+  font-weight: 600;
+}
+
+.time {
+  font-size: 0.8rem;
+  color: #666666;
+}
+
+.ad {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.messageContent {
+  font-size: 1rem;
+}

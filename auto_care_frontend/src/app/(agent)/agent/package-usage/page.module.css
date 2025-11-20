@@ -1,0 +1,42 @@
+.container {
+  padding: 2rem;
+  background: #f0f0f0;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 1rem;
+}
+
+.usageCard {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.packageName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.progressBar {
+  background: #e0e0e0;
+  border-radius: 4px;
+  height: 20px;
+  margin-bottom: 1rem;
+}
+
+.progress {
+  background: #333333;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.usageStats {
+  display: flex;
+  justify-content: space-between;
+}

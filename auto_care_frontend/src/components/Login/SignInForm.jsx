@@ -91,6 +91,9 @@ const SignInForm = () => {
         } else if (userRoles.includes("ROLE_LCOMPANY")) {
           console.log('🎯 Leasing company detected, redirecting to leasing dashboard');
           router.push('/leasing/dashboard');
+        } else if (userRoles.includes("ROLE_AGENT")) {
+          console.log('🎯 Agent detected, redirecting to agent dashboard');
+          router.push('/agent/dashboard');
         } else {
           console.log('🎯 Regular user, redirecting to home page');
           router.push('/');
