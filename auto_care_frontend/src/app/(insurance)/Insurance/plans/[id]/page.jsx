@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import styles from "./viewPlan.module.css";
-import apiClient from "@/utils/axiosConfig";
+import api from "@/utils/axios";
 
 const ViewPlanPage = () => {
   const [plan, setPlan] = useState(null);

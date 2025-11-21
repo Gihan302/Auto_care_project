@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import styles from './carAdd.module.css';
 import { Phone, Mail, MapPin, Fuel, Settings, Calendar, Gauge, ChevronLeft, ChevronRight, ArrowLeft, FileText, Shield, X } from 'lucide-react';
 import api from '@/utils/axios';
+import LeasingPlans from '../../components/homepage/LeasingPlans';
 
 const VehicleDetailPage = () => {
   const params = useParams();
@@ -15,40 +16,10 @@ const VehicleDetailPage = () => {
   const [similarVehicles, setSimilarVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showLeasingModal, setShowLeasingModal] = useState(false);
+  const [showLeasingPlans, setShowLeasingPlans] = useState(false);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
 
   // Mock data for leasing and insurance plans (will be replaced with backend data)
-  const leasingPlans = [
-    {
-      id: 1,
-      company: 'Seylan Bank',
-      interestRate: '8.5%',
-      duration: '60 months',
-      monthlyPayment: 'Rs. 35,000',
-      downPayment: '20%',
-      features: ['Flexible payment options', 'Early settlement facility', 'No hidden charges']
-    },
-    {
-      id: 2,
-      company: 'Commercial Bank',
-      interestRate: '9.0%',
-      duration: '48 months',
-      monthlyPayment: 'Rs. 38,500',
-      downPayment: '25%',
-      features: ['Quick approval', 'Competitive rates', 'Free insurance for 1st year']
-    },
-    {
-      id: 3,
-      company: 'Peoples Bank',
-      interestRate: '8.75%',
-      duration: '72 months',
-      monthlyPayment: 'Rs. 32,000',
-      downPayment: '15%',
-      features: ['Low interest rates', 'Extended payment period', 'Online management']
-    }
-  ];
-
   const insurancePlans = [
     {
       id: 1,
@@ -368,9 +339,9 @@ Thank you.`;
         <section className={styles.financingSection}>
           <h2 className={styles.sectionTitle}>Financing Options</h2>
           <div className={styles.financingButtons}>
-            <button className={styles.btnFinancing} onClick={() => setShowLeasingModal(true)}>
+            <button className={styles.btnFinancing} onClick={() => setShowLeasingPlans(prev => !prev)}>
               <FileText size={20} />
-              View Leasing Plans
+              {showLeasingPlans ? 'Hide Leasing Plans' : 'View Leasing Plans'}
             </button>
             <button className={styles.btnFinancing} onClick={() => setShowInsuranceModal(true)}>
               <Shield size={20} />
@@ -378,6 +349,14 @@ Thank you.`;
             </button>
           </div>
         </section>
+
+        {/* Available Leasing Plans */}
+        {showLeasingPlans && (
+          <section className={styles.leasingPlansSection}>
+            <h2 className={styles.sectionTitle}>Available Leasing Plans</h2>
+            <LeasingPlans showAll={true} />
+          </section>
+        )}
 
         {/* Vehicle Information */}
         <section className={styles.infoSection}>
@@ -540,62 +519,6 @@ Thank you.`;
           </section>
         )}
       </main>
-
-      {/* Leasing Plans Modal */}
-      {showLeasingModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowLeasingModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>
-                <FileText size={24} />
-                Available Leasing Plans
-              </h2>
-              <button className={styles.closeBtn} onClick={() => setShowLeasingModal(false)}>
-                <X size={24} />
-              </button>
-            </div>
-            <div className={styles.plansGrid}>
-              {leasingPlans.map((plan) => (
-                <div key={plan.id} className={styles.planCard}>
-                  <h3 className={styles.planCompany}>{plan.company}</h3>
-                  <div className={styles.planDetails}>
-                    <div className={styles.planRow}>
-                      <span>Interest Rate:</span>
-                      <strong>{plan.interestRate}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Duration:</span>
-                      <strong>{plan.duration}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Monthly Payment:</span>
-                      <strong>{plan.monthlyPayment}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Down Payment:</span>
-                      <strong>{plan.downPayment}</strong>
-                    </div>
-                  </div>
-                  <div className={styles.planFeatures}>
-                    <h4>Features:</h4>
-                    <ul>
-                      {plan.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <button 
-                    className={styles.btnApply}
-                    onClick={() => handleApplyNow(plan.company, 'leasing', plan)}
-                  >
-                    Apply Now
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Insurance Plans Modal */}
       {showInsuranceModal && (

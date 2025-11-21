@@ -3,30 +3,38 @@
 import React, { useState, useEffect } from 'react';
 import api from '@/utils/axios';
 import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; // Reusing styles
+import { useSearchParams } from 'next/navigation';
 
 const LeasingDashboardPage = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const searchParams = useSearchParams();
+
+  const fetchPlans = async () => {
+    try {
+      // --- FIX 1: Call the new, correct endpoint ---
+      const response = await api.get("/leasing-plans");
+      
+      const plansData = Array.isArray(response.data) ? response.data : [];
+      setPlans(plansData);
+    } catch (err) {
+      setError("Failed to fetch plans. Are you logged in?");
+      console.error("Error fetching plans:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        // --- FIX 1: Call the new, correct endpoint ---
-        const response = await api.get("/leasing-plans");
-        
-        const plansData = Array.isArray(response.data) ? response.data : [];
-        setPlans(plansData);
-      } catch (err) {
-        setError("Failed to fetch plans. Are you logged in?");
-        console.error("Error fetching plans:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPlans();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("refresh") === "true") {
+      fetchPlans();
+    }
+  }, [searchParams]);
 
   return (
     <div className={styles.container}>

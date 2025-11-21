@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/utils/axios';
-import styles from '../../(insurance)/Insurance/managePlans/managePlans.module.css'; // Reusing styles
+import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; // Reusing styles
 
 const ManageUsersPage = () => {
   const [users, setUsers] = useState([]);

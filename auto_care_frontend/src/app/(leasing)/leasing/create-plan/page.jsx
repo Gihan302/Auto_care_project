@@ -10,13 +10,11 @@ const CreateLeasingPlanPage = () => {
   const [pendingAds, setPendingAds] = useState([]);
   // --- END ADDED ---
 
-  const [planAmount, setPlanAmount] = useState("");
-  const [noOfInstallments, setNoOfInstallments] = useState("");
-  const [interest, setInterest] = useState("");
-  const [instAmount, setInstAmount] = useState("");
-  const [downPayment, setDownPayment] = useState(""); // New state for Down Payment
+  const [planName, setPlanName] = useState("");
+  const [leaseTerm, setLeaseTerm] = useState("");
+  const [interestRate, setInterestRate] = useState("");
+  const [monthlyPayment, setMonthlyPayment] = useState("");
   const [description, setDescription] = useState("");
-  const [adId, setAdId] = useState(""); // This will be set by the dropdown
   const [vehicleType, setVehicleType] = useState(""); // New state for vehicle type
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,26 +53,25 @@ const CreateLeasingPlanPage = () => {
     setMessage("");
 
     const payload = {
-      planAmount: Number(planAmount),
-      noOfInstallments: Number(noOfInstallments),
-      interest: Number(interest),
-      instAmount: Number(instAmount),
-      downPayment: Number(downPayment), // Add down payment to the payload
-      description,
-      // Your backend requires the adId to be sent in the request body.
-      adId: Number(adId),
+        planName,
+        vehicleType,
+        leaseTerm,
+        interestRate,
+        monthlyPayment,
+        description,
     };
 
     console.log("📤 Sending Payload →", payload);
 
     try {
       // Use the LCompanyController endpoint
-      const response = await api.post("/lcompany/postlplan", payload);
+      const response = await api.post("/leasing-plans", payload);
 
       if (response.status === 200) {
         setMessage("✅ Leasing Plan created successfully!");
+        router.refresh();
         // Redirect to the dashboard after 2 seconds
-        setTimeout(() => router.push("/leasing/manage-plans"), 2000);
+        setTimeout(() => router.push("/leasing/manage-plans?refresh=true"), 2000);
       } else {
         setMessage("⚠️ Failed to create plan.");
       }
@@ -98,10 +95,9 @@ const CreateLeasingPlanPage = () => {
           <div className={styles.formGroup}>
             <label>Advertisement</label>
             <select
-              value={adId}
+              value={vehicleType}
               onChange={(e) => {
                 const selectedAdId = e.target.value;
-                setAdId(selectedAdId);
                 const selectedAd = pendingAds.find(ad => ad.id === Number(selectedAdId));
                 setVehicleType(selectedAd ? selectedAd.v_type || "" : "");
               }}
@@ -127,6 +123,18 @@ const CreateLeasingPlanPage = () => {
             </select>
           </div>
 
+          <div className={styles.formGroup}>
+            <label>Plan Name</label>
+            <input
+              type="text"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+              className={styles.inputField}
+              placeholder="e.g., Basic Lease"
+              required
+            />
+          </div>
+
           {/* Vehicle Type (Read-only) */}
           <div className={styles.formGroup}>
             <label>Vehicle Type</label>
@@ -141,25 +149,12 @@ const CreateLeasingPlanPage = () => {
           {/* --- END UPDATED --- */}
 
           <div className={styles.formGroup}>
-            <label>Plan Amount (LKR)</label>
+            <label>Lease Term (months)</label>
             {/* --- FIX: Removed duplicated fields --- */}
             <input
               type="number"
-              value={planAmount}
-              onChange={(e) => setPlanAmount(e.target.value)}
-              className={styles.inputField}
-              placeholder="e.g., 1000000"
-              required
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>No. of Installments</label>
-            {/* --- FIX: Removed duplicated fields --- */}
-            <input
-              type="number"
-              value={noOfInstallments}
-              onChange={(e) => setNoOfInstallments(e.target.value)}
+              value={leaseTerm}
+              onChange={(e) => setLeaseTerm(e.target.value)}
               className={styles.inputField}
               placeholder="e.g., 60"
               required
@@ -171,8 +166,8 @@ const CreateLeasingPlanPage = () => {
             {/* --- FIX: Removed duplicated fields --- */}
             <input
               type="number"
-              value={interest}
-              onChange={(e) => setInterest(e.target.value)}
+              value={interestRate}
+              onChange={(e) => setInterestRate(e.target.value)}
               className={styles.inputField}
               placeholder="e.g., 8.5"
               step="0.1" // Allows decimal numbers
@@ -181,27 +176,14 @@ const CreateLeasingPlanPage = () => {
           </div>
 
           <div className={styles.formGroup}>
-            <label>Installment Amount (LKR)</label>
+            <label>Monthly Payment (LKR)</label>
             {/* --- FIX: Removed duplicated fields --- */}
             <input
               type="number"
-              value={instAmount}
-              onChange={(e) => setInstAmount(e.target.value)}
+              value={monthlyPayment}
+              onChange={(e) => setMonthlyPayment(e.target.value)}
               className={styles.inputField}
               placeholder="Monthly payment amount"
-              required
-            />
-          </div>
-
-          {/* NEW: Down Payment Field */}
-          <div className={styles.formGroup}>
-            <label>Down Payment (%)</label>
-            <input
-              type="number"
-              value={downPayment}
-              onChange={(e) => setDownPayment(e.target.value)}
-              className={styles.inputField}
-              placeholder="e.g., 10"
               required
             />
           </div>

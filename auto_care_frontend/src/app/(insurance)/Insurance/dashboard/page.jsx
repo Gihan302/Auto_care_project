@@ -39,37 +39,31 @@ const InsuranceDashboardPage = () => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Ad Title</th>
-              <th>Plan Amount (LKR)</th>
-              <th>Installments</th>
-              <th>Interest Rate (%)</th>
-              <th>Monthly Payment (LKR)</th>
+              <th>Plan Name</th>
+              <th>Coverage</th>
+              <th>Price</th>
               <th>Description</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="6" className={styles.loading}>Loading plans...</td>
+                <td colSpan="4" className={styles.loading}>Loading plans...</td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan="6" className={styles.error}>{error}</td>
+                <td colSpan="4" className={styles.error}>{error}</td>
               </tr>
             ) : plans.length === 0 ? (
               <tr>
-                <td colSpan="6" className={styles.empty}>No insurance plans found.</td>
+                <td colSpan="4" className={styles.empty}>No insurance plans found.</td>
               </tr>
             ) : (
-              // Render data from the IPlan object
-              // Note: We use plan.planAmt (from IPlan) instead of plan.planAmount
               plans.map((plan) => (
                 <tr key={plan.id}>
-                  <td>{plan.advertisement?.title || 'N/A'}</td>
-                  <td>{plan.planAmt.toLocaleString()}</td>
-                  <td>{plan.noOfInstallments}</td>
-                  <td>{plan.interest}%</td>
-                  <td>{plan.instAmt.toLocaleString()}</td>
+                  <td>{plan.planName}</td>
+                  <td>{plan.coverage}</td>
+                  <td>{plan.price.toLocaleString()}</td>
                   <td>{plan.description}</td>
                 </tr>
               ))

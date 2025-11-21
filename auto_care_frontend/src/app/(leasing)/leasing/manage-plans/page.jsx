@@ -3,32 +3,38 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import styles from "../../../(insurance)/Insurance/managePlans/managePlans.module.css";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/utils/axios";
 
 export default function ManageLeasingPlansPage() {
   const router = useRouter();
-
+  const searchParams = useSearchParams();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        console.log("📌 Fetching plans from /leasing-plans");
-        const response = await api.get("/leasing-plans");
-        setPlans(response.data);
-      } catch (err) {
-        setError("Failed to fetch plans.");
-        console.error("❌ Error fetching plans:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPlans = async () => {
+    try {
+      console.log("📌 Fetching plans from /leasing-plans");
+      const response = await api.get("/leasing-plans");
+      setPlans(response.data);
+    } catch (err) {
+      setError("Failed to fetch plans.");
+      console.error("❌ Error fetching plans:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPlans();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("refresh") === "true") {
+      fetchPlans();
+    }
+  }, [searchParams]);
 
   const deletePlan = async (id) => {
     try {
