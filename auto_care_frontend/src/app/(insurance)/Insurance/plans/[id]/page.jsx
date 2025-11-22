@@ -15,7 +15,7 @@ const ViewPlanPage = () => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const response = await apiClient.get(`/insurance/plans/${id}`);
+        const response = await api.get(`/insurance-plans/${id}`);
         setPlan(response.data);
       } catch (err) {
         console.error("Error fetching plan:", err);

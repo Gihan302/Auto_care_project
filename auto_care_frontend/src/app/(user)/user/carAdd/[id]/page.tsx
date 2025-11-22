@@ -8,6 +8,17 @@ import { Phone, Mail, MapPin, Fuel, Settings, Calendar, Gauge, ChevronLeft, Chev
 import api from '@/utils/axios';
 import LeasingPlans from '../../components/homepage/LeasingPlans';
 
+interface InsurancePlan {
+  id: number;
+  planName: string;
+  coverage: string;
+  price: number;
+  description: string;
+  user: {
+    cName: string;
+  }
+}
+
 const VehicleDetailPage = () => {
   const params = useParams();
   const router = useRouter();
@@ -18,34 +29,9 @@ const VehicleDetailPage = () => {
   const [error, setError] = useState(null);
   const [showLeasingPlans, setShowLeasingPlans] = useState(false);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
-
-  // Mock data for leasing and insurance plans (will be replaced with backend data)
-  const insurancePlans = [
-    {
-      id: 1,
-      company: 'Ceylinco Insurance',
-      premium: 'Rs. 45,000/year',
-      coverage: 'Rs. 5,000,000',
-      type: 'Comprehensive',
-      features: ['Accident coverage', 'Theft protection', 'Third-party liability', '24/7 roadside assistance']
-    },
-    {
-      id: 2,
-      company: 'HNB Insurance',
-      premium: 'Rs. 42,000/year',
-      coverage: 'Rs. 4,500,000',
-      type: 'Comprehensive',
-      features: ['Full coverage', 'Natural disaster protection', 'Free towing service', 'Windscreen cover']
-    },
-    {
-      id: 3,
-      company: 'LOLC Insurance',
-      premium: 'Rs. 38,000/year',
-      coverage: 'Rs. 4,000,000',
-      type: 'Third Party',
-      features: ['Third-party coverage', 'Personal accident cover', 'Legal liability', 'Medical expenses']
-    }
-  ];
+  const [fetchedInsurancePlans, setFetchedInsurancePlans] = useState<InsurancePlan[]>([]);
+  const [insurancePlansLoading, setInsurancePlansLoading] = useState(true);
+  const [insurancePlansError, setInsurancePlansError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVehicleDetails = async () => {
@@ -80,7 +66,22 @@ const VehicleDetailPage = () => {
       }
     };
 
+    const fetchInsurancePlans = async () => {
+      setInsurancePlansLoading(true);
+      setInsurancePlansError(null);
+      try {
+        const response = await api.get("/insurance-plans/public/all");
+        setFetchedInsurancePlans(response.data);
+      } catch (err) {
+        console.error("Error fetching insurance plans:", err);
+        setInsurancePlansError("Failed to fetch insurance plans.");
+      } finally {
+        setInsurancePlansLoading(false);
+      }
+    };
+
     fetchVehicleDetails();
+    fetchInsurancePlans();
   }, [params.id]);
 
   // Function to create draft message and navigate to messaging
@@ -158,7 +159,7 @@ Could you please provide more information about the application process and requ
 
 Thank you.`;
     } else if (type === 'insurance') {
-      return `Hello ${plan.company},
+      return `Hello ${plan.user.cName},
 
 I would like to get a quote for insurance coverage for the following vehicle:
 
@@ -170,9 +171,9 @@ Vehicle Details:
 - Location: ${vehicle.location || 'N/A'}
 
 Insurance Plan of Interest:
-- Type: ${plan.type}
+- Type: ${plan.planName}
 - Coverage: ${plan.coverage}
-- Premium: ${plan.premium}
+- Premium: Rs. ${parseFloat(plan.price).toLocaleString()}/year
 
 Please provide me with a detailed quote and the necessary documentation required.
 
@@ -533,41 +534,45 @@ Thank you.`;
                 <X size={24} />
               </button>
             </div>
-            <div className={styles.plansGrid}>
-              {insurancePlans.map((plan) => (
-                <div key={plan.id} className={styles.planCard}>
-                  <h3 className={styles.planCompany}>{plan.company}</h3>
-                  <div className={styles.planDetails}>
-                    <div className={styles.planRow}>
-                      <span>Annual Premium:</span>
-                      <strong>{plan.premium}</strong>
+            {insurancePlansLoading ? (
+              <p>Loading insurance plans...</p>
+            ) : insurancePlansError ? (
+              <p className={styles.error}>{insurancePlansError}</p>
+            ) : fetchedInsurancePlans.length === 0 ? (
+              <p>No insurance plans available at the moment.</p>
+            ) : (
+              <div className={styles.plansGrid}>
+                {fetchedInsurancePlans.map((plan) => (
+                  <div key={plan.id} className={styles.planCard}>
+                    <h3 className={styles.planCompany}>{plan.user?.cName || 'Unknown Company'}</h3>
+                    <div className={styles.planDetails}>
+                      <div className={styles.planRow}>
+                        <span>Plan Name:</span>
+                        <strong>{plan.planName}</strong>
+                      </div>
+                      <div className={styles.planRow}>
+                        <span>Annual Premium:</span>
+                        <strong>Rs. {parseFloat(plan.price).toLocaleString()}/year</strong>
+                      </div>
+                      <div className={styles.planRow}>
+                        <span>Coverage:</span>
+                        <strong>{plan.coverage}</strong>
+                      </div>
+                      <div className={styles.planRow}>
+                        <span>Description:</span>
+                        <strong>{plan.description}</strong>
+                      </div>
                     </div>
-                    <div className={styles.planRow}>
-                      <span>Coverage:</span>
-                      <strong>{plan.coverage}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Type:</span>
-                      <strong>{plan.type}</strong>
-                    </div>
+                    <button 
+                      className={styles.btnApply}
+                      onClick={() => handleApplyNow(plan.user?.cName || 'Unknown Company', 'insurance', plan)}
+                    >
+                      Get Quote
+                    </button>
                   </div>
-                  <div className={styles.planFeatures}>
-                    <h4>Coverage Includes:</h4>
-                    <ul>
-                      {plan.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <button 
-                    className={styles.btnApply}
-                    onClick={() => handleApplyNow(plan.company, 'insurance', plan)}
-                  >
-                    Get Quote
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
