@@ -142,7 +142,7 @@ const Header = () => {
     const roleName = userData.roles[0].name || userData.roles[0];
     switch (roleName) {
       case 'ROLE_ADMIN':
-        return '/admin/admin/dashboard';
+        return '/admin/dashboard';
       case 'ROLE_LCOMPANY':
         return '/leasing/dashboard';
       case 'ROLE_ICOMPANY':

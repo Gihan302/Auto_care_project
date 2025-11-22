@@ -23,6 +23,7 @@ const menuItems = [
   { title: "Dashboard", url: "/agent/dashboard", icon: LayoutDashboard },
   { title: "Create Ad", url: "/agent/create-ad", icon: FilePlus },
   { title: "My Ads", url: "/agent/my-ads", icon: Archive },
+  { title: "All Vehicle Ads", url: "/agent/all-ads", icon: Archive },
   { title: "Messages", url: "/agent/messages", icon: MessageSquare },
   { title: "Sold Ads", url: "/agent/sold-ads", icon: CheckCircle },
   { title: "Plans", url: "/agent/plans", icon: Shield },

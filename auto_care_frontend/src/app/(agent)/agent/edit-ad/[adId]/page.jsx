@@ -39,7 +39,7 @@ export default function EditAdPage() {
     if (adId) {
       const fetchAd = async () => {
         try {
-          const response = await api.get(`/agent/getad/${adId}`)
+          const response = await api.get(`/advertisement/getAdById/${adId}`)
           setFormData(response.data)
         } catch (error) {
           console.error(error)
