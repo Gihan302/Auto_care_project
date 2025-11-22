@@ -49,6 +49,13 @@
   margin-top: 1rem;
 }
 
+.planActions {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+  margin-top: 1rem; /* Space from the monthly payment */
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
 .viewAllContainer {
   text-align: center;
   margin-top: 2rem;
@@ -78,14 +85,30 @@
   transition: background-color 0.3s;
   border: none;
   cursor: pointer;
-  margin-top: 1rem;
 }
 
 .messageButton:hover {
   background-color: #218838;
 }
 
+.applyButton {
+  background-color: #007bff; /* Primary blue color */
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s;
+  border: none;
+  cursor: pointer;
+}
+
+.applyButton:hover {
+  background-color: #0056b3;
+}
+
 .error {
   color: #d9534f;
   text-align: center;
 }
+
