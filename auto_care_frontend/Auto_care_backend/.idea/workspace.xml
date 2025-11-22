@@ -4,7 +4,37 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a3794063-0ab9-4743-9162-604da9320cc5" name="Changes" comment="" />
+    <list default="true" id="a3794063-0ab9-4743-9162-604da9320cc5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/AutoCareBackendApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/AutoCareBackendApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/AdController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/AdController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/AgentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/AgentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/CompanyMessageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/CompanyMessageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/ICompanyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/ICompanyController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/InsurancePlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/InsurancePlanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/LCompanyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/LCompanyController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/LeasingPlanController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/LeasingPlanController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/MessageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/MessageController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/Advertisement.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/Advertisement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/IPlan.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/InsurancePlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/InsurancePlan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/LPlan.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/LeasingPlan.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/models/LeasingPlan.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/payload/request/InsurancePlanRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/payload/request/InsurancePlanRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/payload/request/LeasingPlanRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/payload/request/LeasingPlanRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/AdRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/AdRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/IPlanRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/InsurancePlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/InsurancePlanRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/LPlanRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/LeasingPlanRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/repository/LeasingPlanRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/security/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/security/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/security/services/DataMigrationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/security/services/IPlanDetailsImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/main/java/com/autocare/autocarebackend/security/services/LPlanDetailsImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auto-care-backend/src/test/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auto-care-backend/src/test/resources/application.properties" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,10 +43,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
