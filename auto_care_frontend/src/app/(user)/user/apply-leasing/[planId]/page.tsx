@@ -28,6 +28,17 @@ export default function ApplyLeasingPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
+    // Fetch user data from localStorage to pre-fill the form
+    const userDataString = localStorage.getItem('user');
+    if (userDataString) {
+      const userData = JSON.parse(userDataString);
+      setFormData(prev => ({
+        ...prev,
+        fullName: `${userData.fname || ''} ${userData.lname || ''}`.trim(),
+        email: userData.email || ''
+      }));
+    }
+
     if (!planId) return;
 
     const fetchPlanDetails = async () => {
@@ -57,16 +68,8 @@ export default function ApplyLeasingPage() {
     setSubmitSuccess(false);
 
     try {
-      // In a real application, you would send this to a backend API
-      // await api.post(`/leasing-applications/submit`, { ...formData, planId });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); 
-      
-      console.log('Application submitted:', { ...formData, planId });
+      await api.post('/leasing-applications/submit', { ...formData, planId });
       setSubmitSuccess(true);
-      // Optionally redirect user or clear form
-      // router.push('/user/leasing-applications/success'); 
     } catch (err) {
       console.error("Error submitting application:", err);
       setError("Failed to submit application. Please try again.");
