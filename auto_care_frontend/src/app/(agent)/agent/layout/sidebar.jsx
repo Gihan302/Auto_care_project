@@ -15,7 +15,8 @@ import {
   CreditCard,
   User,
   Menu,
-  X
+  X,
+  FileText
 } from "lucide-react"
 import styles from './sidebar.module.css'
 
@@ -23,6 +24,7 @@ const menuItems = [
   { title: "Dashboard", url: "/agent/dashboard", icon: LayoutDashboard },
   { title: "Create Ad", url: "/agent/create-ad", icon: FilePlus },
   { title: "My Ads", url: "/agent/my-ads", icon: Archive },
+  { title: "Manage Applications", url: "/agent/applications", icon: FileText },
   { title: "Messages", url: "/agent/messages", icon: MessageSquare },
   { title: "Sold Ads", url: "/agent/sold-ads", icon: CheckCircle },
   { title: "Plans", url: "/agent/plans", icon: Shield },

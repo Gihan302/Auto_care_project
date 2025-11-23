@@ -38,31 +38,17 @@
   font-weight: 500;
 }
 
-.available {
-  background: #333333;
-  color: #ffffff;
+.pending {
+    background: #FFC107; /* Amber for pending */
+    color: #000000;
 }
 
-.sold {
-  background: #A9A9A9;
-  color: #ffffff;
+.approved {
+    background: #28A745; /* Green for approved */
+    color: #ffffff;
 }
 
-.actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.actionButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: background 0.2s ease;
-  color: #000000;
-}
-
-.actionButton:hover {
-  background: #f0f0f0;
+.rejected {
+    background: #DC3545; /* Red for rejected */
+    color: #ffffff;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link'; // Import Link
 import api from '@/utils/axios';
 import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; // Reusing styles
 import { useSearchParams } from 'next/navigation';
@@ -40,6 +41,12 @@ const LeasingDashboardPage = () => {
     <div className={styles.container}>
       <h1>Leasing Company Dashboard</h1>
       <p>Welcome to your leasing company dashboard!</p>
+
+      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+        <Link href="/leasing/dashboard/applications" className={styles.viewAllButton}>
+          Manage Applications
+        </Link>
+      </div>
 
       <div className={styles.tableWrapper}>
         <h2>Current Offer Plans</h2>

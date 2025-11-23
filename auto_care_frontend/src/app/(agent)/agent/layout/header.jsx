@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 import {
   Moon,
   Sun,
@@ -44,13 +46,22 @@ export default function Header({ setIsMobileOpen }) {
 
   return (
     <header className={styles.header}>
-      <div className={styles.headerLeft}>
+      <div className={`${styles.headerLeft} ${styles.logoContainer}`}>
         <button 
           className={styles.mobileMenuButton}
           onClick={() => setIsMobileOpen(true)}
         >
           <Menu size={20} />
         </button>
+        <Link href="/" className={styles.logoLink}>
+          <Image
+            src="/logo.png"
+            alt="Auto Care Logo"
+            width={100}
+            height={45}
+            priority
+          />
+        </Link>
         <div>
           <h1 className={styles.headerTitle}>Dashboard Overview</h1>
           <p className={styles.headerSubtitle}>Welcome back, Agent</p>

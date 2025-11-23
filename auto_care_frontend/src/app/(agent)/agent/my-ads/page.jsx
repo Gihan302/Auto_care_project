@@ -53,7 +53,7 @@ export default function MyAdsPage() {
       case 0:
         return 'Pending'
       case 1:
-        return 'Active'
+        return 'Available'
       case 2:
         return 'Sold'
       default:
@@ -80,7 +80,7 @@ export default function MyAdsPage() {
               <td>
                 <span
                   className={`${styles.status} ${
-                    getStatus(ad.flag).toLowerCase()
+                    styles[getStatus(ad.flag).toLowerCase()]
                   }`}
                 >
                   {getStatus(ad.flag)}

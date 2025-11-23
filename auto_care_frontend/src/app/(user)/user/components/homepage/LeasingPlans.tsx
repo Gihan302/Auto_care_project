@@ -120,12 +120,17 @@ export default function LeasingPlans({ showAll = false }) {
             <p className={styles.monthlyPayment}>
               Monthly: ${parseFloat(plan.monthlyPayment).toFixed(2)}
             </p>
-            <button
-              className={styles.messageButton}
-              onClick={() => handleMessageCompany(plan.user.cName || plan.user.username)}
-            >
-              Message Company
-            </button>
+            <div className={styles.planActions}>
+              <button
+                className={styles.messageButton}
+                onClick={() => handleMessageCompany(plan.user.cName || plan.user.username)}
+              >
+                Message Company
+              </button>
+              <Link href={`/user/apply-leasing/${plan.id}`} className={styles.applyButton}>
+                Apply Now
+              </Link>
+            </div>
           </div>
         ))}
       </div>

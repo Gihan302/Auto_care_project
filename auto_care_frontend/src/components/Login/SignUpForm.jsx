@@ -122,9 +122,9 @@ const SignUpForm = () => {
           nic: nicNumber,
           username: email,
           password,
-          cName: userType === "Leasing Company" || userType === "Insurance Company" ? cName : undefined,
-          regNum: userType === "Leasing Company" || userType === "Insurance Company" ? regNum : undefined,
-          address: userType === "Leasing Company" || userType === "Insurance Company" ? address : undefined,
+          cName: userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? cName : undefined,
+          regNum: userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? regNum : undefined,
+          address: userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? address : undefined,
           role: roles,
         }),
       });
@@ -223,7 +223,7 @@ const SignUpForm = () => {
             }}
           />
 
-          {userType === "Leasing Company" || userType === "Insurance Company" ? (
+          {userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? (
             <>
               <input
                 type="text"

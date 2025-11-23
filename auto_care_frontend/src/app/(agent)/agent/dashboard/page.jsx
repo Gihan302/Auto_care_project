@@ -11,6 +11,7 @@ import {
   Clock
 } from "lucide-react"
 import styles from './page.module.css'
+import { useRouter } from 'next/navigation' // Import useRouter
 
 const stats = [
   {
@@ -184,20 +185,22 @@ function RecentActivity() {
 }
 
 function QuickActions() {
+  const router = useRouter();
   const actions = [
-    { title: "Create Ad", icon: FilePlus, color: "blue" },
-    { title: "View Messages", icon: MessageSquare, color: "green" },
-    { title: "Buy Packages", icon: Package, color: "yellow" },
+    { title: "Create Ad", icon: FilePlus, color: "blue", href: "/agent/create-ad" },
+    { title: "View Messages", icon: MessageSquare, color: "green", href: "/agent/messages" },
+    { title: "Buy Packages", icon: Package, color: "yellow", href: "/agent/buy-packages" },
   ]
 
   return (
     <div className={styles.quickActionsCard}>
       <h3 className={styles.cardTitle}>Quick Actions</h3>
       <div className={styles.actionsGrid}>
-        {actions.map((action, index) => (
+        {actions.map((action) => (
           <button
             key={action.title}
             className={`${styles.actionButton} ${styles[`action${action.color}`]}`}
+            onClick={() => router.push(action.href)}
           >
             <action.icon className={styles.actionIcon} />
             <span className={styles.actionText}>{action.title}</span>

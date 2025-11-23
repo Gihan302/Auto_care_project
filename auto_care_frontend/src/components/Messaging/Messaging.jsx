@@ -121,13 +121,20 @@ export default function Messaging({ role }) {
     if (!token) return;
 
     const interval = setInterval(() => {
-      if (selectedChat) fetchMessages(selectedChat);
+      if (selectedChat) {
+        fetchMessages(selectedChat);
+        const selectedConv = conversations.find(c => c.id === selectedChat);
+        if (selectedConv) {
+          const pName = selectedConv.participantName || selectedConv.companyName;
+          fetchDetails(selectedChat, pName);
+        }
+      }
       fetchConversations();
       fetchUnreadCount();
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [selectedChat, role]);
+  }, [selectedChat, role, conversations]);
 
   // 4. Auto-scroll and Focus
   useEffect(() => { scrollToBottom(); }, [messages]);
@@ -494,13 +501,15 @@ function CompanyDetailsPanel({ details }) {
 }
 
 function UserDetailsPanel({ details }) {
-  const agentName = `${details.fname} ${details.lname}`;
+  const agentName = [details.fname, details.lname].filter(Boolean).join(' ');
+  const displayName = agentName.trim() ? agentName : "User";
+
   return (
     <div className={styles.companyCard}>
       <div className={styles.companyCardHeader}>
-        <div className={styles.companyLogoLarge}>{getAvatarLetter(details.fname)}</div>
+        <div className={styles.companyLogoLarge}>{getAvatarLetter(displayName)}</div>
       </div>
-      <h2 className={styles.companyCardName}>{agentName || 'Agent Details'}</h2>
+      <h2 className={styles.companyCardName}>{displayName}</h2>
       <p className={styles.companyCardType}>{details.username}</p>
       <p style={{fontSize: '14px', color: '#666', marginTop: '5px'}}>{details.email}</p>
       <p style={{fontSize: '14px', color: '#666', marginTop: '5px'}}>{details.tnumber}</p>

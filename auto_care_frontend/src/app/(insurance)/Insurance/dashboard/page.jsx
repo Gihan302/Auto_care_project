@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link'; // Import Link
 import api from '@/utils/axios';
 // We can reuse the same styles from the other dashboard
 import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; 
@@ -33,6 +34,12 @@ const InsuranceDashboardPage = () => {
     <div className={styles.container}>
       <h1>Insurance Company Dashboard</h1>
       <p>Welcome to your insurance company dashboard!</p>
+
+      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+        <Link href="/Insurance/dashboard/applications" className={styles.viewAllButton}>
+          Manage Applications
+        </Link>
+      </div>
 
       <div className={styles.tableWrapper}>
         <h2>Current Offer Plans</h2>

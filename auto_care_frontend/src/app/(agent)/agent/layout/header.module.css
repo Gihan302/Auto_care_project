@@ -298,3 +298,19 @@ html.dark .header .dropdownItem:hover {
 html.dark .header .dropdownSeparator {
   background-color: #334155;
 }
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logoLink {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .logoLink {
+    display: none;
+  }
+}
