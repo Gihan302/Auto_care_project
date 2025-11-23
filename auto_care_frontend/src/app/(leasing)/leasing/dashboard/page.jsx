@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '@/utils/axios';
-import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; // Reusing styles
+import styles from './page.module.css'; 
 import { useSearchParams } from 'next/navigation';
 
 const LeasingDashboardPage = () => {

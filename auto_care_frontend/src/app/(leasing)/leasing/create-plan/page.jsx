@@ -154,11 +154,21 @@ const CreateLeasingPlanPage = () => {
             <input
               type="number"
               value={leaseTerm}
-              onChange={(e) => setLeaseTerm(e.target.value)}
-              className={styles.inputField}
-              placeholder="e.g., 60"
-              required
-            />
+              onChange={(e) => {
+                const inputValue = Number(e.target.value);
+                  // Only update state if the value is a positive number 
+                  // The min="1" attribute handles most of the validation visually
+                if (inputValue >= 1 || e.target.value === '') {
+                  setLeaseTerm(e.target.value);
+              } 
+                // setting a minimum positive value (e.g., 1) 
+                // if the user types a negative number, but simply ignoring the invalid
+          }}
+            className={styles.inputField}
+            placeholder="e.g., 60"
+            required
+            min="1" // ADD THIS ATTRIBUTE
+          />
           </div>
 
           <div className={styles.formGroup}>
