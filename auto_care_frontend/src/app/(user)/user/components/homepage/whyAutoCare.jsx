@@ -39,6 +39,7 @@ export const WhyAutoCare = () => {
           <div className="feature-card"> {/* Fixed class name */}
             <div className="card-inner"> {/* Added required wrapper */}
               <div className="feature-icon"> {/* Fixed class name */}
+                <img src="/icons/deal.png" alt="Car with keys" />
                 <img src="/icons/steering-wheel.svg" alt="Car with keys" />
               </div>
               <h3 className="feature-title">Boost Your Car's Resale Value!</h3>
@@ -59,7 +60,7 @@ export const WhyAutoCare = () => {
           <div className="feature-card">
             <div className="card-inner">
               <div className="feature-icon">
-                <img src="/icons/handleshake.png" alt="Handshake" />
+                <img src="/icons/rent-a-car.png" alt="Handshake" />
               </div>
               <h3 className="feature-title">Loan or Lease with Confidence!</h3>
               <p className="feature-description">
@@ -79,7 +80,7 @@ export const WhyAutoCare = () => {
           <div className="feature-card">
             <div className="card-inner">
               <div className="feature-icon">
-                <img src="/icons/steering-wheel.svg" alt="Steering wheel" />
+                <img src="/icons/test-drive.png" alt="Steering wheel" />
               </div>
               <h3 className="feature-title">Drive Now, Worry Less!</h3>
               <p className="feature-description">
