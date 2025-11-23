@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import styles from "../../createPlan/createPlan.module.css";
-import apiClient from "@/utils/axiosConfig";
+import styles from "../../../createPlan/createPlan.module.css";
+import api from "@/utils/axios";
 import { useRouter, useParams } from "next/navigation";
 
 const EditPlanPage = () => {
@@ -18,7 +18,7 @@ const EditPlanPage = () => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const response = await apiClient.get(`/api/insurance-plans/${id}`);
+        const response = await api.get(`/api/insurance-plans/${id}`);
         const plan = response.data;
         setPlanName(plan.planName);
         setDescription(plan.description);
@@ -41,7 +41,7 @@ const EditPlanPage = () => {
     setMessage("");
 
     try {
-      const response = await apiClient.put(`/api/insurance-plans/${id}`, {
+      const response = await api.put(`/api/insurance-plans/${id}`, {
         planName,
         description,
         coverage,

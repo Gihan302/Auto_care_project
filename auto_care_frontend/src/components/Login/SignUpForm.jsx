@@ -94,17 +94,23 @@ const SignUpForm = () => {
 
     setLoading(true);
     setError(null);
-    const roleMap = {
-      "Agent": "agent",
-      "Leasing Company": "lcompany",
-      "Insurance Company": "icompany",
-      "Normal User": "user",
-    };
+    
+    let url = "http://localhost:8080/api/auth/signup";
+    let roles = ["user"];
 
-    const role = roleMap[userType];
+    if (userType === "Leasing Company") {
+      url = "http://localhost:8080/api/v1/leasing-companies";
+      roles = ["lcompany"];
+    } else if (userType === "Insurance Company") {
+      url = "http://localhost:8080/api/v1/insurance-companies";
+      roles = ["icompany"];
+    } else if (userType === "Agent") {
+      roles = ["agent", "user"];
+    }
+
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/signup", {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,10 +122,10 @@ const SignUpForm = () => {
           nic: nicNumber,
           username: email,
           password,
-          cName: userType === "Leasing Company" || userType === "Insurance Company" ? cName : undefined,
-          regNum: userType === "Leasing Company" || userType === "Insurance Company" ? regNum : undefined,
-          address: userType === "Leasing Company" || userType === "Insurance Company" ? address : undefined,
-          role: [role],
+          cName: userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? cName : undefined,
+          regNum: userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? regNum : undefined,
+          address: userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? address : undefined,
+          role: roles,
         }),
       });
 
@@ -217,7 +223,7 @@ const SignUpForm = () => {
             }}
           />
 
-          {userType === "Leasing Company" || userType === "Insurance Company" ? (
+          {userType === "Leasing Company" || userType === "Insurance Company" || userType === "Agent" ? (
             <>
               <input
                 type="text"

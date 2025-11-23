@@ -10,13 +10,12 @@ const CreateInsurancePlanPage = () => {
   const [pendingAds, setPendingAds] = useState([]);
 
   // State for the form fields
-  // Note: We use planAmt and instAmt to match the IPlanRequest on the backend
-  const [planAmt, setPlanAmt] = useState("");
-  const [noOfInstallments, setNoOfInstallments] = useState("");
-  const [interest, setInterest] = useState("");
-  const [instAmt, setInstAmt] = useState("");
+  const [planName, setPlanName] = useState("");
+  const [coverage, setCoverage] = useState("");
+  const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [adId, setAdId] = useState(""); // This will be set by the dropdown
+  const [vehicleType, setVehicleType] = useState(""); // New state for vehicle type
   
   // State for UI messages and loading
   const [message, setMessage] = useState("");
@@ -55,25 +54,24 @@ const CreateInsurancePlanPage = () => {
     setMessage("");
 
     const payload = {
-      // Use the correct field names for IPlanRequest
-      planAmt: Number(planAmt),
-      noOfInstallments: Number(noOfInstallments),
-      interest: Number(interest),
-      instAmt: Number(instAmt),
-      description,
-      adId: Number(adId),
+        planName,
+        coverage,
+        price,
+        description,
+        adId: Number(adId),
     };
 
     console.log("📤 Sending Payload →", payload);
 
     try {
       // Call the insurance company's endpoint
-      const response = await api.post("/icompany/postiplan", payload);
+      const response = await api.post("/icompany/postplan", payload);
 
       if (response.status === 200) {
         setMessage("✅ Insurance Plan created successfully!");
+        router.refresh();
         // Redirect to the insurance dashboard
-        setTimeout(() => router.push("/insurance/manage-plans"), 2000);
+        setTimeout(() => router.push("/Insurance/managePlans?refresh=true"), 2000);
       } else {
         setMessage("⚠️ Failed to create plan.");
       }
@@ -97,7 +95,12 @@ const CreateInsurancePlanPage = () => {
             <label>Advertisement</label>
             <select
               value={adId}
-              onChange={(e) => setAdId(e.target.value)}
+              onChange={(e) => {
+                const selectedAdId = e.target.value;
+                setAdId(selectedAdId);
+                const selectedAd = pendingAds.find(ad => ad.id === Number(selectedAdId));
+                setVehicleType(selectedAd ? selectedAd.v_type || "" : "");
+              }}
               className={styles.inputField}
               required
               disabled={loading} // Disable dropdown while loading ads
@@ -119,55 +122,50 @@ const CreateInsurancePlanPage = () => {
             </select>
           </div>
 
-          {/* Plan Amount */}
           <div className={styles.formGroup}>
-            <label>Plan Amount (LKR)</label>
+            <label>Plan Name</label>
             <input
-              type="number"
-              value={planAmt}
-              onChange={(e) => setPlanAmt(e.target.value)}
+              type="text"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
+              className={styles.inputField}
+              placeholder="e.g., Full Coverage"
+              required
+            />
+          </div>
+
+          {/* Vehicle Type (Read-only) */}
+          <div className={styles.formGroup}>
+            <label>Vehicle Type</label>
+            <input
+              type="text"
+              value={vehicleType}
+              className={styles.inputField}
+              readOnly
+              disabled // Also disable to make it clear it's not editable
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Coverage</label>
+            <input
+              type="text"
+              value={coverage}
+              onChange={(e) => setCoverage(e.target.value)}
+              className={styles.inputField}
+              placeholder="e.g., Full, Third Party"
+              required
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Price</label>
+            <input
+              type="text"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               className={styles.inputField}
               placeholder="e.g., 50000"
-              required
-            />
-          </div>
-
-          {/* Number of Installments */}
-          <div className={styles.formGroup}>
-            <label>No. of Installments</label>
-            <input
-              type="number"
-              value={noOfInstallments}
-              onChange={(e) => setNoOfInstallments(e.target.value)}
-              className={styles.inputField}
-              placeholder="e.g., 12"
-              required
-            />
-          </div>
-
-          {/* Interest Rate */}
-          <div className={styles.formGroup}>
-            <label>Interest Rate (%)</label>
-            <input
-              type="number"
-              value={interest}
-              onChange={(e) => setInterest(e.target.value)}
-              className={styles.inputField}
-              placeholder="e.g., 5.0"
-              step="0.1"
-              required
-            />
-          </div>
-
-          {/* Installment Amount */}
-          <div className={styles.formGroup}>
-            <label>Installment Amount (LKR)</label>
-            <input
-              type="number"
-              value={instAmt}
-              onChange={(e) => setInstAmt(e.target.value)}
-              className={styles.inputField}
-              placeholder="Monthly payment amount"
               required
             />
           </div>

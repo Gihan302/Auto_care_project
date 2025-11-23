@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -13,8 +13,8 @@ import {
 import styles from '../../../(admin)/admin/layout/header.module.css' // Reusing admin header styles
 import useLocalStorage from '@/utils/useLocalStorage';
 
-export default function Header({ setIsMobileOpen }) {
-  const [isDarkMode, setIsDarkMode] = useState(true)
+export default function Header({ setIsMobileOpen, isDarkMode, toggleDarkMode }) {
+  console.log('Header component rendered. isDarkMode:', isDarkMode);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [user, setUser] = useLocalStorage('user', null);
   const [clientLoaded, setClientLoaded] = useState(false);
@@ -23,11 +23,6 @@ export default function Header({ setIsMobileOpen }) {
   useEffect(() => {
     setClientLoaded(true);
   }, []);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-    document.documentElement.classList.toggle('dark')
-  }
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen)

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link'; // Import Link
 import api from '@/utils/axios';
 // We can reuse the same styles from the other dashboard
 import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; 
@@ -34,42 +35,42 @@ const InsuranceDashboardPage = () => {
       <h1>Insurance Company Dashboard</h1>
       <p>Welcome to your insurance company dashboard!</p>
 
+      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+        <Link href="/Insurance/dashboard/applications" className={styles.viewAllButton}>
+          Manage Applications
+        </Link>
+      </div>
+
       <div className={styles.tableWrapper}>
         <h2>Current Offer Plans</h2>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Ad Title</th>
-              <th>Plan Amount (LKR)</th>
-              <th>Installments</th>
-              <th>Interest Rate (%)</th>
-              <th>Monthly Payment (LKR)</th>
+              <th>Plan Name</th>
+              <th>Coverage</th>
+              <th>Price</th>
               <th>Description</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="6" className={styles.loading}>Loading plans...</td>
+                <td colSpan="4" className={styles.loading}>Loading plans...</td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan="6" className={styles.error}>{error}</td>
+                <td colSpan="4" className={styles.error}>{error}</td>
               </tr>
             ) : plans.length === 0 ? (
               <tr>
-                <td colSpan="6" className={styles.empty}>No insurance plans found.</td>
+                <td colSpan="4" className={styles.empty}>No insurance plans found.</td>
               </tr>
             ) : (
-              // Render data from the IPlan object
-              // Note: We use plan.planAmt (from IPlan) instead of plan.planAmount
               plans.map((plan) => (
                 <tr key={plan.id}>
-                  <td>{plan.advertisement?.title || 'N/A'}</td>
-                  <td>{plan.planAmt.toLocaleString()}</td>
-                  <td>{plan.noOfInstallments}</td>
-                  <td>{plan.interest}%</td>
-                  <td>{plan.instAmt.toLocaleString()}</td>
+                  <td>{plan.planName}</td>
+                  <td>{plan.coverage}</td>
+                  <td>{plan.price.toLocaleString()}</td>
                   <td>{plan.description}</td>
                 </tr>
               ))

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import styles from "./viewPlan.module.css";
-import apiClient from "@/utils/axiosConfig";
+import api from "@/utils/axios";
 
 const ViewPlanPage = () => {
   const [plan, setPlan] = useState(null);
@@ -15,7 +15,7 @@ const ViewPlanPage = () => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const response = await apiClient.get(`/insurance/plans/${id}`);
+        const response = await api.get(`/insurance-plans/${id}`);
         setPlan(response.data);
       } catch (err) {
         console.error("Error fetching plan:", err);

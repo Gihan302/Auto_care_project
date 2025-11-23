@@ -1,11 +1,87 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import styles from './carAdd.module.css';
 import { Phone, Mail, MapPin, Fuel, Settings, Calendar, Gauge, ChevronLeft, ChevronRight, ArrowLeft, FileText, Shield, X } from 'lucide-react';
 import api from '@/utils/axios';
+import LeasingPlans from '../../components/homepage/LeasingPlans';
+
+interface InsurancePlan {
+  id: number;
+  planName: string;
+  coverage: string;
+  price: number;
+  description: string;
+  user: {
+    cName: string;
+  }
+}
+
+function ApplicationFormModal({ ad, onClose, onSubmit }) {
+    if (!ad) return null;
+
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        address: '',
+        income: '',
+        employmentStatus: '',
+    });
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prev) => ({ ...prev, [id]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(formData);
+    };
+
+    return (
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+                <div className={styles.modalHeader}>
+                    <h2>Application for {ad.title}</h2>
+                    <button onClick={onClose} className={styles.closeButton}><X size={24} /></button>
+                </div>
+                <div className={styles.modalBody}>
+                    <p>Please fill out the form to apply.</p>
+                    <form className={styles.form} onSubmit={handleSubmit}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="fullName">Full Name</label>
+                            <input type="text" id="fullName" value={formData.fullName} onChange={handleChange} required />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="email">Email</label>
+                            <input type="email" id="email" value={formData.email} onChange={handleChange} required />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="phone">Phone</label>
+                            <input type="tel" id="phone" value={formData.phone} onChange={handleChange} required />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="address">Address</label>
+                            <textarea id="address" rows="3" value={formData.address} onChange={handleChange} required></textarea>
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="income">Monthly Income</label>
+                            <input type="text" id="income" value={formData.income} onChange={handleChange} required />
+                        </div>
+                         <div className={styles.formGroup}>
+                            <label htmlFor="employmentStatus">Employment Status</label>
+                            <input type="text" id="employmentStatus" value={formData.employmentStatus} onChange={handleChange} required />
+                        </div>
+                        <button type="submit" className={styles.btnPrimary}>Submit Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 const VehicleDetailPage = () => {
   const params = useParams();
@@ -15,66 +91,14 @@ const VehicleDetailPage = () => {
   const [similarVehicles, setSimilarVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showLeasingModal, setShowLeasingModal] = useState(false);
+  const [showLeasingPlans, setShowLeasingPlans] = useState(false);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
+  const [fetchedInsurancePlans, setFetchedInsurancePlans] = useState<InsurancePlan[]>([]);
+  const [insurancePlansLoading, setInsurancePlansLoading] = useState(true);
+  const [insurancePlansError, setInsurancePlansError] = useState<string | null>(null);
 
-  // Mock data for leasing and insurance plans (will be replaced with backend data)
-  const leasingPlans = [
-    {
-      id: 1,
-      company: 'Seylan Bank',
-      interestRate: '8.5%',
-      duration: '60 months',
-      monthlyPayment: 'Rs. 35,000',
-      downPayment: '20%',
-      features: ['Flexible payment options', 'Early settlement facility', 'No hidden charges']
-    },
-    {
-      id: 2,
-      company: 'Commercial Bank',
-      interestRate: '9.0%',
-      duration: '48 months',
-      monthlyPayment: 'Rs. 38,500',
-      downPayment: '25%',
-      features: ['Quick approval', 'Competitive rates', 'Free insurance for 1st year']
-    },
-    {
-      id: 3,
-      company: 'Peoples Bank',
-      interestRate: '8.75%',
-      duration: '72 months',
-      monthlyPayment: 'Rs. 32,000',
-      downPayment: '15%',
-      features: ['Low interest rates', 'Extended payment period', 'Online management']
-    }
-  ];
-
-  const insurancePlans = [
-    {
-      id: 1,
-      company: 'Ceylinco Insurance',
-      premium: 'Rs. 45,000/year',
-      coverage: 'Rs. 5,000,000',
-      type: 'Comprehensive',
-      features: ['Accident coverage', 'Theft protection', 'Third-party liability', '24/7 roadside assistance']
-    },
-    {
-      id: 2,
-      company: 'HNB Insurance',
-      premium: 'Rs. 42,000/year',
-      coverage: 'Rs. 4,500,000',
-      type: 'Comprehensive',
-      features: ['Full coverage', 'Natural disaster protection', 'Free towing service', 'Windscreen cover']
-    },
-    {
-      id: 3,
-      company: 'LOLC Insurance',
-      premium: 'Rs. 38,000/year',
-      coverage: 'Rs. 4,000,000',
-      type: 'Third Party',
-      features: ['Third-party coverage', 'Personal accident cover', 'Legal liability', 'Medical expenses']
-    }
-  ];
+  const financingSectionRef = useRef(null); // Ref for the financing section
 
   useEffect(() => {
     const fetchVehicleDetails = async () => {
@@ -109,7 +133,22 @@ const VehicleDetailPage = () => {
       }
     };
 
+    const fetchInsurancePlans = async () => {
+      setInsurancePlansLoading(true);
+      setInsurancePlansError(null);
+      try {
+        const response = await api.get("/insurance-plans/public/all");
+        setFetchedInsurancePlans(response.data);
+      } catch (err) {
+        console.error("Error fetching insurance plans:", err);
+        setInsurancePlansError("Failed to fetch insurance plans.");
+      } finally {
+        setInsurancePlansLoading(false);
+      }
+    };
+
     fetchVehicleDetails();
+    fetchInsurancePlans();
   }, [params.id]);
 
   // Function to create draft message and navigate to messaging
@@ -160,6 +199,14 @@ const VehicleDetailPage = () => {
     }
   };
 
+  const handleApplicationSubmit = async (formData) => {
+    console.log("Submitting application:", formData);
+    // Here you would make the API call to your backend
+    // For now, we'll just log it and close the modal.
+    setShowApplicationModal(false);
+    alert("Your application has been submitted (simulated).");
+  };
+
   // Generate draft message based on plan type
   const generateDraftMessage = (type, plan, vehicle) => {
     const vehicleTitle = vehicle.title || `${vehicle.m_year} ${vehicle.manufacturer} ${vehicle.model}`;
@@ -187,7 +234,7 @@ Could you please provide more information about the application process and requ
 
 Thank you.`;
     } else if (type === 'insurance') {
-      return `Hello ${plan.company},
+      return `Hello ${plan.user.cName},
 
 I would like to get a quote for insurance coverage for the following vehicle:
 
@@ -199,9 +246,9 @@ Vehicle Details:
 - Location: ${vehicle.location || 'N/A'}
 
 Insurance Plan of Interest:
-- Type: ${plan.type}
+- Type: ${plan.planName}
 - Coverage: ${plan.coverage}
-- Premium: ${plan.premium}
+- Premium: Rs. ${parseFloat(plan.price).toLocaleString()}/year
 
 Please provide me with a detailed quote and the necessary documentation required.
 
@@ -258,6 +305,11 @@ Thank you.`;
   const handleViewSimilar = (id) => {
     router.push(`/user/carAdd/${id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // New handler for the main "Apply Now" button
+  const handleMainApplyNowClick = () => {
+    setShowApplicationModal(true);
   };
 
   const handleBackToListings = () => {
@@ -324,6 +376,13 @@ Thank you.`;
 
       {/* Main Content */}
       <main className={styles.main}>
+        {/* New "Apply Now" button */}
+        <div style={{ textAlign: 'center', margin: '20px 0' }}>
+          <button className={styles.btnPrimary} onClick={handleMainApplyNowClick}>
+            Apply Now
+          </button>
+        </div>
+
         {/* Image Gallery */}
         <section className={styles.gallery}>
           <div className={styles.mainImageContainer}>
@@ -365,12 +424,12 @@ Thank you.`;
         </section>
 
         {/* Leasing & Insurance Section */}
-        <section className={styles.financingSection}>
+        <section ref={financingSectionRef} className={styles.financingSection}>
           <h2 className={styles.sectionTitle}>Financing Options</h2>
           <div className={styles.financingButtons}>
-            <button className={styles.btnFinancing} onClick={() => setShowLeasingModal(true)}>
+            <button className={styles.btnFinancing} onClick={() => setShowLeasingPlans(prev => !prev)}>
               <FileText size={20} />
-              View Leasing Plans
+              {showLeasingPlans ? 'Hide Leasing Plans' : 'View Leasing Plans'}
             </button>
             <button className={styles.btnFinancing} onClick={() => setShowInsuranceModal(true)}>
               <Shield size={20} />
@@ -378,6 +437,14 @@ Thank you.`;
             </button>
           </div>
         </section>
+
+        {/* Available Leasing Plans */}
+        {showLeasingPlans && (
+          <section className={styles.leasingPlansSection}>
+            <h2 className={styles.sectionTitle}>Available Leasing Plans</h2>
+            <LeasingPlans showAll={true} />
+          </section>
+        )}
 
         {/* Vehicle Information */}
         <section className={styles.infoSection}>
@@ -540,62 +607,8 @@ Thank you.`;
           </section>
         )}
       </main>
-
-      {/* Leasing Plans Modal */}
-      {showLeasingModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowLeasingModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>
-                <FileText size={24} />
-                Available Leasing Plans
-              </h2>
-              <button className={styles.closeBtn} onClick={() => setShowLeasingModal(false)}>
-                <X size={24} />
-              </button>
-            </div>
-            <div className={styles.plansGrid}>
-              {leasingPlans.map((plan) => (
-                <div key={plan.id} className={styles.planCard}>
-                  <h3 className={styles.planCompany}>{plan.company}</h3>
-                  <div className={styles.planDetails}>
-                    <div className={styles.planRow}>
-                      <span>Interest Rate:</span>
-                      <strong>{plan.interestRate}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Duration:</span>
-                      <strong>{plan.duration}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Monthly Payment:</span>
-                      <strong>{plan.monthlyPayment}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Down Payment:</span>
-                      <strong>{plan.downPayment}</strong>
-                    </div>
-                  </div>
-                  <div className={styles.planFeatures}>
-                    <h4>Features:</h4>
-                    <ul>
-                      {plan.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <button 
-                    className={styles.btnApply}
-                    onClick={() => handleApplyNow(plan.company, 'leasing', plan)}
-                  >
-                    Apply Now
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      
+      {showApplicationModal && <ApplicationFormModal ad={vehicleData} onClose={() => setShowApplicationModal(false)} onSubmit={handleApplicationSubmit} />}
 
       {/* Insurance Plans Modal */}
       {showInsuranceModal && (
@@ -610,41 +623,45 @@ Thank you.`;
                 <X size={24} />
               </button>
             </div>
-            <div className={styles.plansGrid}>
-              {insurancePlans.map((plan) => (
-                <div key={plan.id} className={styles.planCard}>
-                  <h3 className={styles.planCompany}>{plan.company}</h3>
-                  <div className={styles.planDetails}>
-                    <div className={styles.planRow}>
-                      <span>Annual Premium:</span>
-                      <strong>{plan.premium}</strong>
+            {insurancePlansLoading ? (
+              <p>Loading insurance plans...</p>
+            ) : insurancePlansError ? (
+              <p className={styles.error}>{insurancePlansError}</p>
+            ) : fetchedInsurancePlans.length === 0 ? (
+              <p>No insurance plans available at the moment.</p>
+            ) : (
+              <div className={styles.plansGrid}>
+                {fetchedInsurancePlans.map((plan) => (
+                  <div key={plan.id} className={styles.planCard}>
+                    <h3 className={styles.planCompany}>{plan.user?.cName || 'Unknown Company'}</h3>
+                    <div className={styles.planDetails}>
+                      <div className={styles.planRow}>
+                        <span>Plan Name:</span>
+                        <strong>{plan.planName}</strong>
+                      </div>
+                      <div className={styles.planRow}>
+                        <span>Annual Premium:</span>
+                        <strong>Rs. {parseFloat(plan.price).toLocaleString()}/year</strong>
+                      </div>
+                      <div className={styles.planRow}>
+                        <span>Coverage:</span>
+                        <strong>{plan.coverage}</strong>
+                      </div>
+                      <div className={styles.planRow}>
+                        <span>Description:</span>
+                        <strong>{plan.description}</strong>
+                      </div>
                     </div>
-                    <div className={styles.planRow}>
-                      <span>Coverage:</span>
-                      <strong>{plan.coverage}</strong>
-                    </div>
-                    <div className={styles.planRow}>
-                      <span>Type:</span>
-                      <strong>{plan.type}</strong>
-                    </div>
+                    <button 
+                      className={styles.btnApply}
+                      onClick={() => handleApplyNow(plan.user?.cName || 'Unknown Company', 'insurance', plan)}
+                    >
+                      Get Quote
+                    </button>
                   </div>
-                  <div className={styles.planFeatures}>
-                    <h4>Coverage Includes:</h4>
-                    <ul>
-                      {plan.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  <button 
-                    className={styles.btnApply}
-                    onClick={() => handleApplyNow(plan.company, 'insurance', plan)}
-                  >
-                    Get Quote
-                  </button>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

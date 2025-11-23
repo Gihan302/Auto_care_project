@@ -54,7 +54,7 @@ export default function ManagePlansPage() {
         <button
           className={styles.addButton}
           // This path must match your file structure for the CreateInsurancePlanPage.jsx
-          onClick={() => router.push("/insurance/create-plan")}
+          onClick={() => router.push("/Insurance/createPlan")}
         >
           <Plus className={styles.addIcon} /> Create New Plan
         </button>
@@ -66,11 +66,9 @@ export default function ManagePlansPage() {
           <thead>
             {/* --- FIX 3: Updated headers to match your IPlan model --- */}
             <tr>
-              <th>Ad Title</th>
-              <th>Plan Amount (LKR)</th>
-              <th>Installments</th>
-              <th>Interest Rate (%)</th>
-              <th>Monthly Payment (LKR)</th>
+              <th>Plan Name</th>
+              <th>Coverage</th>
+              <th>Price</th>
               <th>Description</th>
               <th className={styles.actionsHeader}>Actions</th>
             </tr>
@@ -78,38 +76,36 @@ export default function ManagePlansPage() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="7" className={styles.loading}>Loading...</td>
+                <td colSpan="5" className={styles.loading}>Loading...</td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan="7" className={styles.error}>{error}</td>
+                <td colSpan="5" className={styles.error}>{error}</td>
               </tr>
             ) : plans.length === 0 ? (
               <tr>
-                <td colSpan="7" className={styles.empty}>No plans found.</td>
+                <td colSpan="5" className={styles.empty}>No plans found.</td>
               </tr>
             ) : (
               // --- FIX 3: Render correct data from your IPlan model ---
               plans.map((plan) => (
                 <tr key={plan.id}>
-                  <td>{plan.advertisement?.title || 'N/A'}</td>
-                  <td>{plan.planAmt.toLocaleString()}</td>
-                  <td>{plan.noOfInstallments}</td>
-                  <td>{plan.interest}%</td>
-                  <td>{plan.instAmt.toLocaleString()}</td>
+                  <td>{plan.planName}</td>
+                  <td>{plan.coverage}</td>
+                  <td>{plan.price.toLocaleString()}</td>
                   <td>{plan.description}</td>
                   <td className={styles.actions}>
                     <button
                       className={styles.viewBtn}
                       // This path needs to be created
-                      onClick={() => router.push(`/insurance/plans/${plan.id}`)}
+                      onClick={() => router.push(`/Insurance/plans/${plan.id}`)}
                     >
                       <FileText size={16} />
                     </button>
                     <button
                       className={styles.editBtn}
                       // This path needs to be created
-                      onClick={() => router.push(`/insurance/plans/edit/${plan.id}`)}
+                      onClick={() => router.push(`/Insurance/plans/edit/${plan.id}`)}
                     >
                       <Edit size={16} />
                     </button>
