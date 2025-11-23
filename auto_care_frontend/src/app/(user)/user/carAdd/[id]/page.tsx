@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import styles from './carAdd.module.css';
 import { Phone, Mail, MapPin, Fuel, Settings, Calendar, Gauge, ChevronLeft, ChevronRight, ArrowLeft, FileText, Shield, X } from 'lucide-react';
@@ -19,6 +19,70 @@ interface InsurancePlan {
   }
 }
 
+function ApplicationFormModal({ ad, onClose, onSubmit }) {
+    if (!ad) return null;
+
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        phone: '',
+        address: '',
+        income: '',
+        employmentStatus: '',
+    });
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prev) => ({ ...prev, [id]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        onSubmit(formData);
+    };
+
+    return (
+        <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+                <div className={styles.modalHeader}>
+                    <h2>Application for {ad.title}</h2>
+                    <button onClick={onClose} className={styles.closeButton}><X size={24} /></button>
+                </div>
+                <div className={styles.modalBody}>
+                    <p>Please fill out the form to apply.</p>
+                    <form className={styles.form} onSubmit={handleSubmit}>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="fullName">Full Name</label>
+                            <input type="text" id="fullName" value={formData.fullName} onChange={handleChange} required />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="email">Email</label>
+                            <input type="email" id="email" value={formData.email} onChange={handleChange} required />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="phone">Phone</label>
+                            <input type="tel" id="phone" value={formData.phone} onChange={handleChange} required />
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="address">Address</label>
+                            <textarea id="address" rows="3" value={formData.address} onChange={handleChange} required></textarea>
+                        </div>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="income">Monthly Income</label>
+                            <input type="text" id="income" value={formData.income} onChange={handleChange} required />
+                        </div>
+                         <div className={styles.formGroup}>
+                            <label htmlFor="employmentStatus">Employment Status</label>
+                            <input type="text" id="employmentStatus" value={formData.employmentStatus} onChange={handleChange} required />
+                        </div>
+                        <button type="submit" className={styles.btnPrimary}>Submit Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 const VehicleDetailPage = () => {
   const params = useParams();
   const router = useRouter();
@@ -29,9 +93,12 @@ const VehicleDetailPage = () => {
   const [error, setError] = useState(null);
   const [showLeasingPlans, setShowLeasingPlans] = useState(false);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
+  const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [fetchedInsurancePlans, setFetchedInsurancePlans] = useState<InsurancePlan[]>([]);
   const [insurancePlansLoading, setInsurancePlansLoading] = useState(true);
   const [insurancePlansError, setInsurancePlansError] = useState<string | null>(null);
+
+  const financingSectionRef = useRef(null); // Ref for the financing section
 
   useEffect(() => {
     const fetchVehicleDetails = async () => {
@@ -130,6 +197,14 @@ const VehicleDetailPage = () => {
         alert('Failed to start conversation. Please try again.');
       }
     }
+  };
+
+  const handleApplicationSubmit = async (formData) => {
+    console.log("Submitting application:", formData);
+    // Here you would make the API call to your backend
+    // For now, we'll just log it and close the modal.
+    setShowApplicationModal(false);
+    alert("Your application has been submitted (simulated).");
   };
 
   // Generate draft message based on plan type
@@ -232,6 +307,11 @@ Thank you.`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // New handler for the main "Apply Now" button
+  const handleMainApplyNowClick = () => {
+    setShowApplicationModal(true);
+  };
+
   const handleBackToListings = () => {
     router.push('/user/carListing');
   };
@@ -296,6 +376,13 @@ Thank you.`;
 
       {/* Main Content */}
       <main className={styles.main}>
+        {/* New "Apply Now" button */}
+        <div style={{ textAlign: 'center', margin: '20px 0' }}>
+          <button className={styles.btnPrimary} onClick={handleMainApplyNowClick}>
+            Apply Now
+          </button>
+        </div>
+
         {/* Image Gallery */}
         <section className={styles.gallery}>
           <div className={styles.mainImageContainer}>
@@ -337,7 +424,7 @@ Thank you.`;
         </section>
 
         {/* Leasing & Insurance Section */}
-        <section className={styles.financingSection}>
+        <section ref={financingSectionRef} className={styles.financingSection}>
           <h2 className={styles.sectionTitle}>Financing Options</h2>
           <div className={styles.financingButtons}>
             <button className={styles.btnFinancing} onClick={() => setShowLeasingPlans(prev => !prev)}>
@@ -520,6 +607,8 @@ Thank you.`;
           </section>
         )}
       </main>
+      
+      {showApplicationModal && <ApplicationFormModal ad={vehicleData} onClose={() => setShowApplicationModal(false)} onSubmit={handleApplicationSubmit} />}
 
       {/* Insurance Plans Modal */}
       {showInsuranceModal && (
