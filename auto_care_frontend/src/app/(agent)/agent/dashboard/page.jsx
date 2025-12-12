@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   FilePlus,
   MessageSquare,
@@ -11,99 +11,65 @@ import {
   Clock
 } from "lucide-react"
 import styles from './page.module.css'
-import { useRouter } from 'next/navigation' // Import useRouter
+import { useRouter } from 'next/navigation'
+import api from '@/utils/axios'
+import { getToken } from '@/utils/useLocalStorage'
 
-const stats = [
-  {
-    title: "Total Ads",
-    value: "58",
-    icon: Archive,
-    color: "text-blue-500",
-    bgColor: "bg-blue-50",
-    change: "+5",
-    changeType: "positive"
-  },
-  {
-    title: "Active Ads",
-    value: "42",
-    icon: Eye,
-    color: "text-green-500",
-    bgColor: "bg-green-50",
-    change: "+2",
-    changeType: "positive"
-  },
-  {
-    title: "Sold Ads",
-    value: "16",
-    icon: CheckCircle,
-    color: "text-yellow-500",
-    bgColor: "bg-yellow-50",
-    change: "+3",
-    changeType: "positive"
-  },
-  {
-    title: "Package Usage",
-    value: "25/50",
-    icon: Package,
-    color: "text-red-500",
-    bgColor: "bg-red-50",
-    change: "15 days left",
-    changeType: "neutral"
-  }
-]
+function timeAgo(date) {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    let interval = seconds / 31536000;
+    if (interval > 1) {
+        return Math.floor(interval) + " years ago";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+        return Math.floor(interval) + " months ago";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+        return Math.floor(interval) + " days ago";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+        return Math.floor(interval) + " hours ago";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+        return Math.floor(interval) + " minutes ago";
+    }
+    return Math.floor(seconds) + " seconds ago";
+}
 
-const activities = [
-  {
-    id: 1,
-    user: "Buyer123",
-    action: "sent an inquiry on 'Toyota Camry 2020'",
-    time: "1 hour ago",
-    status: "New Message",
-    initials: "B",
-    avatar: "bg-blue-500"
-  },
-  {
-    id: 2,
-    user: "You",
-    action: "marked 'Honda Civic 2018' as sold",
-    time: "3 hours ago",
-    status: "Sold",
-    initials: "Y",
-    avatar: "bg-green-500"
-  },
-  {
-    id: 3,
-    user: "You",
-    action: "created a new ad for 'Ford Mustang 2022'",
-    time: "5 hours ago",
-    status: "Active",
-    initials: "Y",
-    avatar: "bg-purple-500"
-  },
-  {
-    id: 4,
-    user: "Buyer456",
-    action: "sent an inquiry on 'Ford Mustang 2022'",
-    time: "2 hours ago",
-    status: "New Message",
-    initials: "B",
-    avatar: "bg-pink-500"
-  },
-  {
-    id: 5,
-    user: "You",
-    action: "purchased 'Pro Agent' package",
-    time: "1 day ago",
-    status: "Completed",
-    initials: "Y",
-    avatar: "bg-orange-500"
-  }
-]
+function StatsCards({ agentStats, loading }) {
+  // Define default structure for stats to merge with fetched data
+  const baseStats = [
+    { title: "Total Ads", icon: Archive, color: "text-blue-500", bgColor: "bg-blue-50", value: "0", change: "+0", changeType: "neutral", key: "totalAds" },
+    { title: "Active Ads", icon: Eye, color: "text-green-500", bgColor: "bg-green-50", value: "0", change: "+0", changeType: "neutral", key: "activeAds" },
+    { title: "Sold Ads", icon: CheckCircle, color: "text-yellow-500", bgColor: "bg-yellow-50", value: "0", change: "+0", changeType: "neutral", key: "soldAds" },
+    { title: "Package Usage", icon: Package, color: "text-red-500", bgColor: "bg-red-50", value: "0/0", change: "N/A", changeType: "neutral", key: "packageUsage" }
+  ];
 
-function StatsCards() {
+  const displayStats = baseStats.map(stat => {
+    if (loading) {
+      return { ...stat, value: "...", change: "..." };
+    }
+    switch (stat.key) {
+      case "totalAds":
+        return { ...stat, value: agentStats.totalAds?.toString() || "0" };
+      case "activeAds":
+        return { ...stat, value: agentStats.activeAds?.toString() || "0" };
+      case "soldAds":
+        return { ...stat, value: agentStats.soldAds?.toString() || "0" };
+      case "packageUsage":
+        return { ...stat, value: agentStats.packageUsage || "0/0", change: agentStats.packageDaysLeft || "N/A" };
+      default:
+        return stat;
+    }
+  });
+
   return (
     <div className={styles.statsGrid}>
-      {stats.map((stat, index) => (
+      {displayStats.map((stat, index) => (
         <div 
           key={stat.title}
           className={`${styles.statCard} ${styles[`statCard${index + 1}`]}`}
@@ -112,11 +78,13 @@ function StatsCards() {
             <div className={`${styles.statIcon} ${stat.bgColor} ${stat.color}`}>
               <stat.icon className={styles.icon} />
             </div>
-            <div className={`${styles.statChange} ${
-              stat.changeType === 'positive' ? styles.changePositive : stat.changeType === 'negative' ? styles.changeNegative : styles.changeNeutral
-            }`}>
-              {stat.change}
-            </div>
+            {stat.change && (
+              <div className={`${styles.statChange} ${
+                stat.changeType === 'positive' ? styles.changePositive : stat.changeType === 'negative' ? styles.changeNegative : styles.changeNeutral
+              }`}>
+                {stat.change}
+              </div>
+            )}
           </div>
           <div className={styles.statContent}>
             <p className={styles.statTitle}>{stat.title}</p>
@@ -128,7 +96,7 @@ function StatsCards() {
   )
 }
 
-function RecentActivity() {
+function RecentActivity({ activities }) {
   const getStatusClass = (status) => {
     switch (status) {
       case "New Message":
@@ -160,7 +128,7 @@ function RecentActivity() {
               className={`${styles.activityItem} ${styles[`activityItem${index + 1}`]}`}
             >
               <div className={styles.activityLeft}>
-                <div className={`${styles.activityAvatar} ${activity.avatar}`}>
+                <div className={`${styles.activityAvatar} ${activity.avatarColor}`}>
                   {activity.initials}
                 </div>
                 <div className={styles.activityText}>
@@ -169,7 +137,7 @@ function RecentActivity() {
                   </p>
                   <p className={styles.activityTime}>
                     <Clock className={styles.clockIcon} />
-                    <span>{activity.time}</span>
+                    <span>{timeAgo(activity.time)}</span>
                   </p>
                 </div>
               </div>
@@ -212,6 +180,49 @@ function QuickActions() {
 }
 
 export default function DashboardPage() {
+  const [activities, setActivities] = useState([])
+  const [activityLoading, setActivityLoading] = useState(true)
+  const [agentStats, setAgentStats] = useState({})
+  const [statsLoading, setStatsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const token = getToken()
+        const response = await api.get('/agent/recent-activity', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        setActivities(response.data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setActivityLoading(false)
+      }
+    }
+    fetchActivities()
+  }, [])
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = getToken()
+        const response = await api.get('/agent/stats', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        setAgentStats(response.data)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setStatsLoading(false)
+      }
+    }
+    fetchStats()
+  }, [])
+
   return (
     <div className={styles.dashboard}>
       {/* Welcome Section */}
@@ -236,13 +247,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Cards */}
-      <StatsCards />
+      <StatsCards agentStats={agentStats} loading={statsLoading} />
       
       {/* Quick Actions */}
       <QuickActions />
       
       {/* Recent Activity */}
-      <RecentActivity />
+      {activityLoading ? <p>Loading activities...</p> : <RecentActivity activities={activities} />}
     </div>
   )
 }

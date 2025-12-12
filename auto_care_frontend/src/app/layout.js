@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
   const pathname = usePathname()
   
   // Define routes where you want header/footer
-  const showHeaderFooter = pathname === '/' || pathname === '/home' || pathname === '/signin' || pathname === '/signup'
+  const showHeaderFooter = pathname === '/' || pathname === '/home' || pathname === '/signin' || pathname === '/signup' || pathname.startsWith('/advertisement')
   
   // Define routes where you DON'T want AutoGenie (like the full chat page)
   const hideAutoGenie = pathname === '/chat' || pathname.startsWith('/admin')

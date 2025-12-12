@@ -33,7 +33,7 @@ const CarReviewsPage = () => {
       if (filterRating !== 'all') params.append('rating', filterRating);
       params.append('sort', sortBy);
 
-      const response = await api.get(`/api/reviews?${params.toString()}`);
+      const response = await api.get(`/reviews?${params.toString()}`);
       
       // Transform the response to match frontend expectations
       const transformedReviews = response.data.map(review => ({
@@ -60,7 +60,7 @@ const CarReviewsPage = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await api.get('/api/reviews/stats');
+      const response = await api.get('/reviews/stats');
       setStats({
         totalReviews: response.data.totalReviews || 0,
         averageRating: response.data.averageRating || 0,
@@ -80,7 +80,7 @@ const CarReviewsPage = () => {
 
   const handleHelpful = async (reviewId) => {
     try {
-      await api.post(`/api/reviews/${reviewId}/helpful`);
+      await api.post(`/reviews/${reviewId}/helpful`);
       // Refresh reviews to update count
       fetchReviews();
     } catch (error) {

@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import styles from './page.module.css'
-import { Edit, Trash2, CheckCircle } from 'lucide-react'
+import { Edit, Trash2, CheckCircle, FileText } from 'lucide-react'
 import api from '@/utils/axios'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function MyAdsPage() {
   const router = useRouter()
@@ -101,12 +102,17 @@ export default function MyAdsPage() {
                   <Trash2 size={16} />
                 </button>
                 {ad.flag === 1 && (
-                  <button
-                    className={styles.actionButton}
-                    onClick={() => handleMarkAsSold(ad.id)}
-                  >
-                    <CheckCircle size={16} />
-                  </button>
+                  <>
+                    <button
+                      className={styles.actionButton}
+                      onClick={() => handleMarkAsSold(ad.id)}
+                    >
+                      <CheckCircle size={16} />
+                    </button>
+                    <Link href={`/user/carAdd/${ad.id}`} className={styles.actionButton}>
+                      <FileText size={16} />
+                    </Link>
+                  </>
                 )}
               </td>
             </tr>

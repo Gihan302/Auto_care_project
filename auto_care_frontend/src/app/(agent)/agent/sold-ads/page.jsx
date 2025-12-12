@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '@/utils/axios';
 import Link from 'next/link';
+import styles from './page.module.css'; // Import the CSS module
 
 const SoldAdsPage = () => {
   const [soldAds, setSoldAds] = useState([]);
@@ -44,22 +45,25 @@ const SoldAdsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
+    <div className={styles.container}>
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Sold Advertisements</h1>
+        <h1 className={styles.title}>Sold Advertisements</h1>
         {soldAds.length === 0 ? (
           <p className="text-gray-600">You have no sold advertisements yet.</p>
         ) : (
           <div className="space-y-4">
             {soldAds.map((ad) => (
-              <div key={ad.id} className="border border-gray-200 rounded-md p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                <div>
+              <div key={ad.id} className="border border-gray-200 rounded-md p-4 flex flex-col sm:flex-row items-start sm:items-center">
+                {ad.images && ad.images.length > 0 && (
+                  <img src={ad.images[0]} alt={ad.title} className="w-32 h-32 object-cover rounded-md mr-4 mb-4 sm:mb-0" />
+                )}
+                <div className="flex-grow">
                   <h2 className="text-xl font-semibold text-gray-900">{ad.title}</h2>
                   <p className="text-gray-700">Price: LKR {ad.price.toLocaleString()}</p>
                   <p className="text-gray-600 text-sm">Posted on: {new Date(ad.datetime).toLocaleDateString()}</p>
                 </div>
                 <div className="mt-3 sm:mt-0">
-                  <Link href={`/advertisement/${ad.id}`} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                  <Link href={`/advertisement/${ad.id}`} className={styles.viewDetailsButton}>
                     View Details
                   </Link>
                 </div>

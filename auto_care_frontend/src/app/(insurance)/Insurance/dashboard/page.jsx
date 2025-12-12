@@ -39,6 +39,9 @@ const InsuranceDashboardPage = () => {
         <Link href="/Insurance/dashboard/applications" className={styles.viewAllButton}>
           Manage Applications
         </Link>
+        <Link href="/Insurance/managePlans" className={styles.viewAllButton}>
+          Manage Plans
+        </Link>
       </div>
 
       <div className={styles.tableWrapper}>
