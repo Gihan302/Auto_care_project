@@ -16,6 +16,7 @@ const CreateLeasingPlanPage = () => {
   const [monthlyPayment, setMonthlyPayment] = useState("");
   const [description, setDescription] = useState("");
   const [vehicleType, setVehicleType] = useState(""); // New state for vehicle type
+  const [adId, setAdId] = useState(""); // New state for adId
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [formLoading, setFormLoading] = useState(false); // For the form submit
@@ -59,6 +60,7 @@ const CreateLeasingPlanPage = () => {
         interestRate,
         monthlyPayment,
         description,
+        adId
     };
 
     console.log("📤 Sending Payload →", payload);
@@ -95,10 +97,11 @@ const CreateLeasingPlanPage = () => {
           <div className={styles.formGroup}>
             <label>Advertisement</label>
             <select
-              value={vehicleType}
+              value={adId}
               onChange={(e) => {
                 const selectedAdId = e.target.value;
                 const selectedAd = pendingAds.find(ad => ad.id === Number(selectedAdId));
+                setAdId(selectedAdId);
                 setVehicleType(selectedAd ? selectedAd.v_type || "" : "");
               }}
               className={styles.inputField}

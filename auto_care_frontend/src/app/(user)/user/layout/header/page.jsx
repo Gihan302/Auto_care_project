@@ -11,6 +11,7 @@ const Header = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthChecked, setIsAuthChecked] = useState(false); // New state to track if auth has been checked
   const [userData, setUserData] = useState(null);
   const [notificationCount, setNotificationCount] = useState(3);
   const [messageCount, setMessageCount] = useState(5);
@@ -56,11 +57,14 @@ const Header = () => {
           setUserData(parsedUser);
         } catch (error) {
           console.error('Error parsing user data:', error);
+          setIsAuthenticated(false); // Set to false on parsing error
+          setUserData(null);
         }
       } else {
         setIsAuthenticated(false);
         setUserData(null);
       }
+      setIsAuthChecked(true); // Mark auth as checked
     };
 
     // Check on mount
@@ -224,97 +228,104 @@ const Header = () => {
             <Search className={styles.searchIcon} size={16} />
           </form>
 
-          {isAuthenticated ? (
-            /* Authenticated User Section */
-            <div className={styles.userSection}>
-              {/* Notifications Icon */}
-              <Link href="/user/notifications" className={styles.iconButton}>
-                <Bell size={20} />
-                {notificationCount > 0 && (
-                  <span className={styles.notificationBadge}>{notificationCount}</span>
-                )}
-              </Link>
-
-              {/* Messages Icon */}
-              <Link href="/user/message" className={styles.iconButton}>
-                <MessageCircle size={20} />
-                {messageCount > 0 && (
-                  <span className={styles.notificationBadge}>{messageCount}</span>
-                )}
-              </Link>
-
-              {/* User Profile Dropdown */}
-              <div className={styles.navItemWrapper} ref={userDropdownRef}>
-                <button onClick={() => handleDropdownToggle('user')} className={styles.userButton}>
-                  <div className={styles.userAvatar}>
-                    {getUserInitials()}
-                  </div>
-                  <ChevronDown className={`${styles.chevronSmall} ${activeDropdown === 'user' ? styles.chevronRotated : ''}`} size={16} />
-                </button>
-
-                <div className={`${styles.dropdownMenu} ${styles.dropdownMenuRight} ${activeDropdown === 'user' ? styles.dropdownActive : styles.dropdownEnter}`}>
-                  {/* User Info Section */}
-                  <div className={styles.userInfo}>
-                    <div className={styles.userAvatarLarge}>
+          {isAuthChecked && (
+            isAuthenticated ? (
+              /* Authenticated User Section */
+              <div className={styles.userSection}>
+                {/* Notifications Icon */}
+                <Link href="/user/notifications" className={styles.iconButton}>
+                  <Bell size={20} />
+                  {notificationCount > 0 && (
+                    <span className={styles.notificationBadge}>{notificationCount}</span>
+                  )}
+                </Link>
+  
+                {/* Messages Icon */}
+                <Link href="/user/message" className={styles.iconButton}>
+                  <MessageCircle size={20} />
+                  {messageCount > 0 && (
+                    <span className={styles.notificationBadge}>{messageCount}</span>
+                  )}
+                </Link>
+  
+                {/* User Profile Dropdown */}
+                <div className={styles.navItemWrapper} ref={userDropdownRef}>
+                  <button onClick={() => handleDropdownToggle('user')} className={styles.userButton}>
+                    <div className={styles.userAvatar}>
                       {getUserInitials()}
                     </div>
-                    <div className={styles.userDetails}>
-                      <p className={styles.userName}>
-                        {userData?.fname} {userData?.lname}
-                      </p>
-                      <p className={styles.userRole}>{getUserRole()}</p>
+                    <ChevronDown className={`${styles.chevronSmall} ${activeDropdown === 'user' ? styles.chevronRotated : ''}`} size={16} />
+                  </button>
+  
+                  <div className={`${styles.dropdownMenu} ${styles.dropdownMenuRight} ${activeDropdown === 'user' ? styles.dropdownActive : styles.dropdownEnter}`}>
+                    {/* User Info Section */}
+                    <div className={styles.userInfo}>
+                      <div className={styles.userAvatarLarge}>
+                        {getUserInitials()}
+                      </div>
+                      <div className={styles.userDetails}>
+                        <p className={styles.userName}>
+                          {userData?.fname} {userData?.lname}
+                        </p>
+                        <p className={styles.userRole}>{getUserRole()}</p>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className={styles.dropdownDivider}></div>
-
-                  {/* Menu Items */}
-                  <div className={styles.dropdownContent}>
-                    <Link href={getDashboardPath()} className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
-                      <User size={16} />
-                      Go to Dashboard
-                    </Link>
-                    <Link href="/user/profile" className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
-                      <User size={16} />
-                      My Profile
-                    </Link>
-                    <Link href="/user/settings" className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
-                      <Settings size={16} />
-                      Settings
-                    </Link>
-                    <Link href="/user/notifications" className={`${styles.dropdownLink} ${styles.messageLink}`} onClick={() => setActiveDropdown(null)}>
-                      <Bell size={16} />
-                      Notifications
-                      {notificationCount > 0 && (
-                        <span className={styles.inlineBadge}>{notificationCount}</span>
-                      )}
-                    </Link>
-                    <Link href="/user/message" className={`${styles.dropdownLink} ${styles.messageLink}`} onClick={() => setActiveDropdown(null)}>
-                      <MessageCircle size={16} />
-                      Messages
-                      {messageCount > 0 && (
-                        <span className={styles.inlineBadge}>{messageCount}</span>
-                      )}
-                    </Link>
-                  </div>
-
-                  <div className={styles.dropdownDivider}></div>
-
-                  {/* Logout */}
-                  <div className={styles.dropdownContent}>
-                    <button onClick={handleLogout} className={`${styles.dropdownLink} ${styles.logoutLink}`}>
-                      <LogOut size={16} />
-                      Logout
-                    </button>
+  
+                    <div className={styles.dropdownDivider}></div>
+  
+                    {/* Menu Items */}
+                    <div className={styles.dropdownContent}>
+                      <Link href={getDashboardPath()} className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
+                        <User size={16} />
+                        Go to Dashboard
+                      </Link>
+                      <Link href="/user/profile" className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
+                        <User size={16} />
+                        My Profile
+                      </Link>
+                      <Link href="/user/settings" className={styles.dropdownLink} onClick={() => setActiveDropdown(null)}>
+                        <Settings size={16} />
+                        Settings
+                      </Link>
+                      <Link href="/user/notifications" className={`${styles.dropdownLink} ${styles.messageLink}`} onClick={() => setActiveDropdown(null)}>
+                        <Bell size={16} />
+                        Notifications
+                        {notificationCount > 0 && (
+                          <span className={styles.inlineBadge}>{notificationCount}</span>
+                        )}
+                      </Link>
+                      <Link href="/user/message" className={`${styles.dropdownLink} ${styles.messageLink}`} onClick={() => setActiveDropdown(null)}>
+                        <MessageCircle size={16} />
+                        Messages
+                        {messageCount > 0 && (
+                          <span className={styles.inlineBadge}>{messageCount}</span>
+                        )}
+                      </Link>
+                    </div>
+  
+                    <div className={styles.dropdownDivider}></div>
+  
+                    {/* Logout */}
+                    <div className={styles.dropdownContent}>
+                      <button onClick={handleLogout} className={`${styles.dropdownLink} ${styles.logoutLink}`}>
+                        <LogOut size={16} />
+                        Logout
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            /* Non-authenticated - Sign Up Button */
-            <Link href="/signup" className={styles.signupBtn}>
-              SIGN UP
-            </Link>
+            ) : (
+              /* Non-authenticated - Sign Up Button */
+              <div className={styles.authButtons}>
+                <Link href="/signin" className={styles.signinBtn}>
+                  SIGN IN
+                </Link>
+                <Link href="/signup" className={styles.signupBtn}>
+                  SIGN UP
+                </Link>
+              </div>
+            )
           )}
         </div>
 
@@ -366,38 +377,43 @@ const Header = () => {
             SELL YOUR CAR
           </Link>
 
-          {isAuthenticated ? (
-            /* Authenticated Mobile Menu */
-            <>
-              <div className={styles.mobileMenuDivider}></div>
-              <Link href={getDashboardPath()} className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
-                Go to Dashboard
-              </Link>
-              <Link href="/user/profile" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
-                My Profile
-              </Link>
-              <Link href="/user/notifications" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
-                Notifications {notificationCount > 0 && `(${notificationCount})`}
-              </Link>
-              <Link href="/user/messages" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
-                Messages {messageCount > 0 && `(${messageCount})`}
-              </Link>
-              <Link href="/user/settings" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
-                Settings
-              </Link>
-              <div className={styles.mobileMenuDivider}></div>
-              <button onClick={handleLogout} className={`${styles.mobileMenuItem} ${styles.mobileLogout}`}>
-                Logout
-              </button>
-            </>
-          ) : (
-            /* Non-authenticated Mobile Menu */
-            <>
-              <div className={styles.mobileMenuDivider}></div>
-              <Link href="/signup" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
-                SIGN UP
-              </Link>
-            </>
+          {isAuthChecked && (
+            isAuthenticated ? (
+              /* Authenticated Mobile Menu */
+              <>
+                <div className={styles.mobileMenuDivider}></div>
+                <Link href={getDashboardPath()} className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                  Go to Dashboard
+                </Link>
+                <Link href="/user/profile" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                  My Profile
+                </Link>
+                <Link href="/user/notifications" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                  Notifications {notificationCount > 0 && `(${notificationCount})`}
+                </Link>
+                <Link href="/user/messages" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                  Messages {messageCount > 0 && `(${messageCount})`}
+                </Link>
+                <Link href="/user/settings" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                  Settings
+                </Link>
+                <div className={styles.mobileMenuDivider}></div>
+                <button onClick={handleLogout} className={`${styles.mobileMenuItem} ${styles.mobileLogout}`}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              /* Non-authenticated Mobile Menu */
+              <>
+                <div className={styles.mobileMenuDivider}></div>
+                <Link href="/signin" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                  SIGN IN
+                </Link>
+                <Link href="/signup" className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+                  SIGN UP
+                </Link>
+              </>
+            )
           )}
         </div>
       )}

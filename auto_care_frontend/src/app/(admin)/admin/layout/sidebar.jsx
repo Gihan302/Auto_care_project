@@ -15,7 +15,8 @@ import {
   Bell,
   Settings,
   Menu,
-  X
+  X,
+  Package
 } from "lucide-react"
 import styles from './sidebar.module.css'
 import { RiAdvertisementFill } from 'react-icons/ri'
@@ -30,6 +31,7 @@ const menuItems = [
   { title: "Leasing Plans", url: "/admin/leasing-plans", icon: FileText },
   { title: "Insurance Companies", url: "/admin/insurance", icon: Shield },
   { title: "Insurance Plans", url: "/admin/insurance-plans", icon: FileText },
+  { title: "Offer Packages", url: "/admin/packages", icon: Package },
   { title: "Reports & Analytics", url: "/admin/reports", icon: BarChart3 },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
   { title: "Settings", url: "/admin/settings", icon: Settings },

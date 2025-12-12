@@ -22,34 +22,44 @@ export default function LeasingApplicationsPage() {
   const [applications, setApplications] = useState<LeasingApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+
+  const fetchApplications = async () => {
+    try {
+      // This is a placeholder API endpoint. You'll need to implement
+      // this endpoint in your Java backend to fetch applications for the
+      // authenticated leasing company.
+      const response = await api.get("/leasing-applications/company"); 
+      
+      const appsData = Array.isArray(response.data) ? response.data : [];
+      setApplications(appsData);
+    } catch (err) {
+      setError("Failed to fetch applications. Please ensure you are logged in as a leasing company.");
+      console.error("Error fetching leasing applications:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        // This is a placeholder API endpoint. You'll need to implement
-        // this endpoint in your Java backend to fetch applications for the
-        // authenticated leasing company.
-        const response = await api.get("/leasing-applications/company"); 
-        
-        const appsData = Array.isArray(response.data) ? response.data : [];
-        setApplications(appsData);
-      } catch (err) {
-        setError("Failed to fetch applications. Please ensure you are logged in as a leasing company.");
-        console.error("Error fetching leasing applications:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchApplications();
   }, []);
 
   // Placeholder for status update function
   const handleUpdateStatus = async (appId: number, newStatus: string) => {
-    // Implement API call to update application status
-    console.log(`Updating application ${appId} to status: ${newStatus}`);
-    // Example: await api.put(`/leasing-applications/${appId}/status`, { status: newStatus });
-    // After successful update, refresh the applications list
+    setUpdatingId(appId);
+    try {
+      if (newStatus === 'Approved') {
+        await api.post(`/leasing-applications/${appId}/approve`);
+      } else if (newStatus === 'Rejected') {
+        await api.post(`/leasing-applications/${appId}/reject`);
+      }
+      fetchApplications();
+    } catch (err) {
+      console.error(`Error updating application ${appId} to status: ${newStatus}`, err);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   return (
@@ -99,17 +109,17 @@ export default function LeasingApplicationsPage() {
                     <button 
                       className={styles.messageButton} // Reusing messageButton style
                       onClick={() => handleUpdateStatus(app.id, 'Approved')}
-                      disabled={app.status === 'Approved'}
+                      disabled={app.status === 'Approved' || updatingId === app.id}
                       style={{ marginRight: '5px' }}
                     >
-                      Approve
+                      {updatingId === app.id ? 'Approving...' : 'Approve'}
                     </button>
                     <button 
                       className={styles.viewAllButton} // Reusing viewAllButton style
                       onClick={() => handleUpdateStatus(app.id, 'Rejected')}
-                      disabled={app.status === 'Rejected'}
+                      disabled={app.status === 'Rejected' || updatingId === app.id}
                     >
-                      Reject
+                      {updatingId === app.id ? 'Rejecting...' : 'Reject'}
                     </button>
                     {/* Add a link to view full application details if needed */}
                   </td>

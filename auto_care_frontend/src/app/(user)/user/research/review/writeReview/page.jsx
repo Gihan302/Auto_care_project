@@ -241,7 +241,7 @@ const WriteReviewPage = () => {
 
       console.log('Submitting review data:', reviewData);
 
-      const response = await api.post('/api/reviews/submit', reviewData);
+      const response = await api.post('/reviews/submit', reviewData);
       
       console.log('Response:', response.data);
       alert('Review submitted successfully! It will be visible after admin approval.');

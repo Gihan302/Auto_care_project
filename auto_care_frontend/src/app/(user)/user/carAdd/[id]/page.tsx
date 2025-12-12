@@ -19,70 +19,6 @@ interface InsurancePlan {
   }
 }
 
-function ApplicationFormModal({ ad, onClose, onSubmit }) {
-    if (!ad) return null;
-
-    const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        phone: '',
-        address: '',
-        income: '',
-        employmentStatus: '',
-    });
-
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prev) => ({ ...prev, [id]: value }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
-
-    return (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-                <div className={styles.modalHeader}>
-                    <h2>Application for {ad.title}</h2>
-                    <button onClick={onClose} className={styles.closeButton}><X size={24} /></button>
-                </div>
-                <div className={styles.modalBody}>
-                    <p>Please fill out the form to apply.</p>
-                    <form className={styles.form} onSubmit={handleSubmit}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="fullName">Full Name</label>
-                            <input type="text" id="fullName" value={formData.fullName} onChange={handleChange} required />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="email">Email</label>
-                            <input type="email" id="email" value={formData.email} onChange={handleChange} required />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="phone">Phone</label>
-                            <input type="tel" id="phone" value={formData.phone} onChange={handleChange} required />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="address">Address</label>
-                            <textarea id="address" rows="3" value={formData.address} onChange={handleChange} required></textarea>
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="income">Monthly Income</label>
-                            <input type="text" id="income" value={formData.income} onChange={handleChange} required />
-                        </div>
-                         <div className={styles.formGroup}>
-                            <label htmlFor="employmentStatus">Employment Status</label>
-                            <input type="text" id="employmentStatus" value={formData.employmentStatus} onChange={handleChange} required />
-                        </div>
-                        <button type="submit" className={styles.btnPrimary}>Submit Application</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    )
-}
-
 const VehicleDetailPage = () => {
   const params = useParams();
   const router = useRouter();
@@ -93,7 +29,6 @@ const VehicleDetailPage = () => {
   const [error, setError] = useState(null);
   const [showLeasingPlans, setShowLeasingPlans] = useState(false);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
-  const [showApplicationModal, setShowApplicationModal] = useState(false);
   const [fetchedInsurancePlans, setFetchedInsurancePlans] = useState<InsurancePlan[]>([]);
   const [insurancePlansLoading, setInsurancePlansLoading] = useState(true);
   const [insurancePlansError, setInsurancePlansError] = useState<string | null>(null);
@@ -199,14 +134,6 @@ const VehicleDetailPage = () => {
     }
   };
 
-  const handleApplicationSubmit = async (formData) => {
-    console.log("Submitting application:", formData);
-    // Here you would make the API call to your backend
-    // For now, we'll just log it and close the modal.
-    setShowApplicationModal(false);
-    alert("Your application has been submitted (simulated).");
-  };
-
   // Generate draft message based on plan type
   const generateDraftMessage = (type, plan, vehicle) => {
     const vehicleTitle = vehicle.title || `${vehicle.m_year} ${vehicle.manufacturer} ${vehicle.model}`;
@@ -309,7 +236,7 @@ Thank you.`;
 
   // New handler for the main "Apply Now" button
   const handleMainApplyNowClick = () => {
-    setShowApplicationModal(true);
+    router.push(`/user/advertisement/${params.id}/apply`);
   };
 
   const handleBackToListings = () => {
@@ -608,8 +535,6 @@ Thank you.`;
         )}
       </main>
       
-      {showApplicationModal && <ApplicationFormModal ad={vehicleData} onClose={() => setShowApplicationModal(false)} onSubmit={handleApplicationSubmit} />}
-
       {/* Insurance Plans Modal */}
       {showInsuranceModal && (
         <div className={styles.modalOverlay} onClick={() => setShowInsuranceModal(false)}>

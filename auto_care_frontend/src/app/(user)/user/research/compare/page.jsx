@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './compare.module.css';
+import api from '@/utils/axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+
 
 const VehicleSelector = ({ id, selectedVehicle, onVehicleChange, onRemove, canRemove, index, availableVehicles, manufacturers }) => {
   const [selectedMake, setSelectedMake] = useState('');
@@ -241,23 +242,16 @@ export default function VehicleComparisonPage() {
     setError(null);
     
     try {
-      console.log('📡 Fetching available vehicles from:', `${API_BASE_URL}/advertisement/compare/available`);
+      console.log('📡 Fetching available vehicles from:', '/advertisement/compare/available');
       
-      const response = await fetch(`${API_BASE_URL}/advertisement/compare/available`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      });
+      const response = await api.get('/advertisement/compare/available');
       
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('❌ Response error:', response.status, errorText);
+      if (response.status !== 200) {
+        console.error('❌ Response error:', response.status, response.data);
         throw new Error(`Failed to fetch vehicles: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = response.data;
       console.log('✅ Fetched', data.length, 'vehicles for comparison');
       
       setAvailableVehicles(data);
@@ -309,23 +303,17 @@ export default function VehicleComparisonPage() {
       
       // Build query string
       const queryString = ids.map(id => `ids=${id}`).join('&');
-      const url = `${API_BASE_URL}/advertisement/compare?${queryString}`;
+      const url = `/advertisement/compare?${queryString}`;
       
       console.log('📡 Fetching comparison from:', url);
       
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      });
+      const response = await api.get(url);
       
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error(`Failed to compare vehicles: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = response.data;
       console.log('✅ Comparison data received:', data.length, 'vehicles');
       
       setComparisonData(data);
