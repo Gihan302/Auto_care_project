@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream:auto_care_frontend/src/app/user/carListing/carListing.module.css
 .carListingContainer {
   --color-primary: #1E201E;
   --color-secondary: #222725;
@@ -743,4 +744,1083 @@
     font-size: 3rem;
     margin-bottom: 15px;
   }
+=======
+.carListingContainer {
+  --color-primary: #1E201E;
+  --color-secondary: #222725;
+  --color-tertiary: #ECDFCC;
+  --color-accent: #8B4513;
+  --color-text-light: #ffffff;
+  --color-text-dark: #333333;
+  --color-border: #ddd;
+  --color-hover: #f5f5f5;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.15);
+  --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  background: linear-gradient(135deg, var(--color-tertiary) 0%, #f8f5f0 100%);
+  min-height: 100vh;
+  padding: 20px;
+  animation: fadeInUp 0.8s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+/* Banner Ads Section in Sidebar */
+.bannerAdsSection {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 2px solid rgba(30, 32, 30, 0.1);
+}
+
+.bannerAdsTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 15px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.bannerAdsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bannerAdCard {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(30, 32, 30, 0.1);
+}
+
+.bannerAdCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.bannerAdCard:active {
+  transform: translateY(-1px);
+}
+
+.bannerAdImage {
+  width: 100%;
+  height: auto;
+  min-height: 120px;
+  max-height: 180px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.bannerAdCard:hover .bannerAdImage {
+  transform: scale(1.05);
+}
+
+.bannerAdOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  padding: 12px 15px;
+  transition: all 0.3s ease;
+}
+
+.bannerAdCard:hover .bannerAdOverlay {
+  background: linear-gradient(to top, rgba(30, 32, 30, 0.9), transparent);
+}
+
+.bannerAdTitle {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: block;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Click indicator */
+.bannerAdCard::after {
+  content: '↗';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--color-primary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bannerAdCard:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Responsive adjustments for banner ads */
+@media (max-width: 768px) {
+  .bannerAdsSection {
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .bannerAdsTitle {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+
+  .bannerAdsContainer {
+    gap: 12px;
+  }
+
+  .bannerAdImage {
+    min-height: 100px;
+    max-height: 150px;
+  }
+
+  .bannerAdOverlay {
+    padding: 10px 12px;
+  }
+
+  .bannerAdTitle {
+    font-size: 0.85rem;
+  }
+
+  .bannerAdCard::after {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bannerAdsSection {
+    margin-top: 15px;
+    padding-top: 15px;
+  }
+
+  .bannerAdsTitle {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+
+  .bannerAdsContainer {
+    gap: 10px;
+  }
+
+  .bannerAdImage {
+    min-height: 90px;
+    max-height: 130px;
+  }
+
+  .bannerAdOverlay {
+    padding: 8px 10px;
+  }
+
+  .bannerAdTitle {
+    font-size: 0.8rem;
+  }
+}
+
+/* Loading state for banner ads */
+.bannerAdCard.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  min-height: 120px;
+}
+
+/* Multiple banner ads - smooth scrolling if many ads */
+@media (min-width: 769px) {
+  .bannerAdsContainer {
+    max-height: 600px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(30, 32, 30, 0.3) transparent;
+  }
+
+  .bannerAdsContainer::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .bannerAdsContainer::-webkit-scrollbar-track {
+    background: transparent;
+  }
+    /* Top Banner Section Styles */
+    .topBannerSection {
+      width: 100%;
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+  
+    .topBannerContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+  
+    .topBannerCard {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: #fff;
+    }
+  
+    .topBannerCard:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+    }
+  
+    .topBannerImage {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+  
+    .topBannerOverlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      padding: 1.5rem 1rem;
+      color: white;
+    }
+  
+    .topBannerTitle {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  
+    .topBannerDescription {
+      margin: 0.5rem 0 0;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+  
+    /* Sidebar Banner Ads Styles */
+    .bannerAdsSection {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid #e5e7eb;
+    }
+  
+    .bannerAdsTitle {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+  
+    .bannerAdsContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .bannerAdCard {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+  
+    .bannerAdCard:hover {
+      transform: scale(1.02);
+    }
+  
+    .bannerAdImage {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  
+    .bannerAdOverlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+      padding: 0.5rem;
+    }
+  
+    .bannerAdTitle {
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .topBannerSection {
+        padding: 0 0.5rem;
+      }
+  
+      .topBannerContainer {
+        grid-template-columns: 1fr;
+      }
+  
+      .topBannerImage {
+        height: 150px;
+      }
+    }
+
+  .bannerAdsContainer::-webkit-scrollbar-thumb {
+    background-color: rgba(30, 32, 30, 0.3);
+    border-radius: 3px;
+  }
+
+  .bannerAdsContainer::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(30, 32, 30, 0.5);
+  }
+}
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--color-secondary);
+  opacity: 0.8;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.filterSidebar {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: var(--shadow-medium);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: fadeInLeft 0.8s ease-out;
+}
+
+.filterTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.vehicleTypeFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 25px;
+  justify-content: center;
+}
+
+.vehicleTypeBtn {
+  background: var(--color-tertiary);
+  color: var(--color-primary);
+  border: 2px solid transparent;
+  padding: 8px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  outline: none;
+}
+
+.vehicleTypeBtn:hover {
+  background: var(--color-primary);
+  color: var(--color-tertiary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.vehicleTypeBtn.active {
+  background: var(--color-primary);
+  color: var(--color-tertiary);
+  box-shadow: var(--shadow-medium);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  transition: var(--transition-smooth);
+  background: rgba(255, 255, 255, 0.8);
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 32, 30, 0.1);
+  background: white;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+.filterGroup {
+  margin-bottom: 20px;
+}
+
+.filterLabel {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterSelect {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.8);
+  transition: var(--transition-smooth);
+  box-sizing: border-box;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(30, 32, 30, 0.1);
+}
+
+.priceRange {
+  display: flex;
+  gap: 10px;
+}
+
+.priceInput {
+  flex: 1;
+  padding: 8px 10px;
+  border: 2px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.8);
+  transition: var(--transition-smooth);
+  box-sizing: border-box;
+}
+
+.priceInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(30, 32, 30, 0.1);
+}
+
+.carListings {
+  display: grid;
+  gap: 20px;
+  animation: fadeInRight 0.8s ease-out;
+}
+
+.carCard {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: grid;
+  grid-template-columns: 300px 1fr auto;
+  gap: 20px;
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.carCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-heavy);
+}
+
+.carCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  transform: scaleX(0);
+  transition: var(--transition-smooth);
+}
+
+.carCard:hover::before {
+  transform: scaleX(1);
+}
+
+.carImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+}
+
+.carCard:hover .carImage {
+  transform: scale(1.05);
+}
+
+.carInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.carTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.carPrice {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--color-secondary);
+  margin-bottom: 12px;
+}
+
+.carDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.carDetail {
+  font-size: 0.9rem;
+  color: var(--color-text-dark);
+  opacity: 0.8;
+}
+
+.carActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaseBtn {
+  background: var(--color-primary);
+  color: var(--color-tertiary);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-bounce);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  outline: none;
+}
+
+.leaseBtn:hover {
+  background: var(--color-secondary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.leaseBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.leaseBtn:hover::before {
+  left: 100%;
+}
+
+.exploreBtn {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.exploreBtn:hover {
+  background: var(--color-primary);
+  color: var(--color-tertiary);
+  text-decoration: none;
+}
+
+.loadingCard {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 300px 1fr auto;
+  gap: 20px;
+  animation: pulse 1.5s infinite;
+}
+
+.loadingSkeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+.loadingImage {
+  width: 100%;
+  height: 200px;
+}
+
+.loadingText {
+  height: 20px;
+  margin-bottom: 10px;
+}
+
+.loadingTextShort {
+  height: 20px;
+  width: 60%;
+}
+
+.noResults {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-secondary);
+  font-size: 1.2rem;
+}
+
+.noResultsIcon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.3;
+}
+
+.mobileFilterToggle {
+  display: none;
+  margin-bottom: 15px;
+}
+
+.filterToggleBtn {
+  background: var(--color-primary);
+  color: var(--color-tertiary);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  width: 100%;
+}
+
+.filterToggleBtn:hover {
+  background: var(--color-secondary);
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 1024px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .filterSidebar {
+    position: static;
+    order: 2;
+  }
+
+  .carListings {
+    order: 1;
+  }
+
+  .carCard {
+    grid-template-columns: 250px 1fr auto;
+    gap: 15px;
+  }
+
+  .carImage {
+    height: 180px;
+  }
+
+  .carActions {
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .carCard {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .carImage {
+    height: 220px;
+    width: 100%;
+  }
+
+  .carActions {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .carListingContainer {
+    padding: 10px;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .mainContent {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .mobileFilterToggle {
+    display: block;
+  }
+
+  .filterSidebar {
+    padding: 15px;
+    position: static;
+    order: 2;
+  }
+
+  .filterTitle {
+    font-size: 1.1rem;
+  }
+
+  .vehicleTypeFilters {
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .vehicleTypeBtn {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+
+  .searchInput {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .filterSelect {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .priceInput {
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+
+  .carListings {
+    order: 1;
+  }
+
+  .carCard {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .carImage {
+    height: 200px;
+    width: 100%;
+  }
+
+  .carTitle {
+    font-size: 1.1rem;
+  }
+
+  .carPrice {
+    font-size: 1.3rem;
+  }
+
+  .carDetail {
+    font-size: 0.8rem;
+  }
+
+  .carActions {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .leaseBtn {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+  }
+
+  .exploreBtn {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carListingContainer {
+    padding: 8px;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .filterSidebar {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .filterTitle {
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+
+  .vehicleTypeFilters {
+    gap: 4px;
+    margin-bottom: 15px;
+  }
+
+  .vehicleTypeBtn {
+    font-size: 0.7rem;
+    padding: 5px 8px;
+  }
+
+  .searchInput {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+  }
+
+  .filterGroup {
+    margin-bottom: 15px;
+  }
+
+  .filterLabel {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+
+  .filterSelect {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+
+  .priceInput {
+    padding: 5px 6px;
+    font-size: 0.8rem;
+  }
+
+  .carCard {
+    padding: 10px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .carImage {
+    height: 180px;
+    border-radius: 8px;
+  }
+
+  .carTitle {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+
+  .carPrice {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .carDetails {
+    gap: 4px;
+  }
+
+  .carDetail {
+    font-size: 0.75rem;
+  }
+
+  .carActions {
+    gap: 6px;
+  }
+
+  .leaseBtn {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+  }
+
+  .exploreBtn {
+    padding: 6px 12px;
+    font-size: 0.7rem;
+  }
+
+  .loadingCard {
+    padding: 10px;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .loadingImage {
+    height: 180px;
+  }
+
+  .noResults {
+    padding: 40px 15px;
+    font-size: 1rem;
+  }
+
+  .noResultsIcon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+  }
+>>>>>>> Stashed changes:auto_care_frontend/src/app/(user)/user/carListing/carListing.module.css
 }
