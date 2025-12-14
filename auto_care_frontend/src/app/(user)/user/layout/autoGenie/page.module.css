@@ -1,0 +1,633 @@
+.floatingButton {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d7c7af 0%, #d4c4a8 100%);
+  border: none;
+  color: #1E201E;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(236, 223, 204, 0.4);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  animation: fadeIn 0.5s ease-out, float 3s ease-in-out infinite, gradientShift 8s ease-in-out infinite, glow 2s ease-in-out infinite;
+  overflow: hidden;
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0% {
+    background: linear-gradient(135deg, #d7c7af 0%, #d4c4a8 100%);
+  }
+
+  25% {
+    background: linear-gradient(135deg, #e8d5b7 0%, #d7c7af 100%);
+  }
+
+  50% {
+    background: linear-gradient(135deg, #f0e5d8 0%, #e8d5b7 100%);
+  }
+
+  75% {
+    background: linear-gradient(135deg, #d4c4a8 0%, #c9b99a 100%);
+  }
+
+  100% {
+    background: linear-gradient(135deg, #d7c7af 0%, #d4c4a8 100%);
+  }
+}
+
+/* Glowing effect */
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow: 0 8px 24px rgba(236, 223, 204, 0.4),
+      0 0 20px rgba(236, 223, 204, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 8px 32px rgba(236, 223, 204, 0.6),
+      0 0 40px rgba(236, 223, 204, 0.4),
+      0 0 60px rgba(236, 223, 204, 0.2);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Shimmer effect overlay */
+.floatingButton::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 70%);
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Particle effect (optional - creates subtle dots around button) */
+.floatingButton::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(236, 223, 204, 0.3);
+  animation: pulse-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.floatingButton:hover {
+  transform: scale(1.1) translateY(-4px);
+  box-shadow: 0 12px 32px rgba(236, 223, 204, 0.5),
+    0 0 50px rgba(236, 223, 204, 0.3);
+  animation: fadeIn 0.5s ease-out, float 3s ease-in-out infinite, gradientShift 8s ease-in-out infinite, glow 2s ease-in-out infinite;
+}
+
+/* Subtle rotation on hover for AI feel */
+@keyframes rotate {
+  from {
+    transform: scale(1.1) translateY(-4px) rotate(0deg);
+  }
+
+  to {
+    transform: scale(1.1) translateY(-4px) rotate(360deg);
+  }
+}
+
+.floatingButton:active {
+  transform: scale(0.95);
+}
+
+/* Logo styling - CONSOLIDATED */
+.floatingButton img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  pointer-events: none;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  animation: logoBreath 3s ease-in-out infinite;
+}
+
+/* Breathing effect for logo */
+@keyframes logoBreath {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Badge styling - CONSOLIDATED */
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #1E201E;
+  animation: badgePulse 2s ease-in-out infinite, bounce 1s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes badgePulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Chat Popup */
+.chatPopup {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 400px;
+  height: 600px;
+  background: rgba(34, 39, 37, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(236, 223, 204, 0.15);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Popup Header */
+.popupHeader {
+  padding: 1.25rem;
+  background: rgba(30, 32, 30, 0.9);
+  border-bottom: 1px solid rgba(236, 223, 204, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.botAvatarSmall {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ECDFCC 0%, #d4c4a8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1E201E;
+  box-shadow: 0 4px 12px rgba(236, 223, 204, 0.3);
+}
+
+/* Logo in Bot Avatar (Chat Header) */
+.botAvatarSmall img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.popupTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ECDFCC;
+  margin: 0 0 0.25rem 0;
+}
+
+.popupStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: rgba(236, 223, 204, 0.6);
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px #4ade80;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.iconButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(236, 223, 204, 0.05);
+  color: #ECDFCC;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.iconButton:hover {
+  background: rgba(236, 223, 204, 0.1);
+  transform: scale(1.05);
+}
+
+/* Messages */
+.popupMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-behavior: smooth;
+}
+
+.popupMessages::-webkit-scrollbar {
+  width: 4px;
+}
+
+.popupMessages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.popupMessages::-webkit-scrollbar-thumb {
+  background: rgba(236, 223, 204, 0.15);
+  border-radius: 2px;
+}
+
+.popupMessages::-webkit-scrollbar-thumb:hover {
+  background: rgba(236, 223, 204, 0.25);
+}
+
+.messageWrapper {
+  display: flex;
+  gap: 0.6rem;
+  animation: messageSlide 0.3s ease-out;
+}
+
+@keyframes messageSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.userMessage {
+  flex-direction: row-reverse;
+}
+
+.messageAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.aiMessage .messageAvatar {
+  background: linear-gradient(135deg, #ECDFCC 0%, #d4c4a8 100%);
+  color: #1E201E;
+}
+
+/* Logo in Message Avatar */
+.aiMessage .messageAvatar img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.userMessage .messageAvatar {
+  background: rgba(236, 223, 204, 0.15);
+  color: #ECDFCC;
+}
+
+.messageBubble {
+  max-width: 75%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+}
+
+.aiMessage .messageBubble {
+  background: rgba(236, 223, 204, 0.08);
+  border: 1px solid rgba(236, 223, 204, 0.1);
+  border-radius: 12px 12px 12px 4px;
+}
+
+.userMessage .messageBubble {
+  background: linear-gradient(135deg, rgba(236, 223, 204, 0.2), rgba(236, 223, 204, 0.15));
+  border: 1px solid rgba(236, 223, 204, 0.2);
+  border-radius: 12px 12px 4px 12px;
+}
+
+.messageText {
+  color: #ECDFCC;
+  line-height: 1.5;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Typing Indicator */
+.typingIndicator {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.4rem 0;
+}
+
+.typingIndicator span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ECDFCC;
+  animation: typing 1.4s ease-in-out infinite;
+}
+
+.typingIndicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typingIndicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+/* Quick Actions */
+.quickActions {
+  padding: 0 1.25rem 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.quickButton {
+  padding: 0.5rem 0.875rem;
+  background: rgba(236, 223, 204, 0.08);
+  border: 1px solid rgba(236, 223, 204, 0.15);
+  border-radius: 20px;
+  color: #ECDFCC;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.quickButton:hover {
+  background: rgba(236, 223, 204, 0.15);
+  border-color: rgba(236, 223, 204, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Input Area */
+.popupInput {
+  padding: 1rem 1.25rem;
+  background: rgba(30, 32, 30, 0.9);
+  border-top: 1px solid rgba(236, 223, 204, 0.1);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.input {
+  flex: 1;
+  background: rgba(236, 223, 204, 0.05);
+  border: 1px solid rgba(236, 223, 204, 0.1);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #ECDFCC;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input::placeholder {
+  color: rgba(236, 223, 204, 0.4);
+}
+
+.input:focus {
+  background: rgba(236, 223, 204, 0.08);
+  border-color: rgba(236, 223, 204, 0.25);
+  box-shadow: 0 0 0 3px rgba(236, 223, 204, 0.05);
+}
+
+.sendButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #ECDFCC 0%, #d4c4a8 100%);
+  color: #1E201E;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.sendButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 223, 204, 0.3);
+}
+
+.sendButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.popupFooter {
+  padding: 0.75rem 1.25rem;
+  background: rgba(30, 32, 30, 0.5);
+  border-top: 1px solid rgba(236, 223, 204, 0.05);
+  text-align: center;
+}
+
+.expandLink {
+  color: rgba(236, 223, 204, 0.6);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.expandLink:hover {
+  color: #ECDFCC;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .floatingButton {
+    width: 56px;
+    height: 56px;
+    bottom: 20px;
+    right: 20px;
+  }
+
+  .floatingButton img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .chatPopup {
+    width: calc(100vw - 32px);
+    height: calc(100vh - 100px);
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .messageBubble {
+    max-width: 85%;
+  }
+
+  .quickActions {
+    padding: 0 1rem 0.5rem;
+  }
+
+  .quickButton {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+  }
+}

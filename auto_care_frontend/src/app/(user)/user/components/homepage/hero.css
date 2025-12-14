@@ -38,14 +38,7 @@
 .hero-gradient-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right,
-      rgba(30, 32, 30, 0.8),
-      /* primary with 80% opacity */
-      rgba(34, 39, 37, 0.7),
-      /* secondary with 70% opacity */
-      rgba(236, 223, 204, 0.8)
-      /* tertiary with 80% opacity */
-    );
+  background: rgba(0, 0, 0, 0.5);
   animation: pulse-slow 4s ease-in-out infinite;
 }
 

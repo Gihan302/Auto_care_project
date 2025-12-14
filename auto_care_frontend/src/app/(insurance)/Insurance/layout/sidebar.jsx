@@ -9,15 +9,19 @@ import {
   ClipboardList,
   Bell,
   Menu,
-  X
+  X,
+  MessagesSquare,
+  Building
 } from "lucide-react"
 import styles from './sidebar.module.css'
 
 const menuItems = [
-  { title: "Dashboard", url: "/Insurance/insuranceCompany", icon: LayoutDashboard },
+  { title: "Dashboard", url: "/Insurance/dashboard", icon: LayoutDashboard },
   { title: "Create New Plan", url: "/Insurance/createPlan", icon: FilePlus2 },
   { title: "Manage Plans", url: "/Insurance/managePlans", icon: ClipboardList },
+  { title: "Messages", url: "/Insurance/message", icon: MessagesSquare },
   { title: "Notifications", url: "/Insurance/notifications", icon: Bell },
+  { title: "Company Profile", url: "/Insurance/profile", icon: Building },
 ]
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
@@ -58,7 +62,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
             {!isCollapsed && (
               <div className={styles.logoText}>
                 <h1>Auto Care</h1>
-                <p>Insurance Admin</p>
+                <p>Insurance Company</p>
               </div>
             )}
           </div>
@@ -130,6 +134,5 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
     </>
   )
 }
-
 
 

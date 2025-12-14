@@ -1,0 +1,90 @@
+.container {
+  padding: 2rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.unreadBadge {
+  background-color: #ef4444;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.notificationList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notificationItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.notificationItem:hover {
+  background-color: #f3f4f6;
+}
+
+.notificationItem.read {
+  background-color: #fff;
+  opacity: 0.7;
+}
+
+.iconWrapper {
+  flex-shrink: 0;
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.icon.success {
+  color: #10b981;
+}
+
+.icon.error {
+  color: #ef4444;
+}
+
+.icon.warning {
+  color: #f59e0b;
+}
+
+.icon.info {
+  color: #3b82f6;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.message {
+  margin: 0;
+  font-weight: 500;
+}
+
+.time {
+  font-size: 0.875rem;
+  color: #6b7280;
+}

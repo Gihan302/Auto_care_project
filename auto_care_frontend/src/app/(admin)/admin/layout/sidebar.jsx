@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from "next/image";
 import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
@@ -14,17 +15,23 @@ import {
   Bell,
   Settings,
   Menu,
-  X
+  X,
+  Package
 } from "lucide-react"
 import styles from './sidebar.module.css'
+import { RiAdvertisementFill } from 'react-icons/ri'
 
 const menuItems = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
   { title: "Manage Users", url: "/admin/manageUsers", icon: Users },
   { title: "Manage Vehicles", url: "/admin/manageVehicles", icon: Car },
-  { title: "Loan Applications", url: "/admin/loans", icon: FileText },
+  { title: "Manage Reviews", url: "/admin/manageReviews", icon: FileText },
+  { title: "Advertisements", url: "/admin/advertisements", icon: RiAdvertisementFill },
   { title: "Leasing Companies", url: "/admin/leasing", icon: Building2 },
-  { title: "Insurance Companies", url: "/Insurance/insuranceCompany", icon: Shield },
+  { title: "Leasing Plans", url: "/admin/leasing-plans", icon: FileText },
+  { title: "Insurance Companies", url: "/admin/insurance", icon: Shield },
+  { title: "Insurance Plans", url: "/admin/insurance-plans", icon: FileText },
+  { title: "Offer Packages", url: "/admin/packages", icon: Package },
   { title: "Reports & Analytics", url: "/admin/reports", icon: BarChart3 },
   { title: "Notifications", url: "/admin/notifications", icon: Bell },
   { title: "Settings", url: "/admin/settings", icon: Settings },
@@ -61,9 +68,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
         {/* Header */}
         <div className={styles.sidebarHeader}>
           <div className={styles.logoContainer}>
-            <div className={styles.logo}>
-              <Car className={styles.logoIcon} />
-            </div>
+            <div className={styles.logoIconWrapper}>
+            <Image
+              src="/logo.png"
+              alt="Auto Care Logo"
+              width={75}
+              height={34}
+              priority
+            />
+          </div>
+
             {!isCollapsed && (
               <div className={styles.logoText}>
                 <h1>Auto Care</h1>

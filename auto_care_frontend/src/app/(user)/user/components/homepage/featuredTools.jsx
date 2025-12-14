@@ -2,6 +2,7 @@
 
 import React from 'react';
 import './featuredTools.css';
+import Link from 'next/link';
 
 const FeaturedTools = () => {
   return (
@@ -30,7 +31,7 @@ const FeaturedTools = () => {
         <div className="tool-card">
           <h3 className="tool-title">Arrange A Finance</h3>
           <p className="tool-description">Not Sure What You Want? We will help you</p>
-          <button className="tool-button">View Leasing Plans</button>
+         <Link href="/user/LeasingPlans" className="tool-button">View Leasing Plans</Link>
           <div className="tool-image">
             <img src="/finance.jpg" alt="Finance consultation" />
           </div>
@@ -50,3 +51,5 @@ const FeaturedTools = () => {
 };
 
 export default FeaturedTools;
+
+

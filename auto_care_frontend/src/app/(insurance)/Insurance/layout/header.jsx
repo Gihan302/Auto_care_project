@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Moon,
   Sun,
@@ -9,10 +9,27 @@ import {
   Menu
 } from "lucide-react"
 import styles from './header.module.css'
+import Link from 'next/link';
+import useLocalStorage from '@/utils/useLocalStorage';
+
+import { useRouter } from 'next/navigation'
 
 export default function Header({ setIsMobileOpen }) {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [user, setUser] = useLocalStorage('user', null)
+  const [clientLoaded, setClientLoaded] = useState(false);
+  const router = useRouter()
+
+  useEffect(() => {
+    setClientLoaded(true);
+  }, []);
+
+  const getCompanyInitials = () => {
+    if (!user) return 'C';
+    const companyName = user.cName || '';
+    return companyName.charAt(0).toUpperCase();
+  };
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -24,23 +41,18 @@ export default function Header({ setIsMobileOpen }) {
   }
 
   const handleLogout = () => {
-    console.log('Logging out...')
-    setIsDropdownOpen(false)
-  }
-
-  const handleProfileSettings = () => {
-    console.log('Opening profile settings...')
-    setIsDropdownOpen(false)
-  }
-
-  const handleAccountPreferences = () => {
-    console.log('Opening account preferences...')
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
+    router.push('/signin')
     setIsDropdownOpen(false)
   }
 
   return (
     <header className={styles.header}>
       <div className={styles.headerLeft}>
+        <Link href="/">
+          <img src="/logo.png" alt="AutoCare Logo" className={styles.logo} />
+        </Link>
         <button 
           className={styles.mobileMenuButton}
           onClick={() => setIsMobileOpen(true)}
@@ -48,8 +60,8 @@ export default function Header({ setIsMobileOpen }) {
           <Menu size={20} />
         </button>
         <div>
-          <h1 className={styles.headerTitle}>Dashboard Overview</h1>
-          <p className={styles.headerSubtitle}>Welcome back, Admin</p>
+          <h1 className={styles.headerTitle}>Insurance Company Portal</h1>
+          <p className={styles.headerSubtitle}>Welcome back, {clientLoaded && (user?.cName || 'Company')}</p>
         </div>
       </div>
             
@@ -66,8 +78,8 @@ export default function Header({ setIsMobileOpen }) {
             className={styles.dropdownTrigger}
             onClick={handleDropdownToggle}
           >
-            <div className={styles.avatar}>AD</div>
-            <span className={styles.adminName}>Admin</span>
+            <div className={styles.avatar}>{clientLoaded && getCompanyInitials()}</div>
+            <span className={styles.adminName}>{clientLoaded && (user?.cName || 'Company')}</span>
             <ChevronDown 
               size={16} 
               className={`${styles.chevron} ${isDropdownOpen ? styles.chevronRotated : ''}`} 
@@ -82,15 +94,12 @@ export default function Header({ setIsMobileOpen }) {
               />
               
               <div className={styles.dropdownMenu}>
-                <button 
-                  className={styles.dropdownItem}
-                  onClick={handleProfileSettings}
-                >
+                <Link href="/Insurance/profile" className={styles.dropdownItem}>
                   Profile Settings
-                </button>
+                </Link>
                 <button 
                   className={styles.dropdownItem}
-                  onClick={handleAccountPreferences}
+                  onClick={() => setIsDropdownOpen(false)}
                 >
                   Account Preferences
                 </button>

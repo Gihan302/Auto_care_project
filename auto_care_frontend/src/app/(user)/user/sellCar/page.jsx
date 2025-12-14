@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import styles from './page.module.css';
 import { useRouter } from 'next/navigation';
+import api from '@/utils/axios';
 
 export default function SellCarPage() {
   const [formData, setFormData] = useState({
@@ -10,8 +11,9 @@ export default function SellCarPage() {
     vehicleRegistration: '',
     location: ''
   });
-
   const [expandedFAQ, setExpandedFAQ] = useState(null);
+  const [agents, setAgents] = useState([]);
+  const [showAgentModal, setShowAgentModal] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,13 +26,21 @@ export default function SellCarPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-
     router.push('/user/sellCar/postAdd');
   };
 
   const router = useRouter();
 
-
+  const handleFindAgent = async () => {
+    try {
+      const response = await api.get('/user/approved-agents');
+      setAgents(response.data);
+      setShowAgentModal(true);
+    } catch (error) {
+      console.error('Error fetching agents:', error);
+      alert('Could not fetch agents. Please try again later.');
+    }
+  };
 
   const toggleFAQ = (index) => {
     setExpandedFAQ(expandedFAQ === index ? null : index);
@@ -99,6 +109,21 @@ export default function SellCarPage() {
         </div>
       </section>
 
+      {/* Find Your Agent Section */}
+      <section className={styles.findAgentSection}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Find Your Agent</h2>
+          <p className={styles.sectionSubtitle}>Our dedicated agents are here to help you every step of the way.</p>
+          <div className={styles.agentContent}>
+            <p className={styles.agentDescription}>Connect with a professional agent who can assist you with paperwork, pricing, and finding the best buyer for your car. Get personalized support and make your selling experience even smoother.</p>
+            <button className={styles.findAgentButton} onClick={handleFindAgent}>Connect with an Agent</button>
+          </div>
+        </div>
+      </section>
+
+      {/* Agent List Modal */}
+      {showAgentModal && <AgentListModal agents={agents} onClose={() => setShowAgentModal(false)} />}
+
       {/* Car Value Form Section */}
       <section className={styles.valueSection}>
         <div className={styles.container}>
@@ -106,75 +131,7 @@ export default function SellCarPage() {
           <p className={styles.formSubtitle}>Enter your details for an instant estimate</p>
           
           <form onSubmit={handleSubmit} className={styles.valueForm}>
-            <div className={styles.formGroup}>
-              <select 
-                name="vehicleType"
-                value={formData.vehicleType}
-                onChange={handleInputChange}
-                className={styles.formInput}
-                required
-              >
-                <option value="">Select Vehicle Type</option>
-                <option value="cars">Cars</option>
-                <option value="vans">Vans</option>
-                <option value="suvs">SUVs</option>
-                <option value="trucks">Trucks</option>
-                <option value="bikes">Bikes</option>
-                <option value="threewheelers">Threewheelers</option>
-                <option value="lorries">Lorries</option>
-                <option value="busses">Busses</option>
-              </select>
-            </div>
-
-            <div className={styles.formGroup}>
-              <input
-                type="text"
-                name="vehicleRegistration"
-                value={formData.vehicleRegistration}
-                onChange={handleInputChange}
-                placeholder="Enter Vehicle Registration Number"
-                className={styles.formInput}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <select 
-                name="location"
-                value={formData.location}
-                onChange={handleInputChange}
-                className={styles.formInput}
-                required
-              >
-                <option value="">Enter Location / District</option>
-                <option value="colombo">Colombo</option>
-                <option value="gampaha">Gampaha</option>
-                <option value="kalutara">Kalutara</option>
-                <option value="kandy">Kandy</option>
-                <option value="matale">Matale</option>
-                <option value="nuwara-eliya">Nuwara Eliya</option>
-                <option value="galle">Galle</option>
-                <option value="matara">Matara</option>
-                <option value="hambantota">Hambantota</option>
-                <option value="jaffna">Jaffna</option>
-                <option value="kilinochchi">Kilinochchi</option>
-                <option value="mannar">Mannar</option>
-                <option value="vavuniya">Vavuniya</option>
-                <option value="mullaitivu">Mullaitivu</option>
-                <option value="batticaloa">Batticaloa</option>
-                <option value="ampara">Ampara</option>
-                <option value="trincomalee">Trincomalee</option>
-                <option value="kurunegala">Kurunegala</option>
-                <option value="puttalam">Puttalam</option>
-                <option value="anuradhapura">Anuradhapura</option>
-                <option value="polonnaruwa">Polonnaruwa</option>
-                <option value="badulla">Badulla</option>
-                <option value="moneragala">Moneragala</option>
-                <option value="ratnapura">Ratnapura</option>
-                <option value="kegalle">Kegalle</option>
-              </select>
-            </div>
-
+            
             <button type="submit" className={styles.submitBtn}>
               Sell My Vehicle
             </button>
@@ -245,6 +202,52 @@ export default function SellCarPage() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+function AgentListModal({ agents, onClose }) {
+  const router = useRouter();
+
+  const handleAgentClick = async (agent) => {
+    try {
+      const response = await api.post('/user/conversations', {
+        agentId: agent.id,
+        // The backend should handle creating or finding the conversation
+      });
+      const conversationId = response.data.conversationId;
+      router.push(`/user/message?conversationId=${conversationId}`);
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+      alert('Could not start a conversation with this agent. Please try again.');
+    }
+  };
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modal}>
+        <div className={styles.modalHeader}>
+          <h2>Our Approved Agents</h2>
+          <button onClick={onClose}>&times;</button>
+        </div>
+        <div className={styles.modalBody}>
+          {agents.length > 0 ? (
+            <ul className={styles.agentList}>
+              {agents.map(agent => (
+                <li key={agent.id} className={styles.agentListItem} onClick={() => handleAgentClick(agent)}>
+                  <div className={styles.agentAvatar}>{agent.fname.charAt(0)}</div>
+                  <div className={styles.agentInfo}>
+                    <p className={styles.agentName}>{agent.fname} {agent.lname}</p>
+                    <p className={styles.agentContact}>{agent.username}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No agents available at the moment.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

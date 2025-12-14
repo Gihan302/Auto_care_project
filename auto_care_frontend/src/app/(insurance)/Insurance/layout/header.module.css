@@ -20,6 +20,12 @@
   gap: 1rem;
 }
 
+.logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
 .mobileMenuButton {
   display: none;
   background: none;
