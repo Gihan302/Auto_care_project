@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'; // Import Link
 import api from '@/utils/axios';
-import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; // Reusing styles
+import styles from './page.module.css'; // Using dedicated styles
 import { useSearchParams } from 'next/navigation';
 
 const LeasingDashboardPage = () => {
@@ -14,7 +14,6 @@ const LeasingDashboardPage = () => {
 
   const fetchPlans = async () => {
     try {
-      // --- FIX 1: Call the new, correct endpoint ---
       const response = await api.get("/leasing-plans");
       
       const plansData = Array.isArray(response.data) ? response.data : [];
@@ -39,17 +38,20 @@ const LeasingDashboardPage = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Leasing Company Dashboard</h1>
-      <p>Welcome to your leasing company dashboard!</p>
+      <h1 className={styles.pageTitle}>Leasing Company Dashboard</h1>
+      <p className={styles.welcomeMessage}>Welcome to your leasing company dashboard!</p>
 
-      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-        <Link href="/leasing/dashboard/applications" className={styles.viewAllButton}>
+      <div className={styles.navigationLinks}>
+        <Link href="/leasing/dashboard/applications" className={styles.navLinkButton}>
           Manage Applications
+        </Link>
+        <Link href="/leasing/manage-plans" className={styles.navLinkButton}>
+          Manage Plans
         </Link>
       </div>
 
       <div className={styles.tableWrapper}>
-        <h2>Current Offer Plans</h2>
+        <h2 className={styles.tableTitle}>Current Offer Plans</h2>
         <table className={styles.table}>
           <thead>
             <tr>

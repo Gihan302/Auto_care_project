@@ -1,18 +1,16 @@
-/* src/app/(insurance)/Insurance/dashboard/page.module.css */
+/* src/app/(leasing)/leasing/dashboard/page.module.css */
 
 .container {
-  width: 100%;
-  max-width: 100%;
   padding: 1.5rem;
-  background-color: #f8fafc; /* Light background for the overall page */
-  min-height: calc(100vh - 60px); /* Adjust based on header height */
+  background-color: #f8fafc;
+  min-height: calc(100vh - 60px);
   color: #333;
 }
 
 .pageTitle {
-  font-size: 2.25rem; /* text-3xl */
-  font-weight: 700; /* font-bold */
-  margin-bottom: 1.5rem; /* mb-6 */
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
   color: #0f172a;
 }
 
@@ -22,11 +20,8 @@
 }
 
 .navigationLinks {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  gap: 1rem; /* Space between links */
 }
 
 .navLinkButton {
@@ -45,12 +40,12 @@
 }
 
 .tableWrapper {
-  margin-top: 2rem;
+  margin-top: 1rem;
   background-color: white;
   border-radius: 0.75rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   border: 1px solid #e2e8f0;
-  overflow-x: auto; /* Ensures table is scrollable on small screens */
+  overflow-x: auto;
   padding: 1.5rem;
 }
 
@@ -96,7 +91,7 @@
 
 .loading, .error, .empty {
   text-align: center;
-  padding: 1rem;
+  padding: 2rem;
   font-style: italic;
   color: #777;
 }

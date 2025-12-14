@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link'; // Import Link
 import api from '@/utils/axios';
 // We can reuse the same styles from the other dashboard
-import styles from '../../../(insurance)/Insurance/managePlans/managePlans.module.css'; 
+import styles from './page.module.css'; 
 
 const InsuranceDashboardPage = () => {
   const [plans, setPlans] = useState([]);
@@ -32,20 +32,20 @@ const InsuranceDashboardPage = () => {
 
   return (
     <div className={styles.container}>
-      <h1>Insurance Company Dashboard</h1>
-      <p>Welcome to your insurance company dashboard!</p>
+      <h1 className={styles.pageTitle}>Insurance Company Dashboard</h1>
+      <p className={styles.welcomeMessage}>Welcome to your insurance company dashboard!</p>
 
-      <div style={{ marginBottom: '20px', textAlign: 'center' }}>
-        <Link href="/Insurance/dashboard/applications" className={styles.viewAllButton}>
+      <div className={styles.navigationLinks}>
+        <Link href="/Insurance/dashboard/applications" className={styles.navLinkButton}>
           Manage Applications
         </Link>
-        <Link href="/Insurance/managePlans" className={styles.viewAllButton}>
+        <Link href="/Insurance/managePlans" className={styles.navLinkButton}>
           Manage Plans
         </Link>
       </div>
 
       <div className={styles.tableWrapper}>
-        <h2>Current Offer Plans</h2>
+        <h2 className={styles.tableTitle}>Current Offer Plans</h2>
         <table className={styles.table}>
           <thead>
             <tr>

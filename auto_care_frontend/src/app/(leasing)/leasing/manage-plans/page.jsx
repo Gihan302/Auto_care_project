@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import styles from "../../../(insurance)/Insurance/managePlans/managePlans.module.css";
+import styles from "./page.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import api from "@/utils/axios";
 
@@ -37,23 +37,25 @@ export default function ManageLeasingPlansPage() {
   }, [searchParams]);
 
   const deletePlan = async (id) => {
-    try {
-      await api.delete(`/leasing-plans/${id}`);
-      setPlans((prev) => prev.filter((plan) => plan.id !== id));
-    } catch (err) {
-      console.error("❌ Error deleting plan:", err);
+    if (window.confirm("Are you sure you want to delete this plan?")) {
+      try {
+        await api.delete(`/leasing-plans/${id}`);
+        setPlans((prev) => prev.filter((plan) => plan.id !== id));
+      } catch (err) {
+        console.error("❌ Error deleting plan:", err);
+      }
     }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Manage Leasing Plans</h1>
+        <h1 className={styles.title}>Manage Leasing Plans</h1>
         <button
           className={styles.addButton}
           onClick={() => router.push("/leasing/create-plan")}
         >
-          <Plus className={styles.addIcon} /> Create New Plan
+          <Plus size={18} /> Create New Plan
         </button>
       </div>
 
@@ -88,13 +90,13 @@ export default function ManageLeasingPlansPage() {
                   <td>{plan.description}</td>
                   <td className={styles.actions}>
                     <button
-                      className={styles.editBtn}
+                      className={styles.editButton}
                       onClick={() => router.push(`/leasing/edit-plan/${plan.id}`)}
                     >
                       <Edit size={16} />
                     </button>
                     <button
-                      className={styles.deleteBtn}
+                      className={styles.deleteButton}
                       onClick={() => deletePlan(plan.id)}
                     >
                       <Trash2 size={16} />

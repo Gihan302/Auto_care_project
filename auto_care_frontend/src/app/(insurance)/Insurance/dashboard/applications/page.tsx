@@ -29,10 +29,11 @@ export default function ManageApplicationsPage() {
           sort: `${sortColumn},${sortDirection}`,
         },
       })
-      setApplications(response.data.content)
+      console.log('API Response:', response.data) // Added for debugging
+      setApplications(response.data || []) // Safely set to empty array if data is null/undefined
       setTotalPages(response.data.totalPages)
     } catch (error) {
-      console.error(error)
+      console.error('Error fetching applications:', error) // Added for debugging
     } finally {
       setLoading(false)
     }
@@ -151,53 +152,61 @@ export default function ManageApplicationsPage() {
                 </tr>
               </thead>
               <tbody>
-                {applications?.map((app) => (
-                  <tr key={app.id}>
-                    <td>{app.id}</td>
-                    <td>{app.applicantName}</td>
-                    <td>{app.email}</td>
-                    <td>{app.phone}</td>
-                    <td>{app.planName}</td>
-                    <td>{new Date(app.submittedAt).toLocaleDateString()}</td>
-                    <td>
-                      <span
-                        className={`${styles.status} ${
-                          styles[app.status.toLowerCase()]
-                        }`}
-                      >
-                        {app.status}
-                      </span>
-                    </td>
-                    <td className={styles.actions}>
-                      <button
-                        onClick={() => setSelectedApplication(app)}
-                        className={styles.viewButton}
-                      >
-                        <FileText size={16} /> View
-                      </button>
-                      {app.status === 'Pending' && (
-                        <>
-                          <button
-                            onClick={() => handleApprove(app.id)}
-                            className={styles.approveButton}
-                            disabled={updatingId === app.id}
-                          >
-                            <CheckCircle size={16} />{' '}
-                            {updatingId === app.id ? 'Wait...' : 'Approve'}
-                          </button>
-                          <button
-                            onClick={() => handleReject(app.id)}
-                            className={styles.rejectButton}
-                            disabled={updatingId === app.id}
-                          >
-                            <XCircle size={16} />{' '}
-                            {updatingId === app.id ? 'Wait...' : 'Reject'}
-                          </button>
-                        </>
-                      )}
+                {applications.length > 0 ? (
+                  applications.map((app) => (
+                    <tr key={app.id}>
+                      <td>{app.id}</td>
+                      <td>{app.applicantName}</td>
+                      <td>{app.email}</td>
+                      <td>{app.phone}</td>
+                      <td>{app.planName}</td>
+                      <td>{new Date(app.submittedAt).toLocaleDateString()}</td>
+                      <td>
+                        <span
+                          className={`${styles.status} ${
+                            styles[app.status.toLowerCase()]
+                          }`}
+                        >
+                          {app.status}
+                        </span>
+                      </td>
+                      <td className={styles.actions}>
+                        <button
+                          onClick={() => setSelectedApplication(app)}
+                          className={styles.viewButton}
+                        >
+                          <FileText size={16} /> View
+                        </button>
+                        {app.status === 'Pending' && (
+                          <>
+                            <button
+                              onClick={() => handleApprove(app.id)}
+                              className={styles.approveButton}
+                              disabled={updatingId === app.id}
+                            >
+                              <CheckCircle size={16} />{' '}
+                              {updatingId === app.id ? 'Wait...' : 'Approve'}
+                            </button>
+                            <button
+                              onClick={() => handleReject(app.id)}
+                              className={styles.rejectButton}
+                              disabled={updatingId === app.id}
+                            >
+                              <XCircle size={16} />{' '}
+                              {updatingId === app.id ? 'Wait...' : 'Reject'}
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" style={{ textAlign: 'center', padding: '1rem' }}>
+                      No applications found.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

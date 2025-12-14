@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '@/utils/axios';
-// Reuse existing styles from managePlans or create a new one if needed
-import styles from '../../../../(insurance)/Insurance/managePlans/managePlans.module.css'; 
+import styles from './page.module.css';
+import { CheckCircle, XCircle } from 'lucide-react'; // Import icons
 
-// Define an interface for the application data
 interface LeasingApplication {
   id: number;
   planId: number;
@@ -13,9 +12,8 @@ interface LeasingApplication {
   applicantName: string;
   email: string;
   phone: string;
-  status: string; // e.g., 'Pending', 'Approved', 'Rejected'
+  status: string;
   submittedAt: string;
-  // Add more fields as per your backend model
 }
 
 export default function LeasingApplicationsPage() {
@@ -24,29 +22,44 @@ export default function LeasingApplicationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
 
+  // --- States for controls ---
+  const [filterStatus, setFilterStatus] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  // Removed page and totalPages state as API is not paginated
+
   const fetchApplications = async () => {
+    setLoading(true);
     try {
-      // This is a placeholder API endpoint. You'll need to implement
-      // this endpoint in your Java backend to fetch applications for the
-      // authenticated leasing company.
-      const response = await api.get("/leasing-applications/company"); 
+      const response = await api.get("/leasing-applications/company", {
+        params: {
+          status: filterStatus,
+          search: searchTerm,
+          // Removed page parameter
+        },
+      });
+      console.log("API Response:", response.data);
       
-      const appsData = Array.isArray(response.data) ? response.data : [];
-      setApplications(appsData);
+      // API returns a direct array
+      setApplications(response.data || []);
+      // No totalPages to set
     } catch (err) {
       setError("Failed to fetch applications. Please ensure you are logged in as a leasing company.");
       console.error("Error fetching leasing applications:", err);
+      setApplications([]); // Clear data on error
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchApplications();
-  }, []);
+    const handler = setTimeout(() => {
+      fetchApplications();
+    }, 500); // Debounce search requests
 
-  // Placeholder for status update function
-  const handleUpdateStatus = async (appId: number, newStatus: string) => {
+    return () => clearTimeout(handler);
+  }, [filterStatus, searchTerm]); // Removed page from dependency array
+
+  const handleUpdateStatus = async (appId: number, newStatus: 'Approved' | 'Rejected') => {
     setUpdatingId(appId);
     try {
       if (newStatus === 'Approved') {
@@ -54,7 +67,7 @@ export default function LeasingApplicationsPage() {
       } else if (newStatus === 'Rejected') {
         await api.post(`/leasing-applications/${appId}/reject`);
       }
-      fetchApplications();
+      fetchApplications(); // Refresh data after update
     } catch (err) {
       console.error(`Error updating application ${appId} to status: ${newStatus}`, err);
     } finally {
@@ -62,73 +75,115 @@ export default function LeasingApplicationsPage() {
     }
   };
 
+  const handleClearFilters = () => {
+    setFilterStatus('');
+    setSearchTerm('');
+    // No page to reset
+  };
+
   return (
     <div className={styles.container}>
-      <h1>Manage Leasing Applications</h1>
-      <p>View and manage all submitted leasing applications for your company.</p>
-
-      <div className={styles.tableWrapper}>
-        <h2>Submitted Applications</h2>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Application ID</th>
-              <th>Plan Name</th>
-              <th>Applicant Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Status</th>
-              <th>Submitted Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan={8} className={styles.loading}>Loading applications...</td>
-              </tr>
-            ) : error ? (
-              <tr>
-                <td colSpan={8} className={styles.error}>{error}</td>
-              </tr>
-            ) : applications.length === 0 ? (
-              <tr>
-                <td colSpan={8} className={styles.empty}>No leasing applications found.</td>
-              </tr>
-            ) : (
-              applications.map((app) => (
-                <tr key={app.id}>
-                  <td>{app.id}</td>
-                  <td>{app.planName}</td>
-                  <td>{app.applicantName}</td>
-                  <td>{app.email}</td>
-                  <td>{app.phone}</td>
-                  <td>{app.status}</td>
-                  <td>{new Date(app.submittedAt).toLocaleDateString()}</td>
-                  <td>
-                    <button 
-                      className={styles.messageButton} // Reusing messageButton style
-                      onClick={() => handleUpdateStatus(app.id, 'Approved')}
-                      disabled={app.status === 'Approved' || updatingId === app.id}
-                      style={{ marginRight: '5px' }}
-                    >
-                      {updatingId === app.id ? 'Approving...' : 'Approve'}
-                    </button>
-                    <button 
-                      className={styles.viewAllButton} // Reusing viewAllButton style
-                      onClick={() => handleUpdateStatus(app.id, 'Rejected')}
-                      disabled={app.status === 'Rejected' || updatingId === app.id}
-                    >
-                      {updatingId === app.id ? 'Rejecting...' : 'Reject'}
-                    </button>
-                    {/* Add a link to view full application details if needed */}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Manage Leasing Applications</h1>
+        <div className={styles.controls}>
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+          <div className={styles.filter}>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+          <button onClick={handleClearFilters} className={styles.clearButton}>
+            Clear
+          </button>
+        </div>
       </div>
+
+      {loading ? (
+        <p>Loading applications...</p>
+      ) : error ? (
+        <p className={styles.error}>{error}</p>
+      ) : (
+        <>
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>App ID</th>
+                  <th>Plan Name</th>
+                  <th>Applicant Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Submitted</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.length > 0 ? (
+                  applications.map((app) => (
+                    <tr key={app.id}>
+                      <td>{app.id}</td>
+                      <td>{app.planName}</td>
+                      <td>{app.applicantName}</td>
+                      <td>{app.email}</td>
+                      <td>{app.phone}</td>
+                      <td>{new Date(app.submittedAt).toLocaleDateString()}</td>
+                      <td>
+                        <span
+                          className={`${styles.status} ${styles[app.status.toLowerCase()] || ''}`}
+                        >
+                          {app.status}
+                        </span>
+                      </td>
+                      <td className={styles.actions}>
+                        {app.status === 'Pending' && (
+                          <>
+                            <button
+                              onClick={() => handleUpdateStatus(app.id, 'Approved')}
+                              className={styles.approveButton}
+                              disabled={updatingId === app.id}
+                            >
+                              <CheckCircle size={16} />
+                              {updatingId === app.id ? 'Wait...' : 'Approve'}
+                            </button>
+                            <button
+                              onClick={() => handleUpdateStatus(app.id, 'Rejected')}
+                              className={styles.rejectButton}
+                              disabled={updatingId === app.id}
+                            >
+                              <XCircle size={16} />
+                              {updatingId === app.id ? 'Wait...' : 'Reject'}
+                            </button>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} style={{ textAlign: 'center', padding: '1rem' }}>
+                      No applications found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {/* Pagination controls removed */}
+        </>
+      )}
     </div>
   );
 }
