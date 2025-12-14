@@ -1,0 +1,220 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  background-color: #f8fafc; /* Light background for the overall page */
+  min-height: calc(100vh - 60px); /* Adjust based on header height */
+  color: #333;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.searchInput,
+.filter select {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #555;
+  background-color: #fff;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.searchInput:focus,
+.filter select:focus {
+  border-color: #007bff; /* Primary color for focus */
+  outline: none;
+}
+
+.clearButton {
+  padding: 0.6rem 1.2rem;
+  background-color: #6c757d; /* Muted color for clear button */
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.clearButton:hover {
+  background-color: #5a6268;
+}
+
+.tableWrapper {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.table th {
+  background-color: #f2f2f2;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.status {
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status.approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.viewButton {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.viewButton:hover {
+  background-color: #0056b3;
+}
+
+.approveButton {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.approveButton:hover {
+  background-color: #218838;
+}
+
+.rejectButton {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.rejectButton:hover {
+  background-color: #c82333;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+}
+
+.pagination button {
+  padding: 0.6rem 1rem;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .controls {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.8rem;
+  }
+
+  .searchInput,
+  .filter select,
+  .clearButton {
+    width: 100%;
+  }
+
+  .table th,
+  .table td {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}

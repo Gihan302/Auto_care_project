@@ -1,0 +1,95 @@
+/* ApplicationModal.module.css */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  /* Simple fade-in animation for overlay */
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modalContent {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  /* Slide-in animation for modal content */
+  animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s;
+  line-height: 1; /* Ensure good alignment */
+}
+
+.closeButton:hover {
+  color: #0f172a;
+}
+
+.modalBody p {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.modalBody strong {
+  font-weight: 600;
+  color: #0f172a;
+  min-width: 120px; /* Align content nicely */
+  display: inline-block;
+}
+
+/* Status styles for badge within the modal */
+.pending {
+  color: #d97706;
+  font-weight: bold;
+}
+.approved {
+  color: #16a34a;
+  font-weight: bold;
+}
+.rejected {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-20px); 
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

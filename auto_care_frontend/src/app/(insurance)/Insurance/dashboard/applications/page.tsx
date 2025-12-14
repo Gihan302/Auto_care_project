@@ -151,7 +151,7 @@ export default function ManageApplicationsPage() {
                 </tr>
               </thead>
               <tbody>
-                {applications.map((app) => (
+                {applications?.map((app) => (
                   <tr key={app.id}>
                     <td>{app.id}</td>
                     <td>{app.applicantName}</td>
